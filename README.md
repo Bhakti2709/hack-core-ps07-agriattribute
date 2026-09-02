@@ -37,6 +37,26 @@ Farmers struggle to determine how much of their crop yield improvement is actual
 
 ---
 
+## 📐 13-Point Hackathon Evaluation Alignment Matrix
+
+| # | Evaluation Dimension | Implementation Strategy in AgriAttribute AI |
+|---|---|---|
+| **1** | **Actual Problem** | Isolates biological lift from weather/soil confounding to solve Syngenta's *"Seeing is Believing"* challenge. |
+| **2** | **Business Objective** | Provides unconfounded ROI (₹/acre) for farmers & equips sales reps with PDF/WhatsApp proof collateral. |
+| **3** | **Required Outputs** | Yield prediction (q/acre), SHAP 4-factor breakdown, Counterfactual $\Delta Y$, Net Profit & ROI %. |
+| **4** | **Yield Attribution** | Mathematical decomposition into Baseline Soil, Monsoon Weather, Practice, and Syngenta Biological. |
+| **5** | **Data Strategy** | Syngenta trials + Meteoblue Weather API + ISRIC SoilGrids API + Sentinel-2 Peak NDVI. |
+| **6** | **Financial ROI** | $\text{Gross Revenue} = \Delta Y \times \text{MSP}$, $\text{Net Profit} = \text{Revenue} - \text{Cost}$, $\text{ROI\%} = \frac{\text{Profit}}{\text{Cost}} \times 100\%$. |
+| **7** | **AI/ML Core** | XGBoost Regressor for non-linear stress buffering + SHAP TreeExplainer for game-theoretic attribution. |
+| **8** | **Weather Telemetry** | Normalizes monsoon rainfall, GDD, and heat stress days (>38°C) to isolate true biological efficacy. |
+| **9** | **Satellite / Sensing** | Sentinel-2 Peak NDVI telemetry for empirical mid-season canopy vigor validation. |
+| **10** | **IoT Strategy** | **Dropped ground IoT** (avoiding ₹25,000+ hardware friction) in favor of 0-cost gridded satellite/weather APIs. |
+| **11** | **System Architecture**| End-to-end Python Streamlit UI + API Gateway + ML & SHAP + FPDF2 & WhatsApp export engines. |
+| **12** | **Realizable Prototype**| Fully deployed Streamlit dashboard (`app.py`), serialized models (`model.pkl`), PDF & WhatsApp engines. |
+| **13** | **Concept Note** | Formal concept note in `concept_note.md` mapping problem-to-impact for hackathon jury presentation. |
+
+---
+
 ## 🏗️ Technical Architecture
 
 ```mermaid
