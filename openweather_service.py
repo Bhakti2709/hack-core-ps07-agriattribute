@@ -8,9 +8,11 @@ import requests
 from datetime import datetime
 
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Active OpenWeatherMap Keys (Loaded securely from environment with failover)
 k1 = os.getenv("OPENWEATHER_API_KEY", "")

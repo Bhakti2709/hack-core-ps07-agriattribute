@@ -6,11 +6,16 @@ Project: soham0777/hack-core-ps07-agriattribute (Team 15 - Syngenta & ANNAM.AI)
 import os
 import requests
 from datetime import datetime
-from supabase import create_client, Client
+try:
+    from supabase import create_client, Client
+except ImportError:
+    create_client, Client = None, None
 
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Supabase Credentials (Loaded securely from environment)
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://wnujxbnjqrwybllvbahm.supabase.co")

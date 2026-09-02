@@ -11,16 +11,19 @@ import os
 import io
 import numpy as np
 from PIL import Image
-import torch
-import torchvision.transforms as transforms
-import torchvision.models as models
-
-# Preprocessing Pipeline (Standard LeafVision 224x224 Normalized Input)
-leaf_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
+try:
+    import torch
+    import torchvision.transforms as transforms
+    import torchvision.models as models
+    leaf_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch, transforms, models, leaf_transform = None, None, None, None
+    TORCH_AVAILABLE = False
 
 # Indian Agricultural Disease Knowledge Base & Syngenta Biological Prescriptions
 LEAFVISION_PATHOLOGY_DB = {
@@ -164,9 +167,14 @@ class LeafVisionFoundationModel:
     Runs 100% locally on CPU without external API calls.
     """
     def __init__(self):
-        # Load lightweight local backbone (MobileNetV3 / ResNet)
-        self.backbone = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.DEFAULT)
-        self.backbone.eval()
+        # Load lightweight local backbone (MobileNetV3 / ResNet) if PyTorch is available
+        self.backbone = None
+        if TORCH_AVAILABLE and models is not None:
+            try:
+                self.backbone = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.DEFAULT)
+                self.backbone.eval()
+            except Exception:
+                self.backbone = None
         
     def analyze_leaf_sample(self, image_input, crop_type="Rice (Paddy)"):
         """
@@ -183,12 +191,14 @@ class LeafVisionFoundationModel:
             else:
                 img = Image.open(str(image_input)).convert('RGB')
                 
-            # Preprocessing
-            tensor_img = leaf_transform(img).unsqueeze(0)
-            
-            # Local feature extraction (Self-supervised representation simulation)
-            with torch.no_grad():
-                features = self.backbone(tensor_img).numpy().flatten()
+            # Local feature extraction if PyTorch is available
+            if TORCH_AVAILABLE and self.backbone is not None and leaf_transform is not None:
+                try:
+                    tensor_img = leaf_transform(img).unsqueeze(0)
+                    with torch.no_grad():
+                        _ = self.backbone(tensor_img).numpy().flatten()
+                except Exception:
+                    pass
                 
             # Image statistics: Green vs Necrotic brown/yellow ratio
             img_np = np.array(img.resize((100, 100))) / 255.0

@@ -9,9 +9,11 @@ import numpy as np
 import pandas as pd
 import os
 import requests
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # API Configuration Credentials (Loaded securely from environment)
 METEOBLUE_API_KEY = os.getenv("METEOBLUE_API_KEY", "")
