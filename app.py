@@ -337,7 +337,7 @@ def main():
             active_crop=t_crop(st.session_state.selected_crop, lang),
             weather_info=ow_live
         )
-        components.html(map_html, height=520)
+        components.html(map_html, height=570)
 
     # Visual Crop Cultivation Intelligence Cards
     st.markdown("---")

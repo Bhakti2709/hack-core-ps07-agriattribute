@@ -65,13 +65,18 @@ def generate_interactive_weather_map_html(
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
-        body {{ margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-        #map {{ height: 520px; width: 100%; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); position: relative; }}
-        
+        html, body {{
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }}
         .map-banner {{
             background: linear-gradient(90deg, #065f46, #047857);
             color: white;
-            padding: 9px 16px;
+            padding: 8px 16px;
             border-radius: 10px 10px 0 0;
             display: flex;
             justify-content: space-between;
@@ -80,6 +85,14 @@ def generate_interactive_weather_map_html(
             font-weight: 600;
             flex-wrap: wrap;
             gap: 8px;
+            box-sizing: border-box;
+            height: 44px;
+        }}
+        #map {{
+            height: calc(100% - 44px);
+            width: 100%;
+            border-radius: 0 0 14px 14px;
+            position: relative;
         }}
         
         /* Floating Weather HUD on top-left */
@@ -138,20 +151,21 @@ def generate_interactive_weather_map_html(
         /* Bottom Search & GPS Box */
         .search-container {{
             position: absolute;
-            bottom: 15px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(6px);
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
             border-radius: 30px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
             display: flex;
             align-items: center;
-            gap: 6px;
-            width: 85%;
-            max-width: 480px;
+            gap: 8px;
+            width: 88%;
+            max-width: 500px;
         }}
         .search-input {{
             border: none;
