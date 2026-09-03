@@ -1253,7 +1253,7 @@ def main():
     with tab_ai:
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader(t("tab6_heading", lang))
-        st.caption(t("tab6_caption", lang, lang=lang))
+        st.caption(t("tab6_caption", lang))
 
         # Suggested Questions
         st.markdown("<div style='font-size:0.8rem; font-weight:700; color:#64748b;'>💡 Quick Agronomic Questions:</div>", unsafe_allow_html=True)

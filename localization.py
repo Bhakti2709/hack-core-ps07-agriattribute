@@ -1291,12 +1291,14 @@ def t(key: str, lang: str = "English", **kwargs) -> str:
     lang_dict = TRANSLATIONS.get(code, TRANSLATIONS["en"])
     text = lang_dict.get(key, TRANSLATIONS["en"].get(key, key))
     
-    if kwargs:
-        try:
-            return text.format(**kwargs)
-        except Exception:
-            return text
-    return text
+    format_kwargs = dict(kwargs)
+    if "lang" not in format_kwargs:
+        format_kwargs["lang"] = lang
+        
+    try:
+        return text.format(**format_kwargs)
+    except Exception:
+        return text
 
 def t_crop(crop_name: str, lang: str = "English") -> str:
     """Translates crop name to selected language, supporting all 24 Indian commodities."""
