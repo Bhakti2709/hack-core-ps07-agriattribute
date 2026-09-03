@@ -356,49 +356,7 @@ def main():
                 st.session_state.selected_region = get_closest_region(new_lat, new_lon)
                 st.rerun()
 
-    # Village & Taluka Search Bar
-    st.markdown('<div style="margin-top: 14px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">', unsafe_allow_html=True)
-    c_s1, c_s2 = st.columns([3, 1])
-    with c_s1:
-        loc_search_input = st.text_input(
-            "🔍 Search Any Village / Taluka / Mandi in India:",
-            placeholder="e.g. Kopargaon, Akola, Baramati, Nashik, Ludhiana, Pune, Guntur...",
-            key="loc_search_field"
-        )
-    with c_s2:
-        st.write("")
-        st.write("")
-        if st.button("🎯 Locate Farm", key="btn_locate_field", use_container_width=True) and loc_search_input:
-            res_loc = resolve_farm_location(loc_search_input)
-            if res_loc:
-                st.session_state.farm_lat = res_loc["lat"]
-                st.session_state.farm_lon = res_loc["lon"]
-                st.session_state.farm_location_name = res_loc["name"]
-                st.session_state.selected_region = get_closest_region(res_loc["lat"], res_loc["lon"])
-                st.rerun()
-            else:
-                st.warning(f"Could not locate '{loc_search_input}'. Please try nearby taluka/district name.")
 
-    # 1-Tap Quick Agricultural Hub Pills
-    st.markdown("<div style='font-size: 0.78rem; font-weight: 700; color: #64748b; margin-top: 6px; margin-bottom: 4px;'>⚡ Quick Farm Hubs:</div>", unsafe_allow_html=True)
-    hub_cols = st.columns(6)
-    farm_hubs = [
-        ("📍 Kopargaon", 19.8833, 74.4833, "Maharashtra & Vidarbha (Deccan)", "Kopargaon"),
-        ("📍 Akola", 20.7333, 77.0000, "Maharashtra & Vidarbha (Deccan)", "Akola"),
-        ("📍 Baramati", 18.1500, 74.5800, "Maharashtra & Vidarbha (Deccan)", "Baramati"),
-        ("📍 Nashik", 19.9975, 73.7898, "Maharashtra & Vidarbha (Deccan)", "Nashik"),
-        ("📍 Ludhiana", 30.9010, 75.8573, "Punjab & Haryana (Indo-Gangetic)", "Ludhiana"),
-        ("📍 Guntur", 16.3067, 80.4365, "Andhra Pradesh & Telangana", "Guntur")
-    ]
-    for h_i, (h_lbl, h_lat, h_lon, h_reg, h_loc) in enumerate(farm_hubs):
-        with hub_cols[h_i]:
-            if st.button(h_lbl, key=f"quick_hub_pill_{h_i}", use_container_width=True):
-                st.session_state.farm_lat = h_lat
-                st.session_state.farm_lon = h_lon
-                st.session_state.farm_location_name = h_loc
-                st.session_state.selected_region = h_reg
-                st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # Quick Region Switcher Pills
     st.markdown(f"<div style='font-size: 0.8rem; font-weight: 600; color: #64748b; margin-top: 10px; margin-bottom: 6px;'>{t('loc_change_belt', lang)}</div>", unsafe_allow_html=True)
