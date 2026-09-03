@@ -273,7 +273,7 @@ def main():
         st.session_state.farm_lon = REGION_COORDS[st.session_state.selected_region]["lon"]
         
     region_crop_options = list(REGIONAL_CROP_SHARES.get(st.session_state.selected_region, {}).keys())
-    if st.session_state.selected_crop not in region_crop_options:
+    if 'selected_crop' not in st.session_state or not st.session_state.selected_crop:
         st.session_state.selected_crop = region_crop_options[0]
 
     # LOCATION & GPS INTELLIGENCE LAYER
@@ -451,7 +451,7 @@ def main():
                     else:
                         matched_app_crop = "Soybean"
                         
-                is_active = (st.session_state.selected_crop == matched_app_crop)
+                is_active = (st.session_state.selected_crop == c_name_raw or st.session_state.selected_crop == matched_app_crop)
                 box_border = "2px solid #059669; background: #ecfdf5;" if is_active else "1.5px solid #e2e8f0; background: #ffffff;"
                 
                 with cols[i % 4]:
@@ -472,7 +472,7 @@ def main():
                     else:
                         btn_lbl = t("select_crop_btn", lang, crop=c_name_display.split()[0])
                         if st.button(btn_lbl, key=f"sel_ag_{key_prefix}_{i}", use_container_width=True):
-                            st.session_state.selected_crop = matched_app_crop
+                            st.session_state.selected_crop = c_name_raw
                             st.rerun()
                             
         with tab_cereals:
@@ -602,6 +602,25 @@ def main():
         "bio_applied": 1 if bio_toggle else 0, "bio_dosage_l_ha": dosage if bio_toggle else 0.0
     }
     
+    def get_crop_proxy(c_name):
+        c = str(c_name).lower()
+        if any(x in c for x in ["cotton"]): return "Cotton"
+        elif any(x in c for x in ["soybean", "soyabean"]): return "Soybean"
+        elif any(x in c for x in ["rice", "paddy"]): return "Rice (Paddy)"
+        elif any(x in c for x in ["wheat", "barley"]): return "Wheat"
+        elif any(x in c for x in ["sugarcane"]): return "Sugarcane"
+        elif any(x in c for x in ["maize", "bajra", "jowar", "ragi", "millet", "sorghum"]): return "Maize"
+        elif any(x in c for x in ["groundnut", "peanut"]): return "Groundnut (Peanut)"
+        elif any(x in c for x in ["mustard", "rapeseed"]): return "Mustard / Rapeseed"
+        elif any(x in c for x in ["gram", "chickpea", "chana", "moong", "urd", "masur", "lentil"]): return "Gram / Chickpea (Chana)"
+        elif any(x in c for x in ["tur", "arhar", "pigeon pea", "red gram"]): return "Tur / Pigeon Pea (Arhar)"
+        elif any(x in c for x in ["onion", "potato"]): return "Onion"
+        elif any(x in c for x in ["tomato"]): return "Tomato"
+        elif any(x in c for x in ["sunflower", "sesame", "sesamum", "til", "safflower", "copra"]): return "Soybean"
+        return "Soybean"
+
+    proxy_crop = get_crop_proxy(crop)
+
     encoded_columns = artifacts["all_columns"]
     def prepare_input(data_dict, bio_flag, dosage_val):
         d = data_dict.copy()
@@ -610,7 +629,7 @@ def main():
         row = pd.Series(0.0, index=encoded_columns)
         for k, v in d.items():
             if k in row.index: row[k] = float(v)
-        if f"crop_type_{crop}" in row.index: row[f"crop_type_{crop}"] = 1.0
+        if f"crop_type_{proxy_crop}" in row.index: row[f"crop_type_{proxy_crop}"] = 1.0
         if f"region_{region}" in row.index: row[f"region_{region}"] = 1.0
         return pd.DataFrame([row])
 

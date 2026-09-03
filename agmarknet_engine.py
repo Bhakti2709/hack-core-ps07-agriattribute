@@ -22,19 +22,56 @@ from plotly.subplots import make_subplots
 # Dataset location
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "agmarknet_daily_report.csv")
 
-# Crop Mapping from AgriAttribute UI to Agmarknet 2.0 Commodities
+# Crop Mapping from AgriAttribute UI to Agmarknet 2.0 Commodities (24 Official Commodities)
 CROP_TO_AGMARKNET = {
-    "Soybean": "Soyabean",
-    "Cotton": "Cotton",
-    "Rice (Paddy)": "Paddy(Common)",
-    "Wheat": "Wheat",
-    "Sugarcane": "Sugarcane",
+    "Bajra": "Bajra(Pearl Millet/Cumbu)",
+    "Bajra(Pearl Millet/Cumbu)": "Bajra(Pearl Millet/Cumbu)",
+    "Barley": "Barley(Jau)",
+    "Barley(Jau)": "Barley(Jau)",
+    "Jowar": "Jowar(Sorghum)",
+    "Jowar(Sorghum)": "Jowar(Sorghum)",
     "Maize": "Maize",
+    "Paddy": "Paddy(Common)",
+    "Rice (Paddy)": "Paddy(Common)",
+    "Paddy(Common)": "Paddy(Common)",
+    "Ragi": "Ragi(Finger Millet)",
+    "Ragi(Finger Millet)": "Ragi(Finger Millet)",
+    "Wheat": "Wheat",
+    "Cotton": "Cotton",
+    "Copra": "Copra",
+    "Groundnut": "Groundnut",
     "Groundnut (Peanut)": "Groundnut",
+    "Mustard": "Mustard",
     "Mustard / Rapeseed": "Mustard",
+    "Safflower": "Safflower",
+    "Sesamum": "Sesamum(Sesame,Gingelly,Til)",
+    "Sesamum(Sesame,Gingelly,Til)": "Sesamum(Sesame,Gingelly,Til)",
+    "Til": "Sesamum(Sesame,Gingelly,Til)",
+    "Soybean": "Soyabean",
+    "Soyabean": "Soyabean",
+    "Sunflower": "Sunflower/Sunflower Seed",
+    "Sunflower/Sunflower Seed": "Sunflower/Sunflower Seed",
+    "Sugarcane": "Sugarcane",
+    "Bengal Gram": "Bengal Gram(Gram)(Whole)",
+    "Bengal Gram(Gram)(Whole)": "Bengal Gram(Gram)(Whole)",
     "Gram / Chickpea (Chana)": "Bengal Gram(Gram)(Whole)",
+    "Chana": "Bengal Gram(Gram)(Whole)",
+    "Black Gram": "Black Gram(Urd Beans)(Whole)",
+    "Black Gram(Urd Beans)(Whole)": "Black Gram(Urd Beans)(Whole)",
+    "Urd": "Black Gram(Urd Beans)(Whole)",
+    "Green Gram": "Green Gram(Moong)(Whole)",
+    "Green Gram(Moong)(Whole)": "Green Gram(Moong)(Whole)",
+    "Moong": "Green Gram(Moong)(Whole)",
+    "Lentil": "Lentil(Masur)(Whole)",
+    "Lentil(Masur)(Whole)": "Lentil(Masur)(Whole)",
+    "Masur": "Lentil(Masur)(Whole)",
+    "Red gram": "Red gram/Arhar/Tur(whole)",
+    "Red gram/Arhar/Tur(whole)": "Red gram/Arhar/Tur(whole)",
     "Tur / Pigeon Pea (Arhar)": "Red gram/Arhar/Tur(whole)",
+    "Arhar": "Red gram/Arhar/Tur(whole)",
+    "Tur": "Red gram/Arhar/Tur(whole)",
     "Onion": "Onion",
+    "Potato": "Potato",
     "Tomato": "Tomato"
 }
 
@@ -53,6 +90,12 @@ def get_mandi_intelligence_for_crop(crop_name: str, has_biological: bool = True)
     agmark_name = CROP_TO_AGMARKNET.get(crop_name, crop_name)
     
     match = df[df["commodity"].str.strip().str.lower() == agmark_name.strip().lower()]
+    if match.empty:
+        # Try substring matching
+        c_clean = crop_name.split('(')[0].split('/')[0].strip().lower()
+        sub = df[df["commodity"].str.lower().str.contains(c_clean, regex=False)]
+        if not sub.empty:
+            match = sub
     if match.empty:
         # Fallback to defaults
         return {

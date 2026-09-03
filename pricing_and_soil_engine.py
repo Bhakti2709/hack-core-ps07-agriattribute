@@ -82,6 +82,138 @@ CROPS_DATABASE = {
         "default_product": "Syngenta Isabion", "dosage_l_acre": 2.0, "unit_cost_per_l": 920.0, "labor_cost_acre": 200.0,
         "season": "Annual Cash", "icon": "🍅", "family": "Solanaceae / Vegetable",
         "description": "Intensive vegetable crop; biostimulants enhance brix content, skin firmness, and yield."
+    },
+    "Bajra(Pearl Millet/Cumbu)": {
+        "msp_cacp_2024": 2775.0, "cacp_cost_a2_fl": 1850.0, "mandi_variance_pct": 2.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif Season", "icon": "🌾", "family": "Poaceae / Millet",
+        "description": "Drought-hardy nutrient-rich pearl millet; biostimulants improve panicle grain density."
+    },
+    "Bajra": {
+        "msp_cacp_2024": 2775.0, "cacp_cost_a2_fl": 1850.0, "mandi_variance_pct": 2.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif Season", "icon": "🌾", "family": "Poaceae / Millet",
+        "description": "Drought-hardy nutrient-rich pearl millet; biostimulants improve panicle grain density."
+    },
+    "Barley(Jau)": {
+        "msp_cacp_2024": 2150.0, "cacp_cost_a2_fl": 1433.0, "mandi_variance_pct": 2.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Rabi Season", "icon": "🌾", "family": "Poaceae / Cereal",
+        "description": "Key rabi food and malting grain; terminal heat stress protection preserves test weight."
+    },
+    "Barley": {
+        "msp_cacp_2024": 2150.0, "cacp_cost_a2_fl": 1433.0, "mandi_variance_pct": 2.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Rabi Season", "icon": "🌾", "family": "Poaceae / Cereal",
+        "description": "Key rabi food and malting grain; terminal heat stress protection preserves test weight."
+    },
+    "Jowar(Sorghum)": {
+        "msp_cacp_2024": 3699.0, "cacp_cost_a2_fl": 2466.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🌾", "family": "Poaceae / Sorghum",
+        "description": "Staple dryland cereal; amino acids preserve grain filling under mid-season dry spells."
+    },
+    "Jowar": {
+        "msp_cacp_2024": 3699.0, "cacp_cost_a2_fl": 2466.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🌾", "family": "Poaceae / Sorghum",
+        "description": "Staple dryland cereal; amino acids preserve grain filling under mid-season dry spells."
+    },
+    "Ragi(Finger Millet)": {
+        "msp_cacp_2024": 4886.0, "cacp_cost_a2_fl": 3257.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif Season", "icon": "🌾", "family": "Poaceae / Millet",
+        "description": "Finger millet; rich in calcium; foliar nutrition enhances finger spikelet grain filling."
+    },
+    "Ragi": {
+        "msp_cacp_2024": 4886.0, "cacp_cost_a2_fl": 3257.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif Season", "icon": "🌾", "family": "Poaceae / Millet",
+        "description": "Finger millet; rich in calcium; foliar nutrition enhances finger spikelet grain filling."
+    },
+    "Copra": {
+        "msp_cacp_2024": 12100.0, "cacp_cost_a2_fl": 8066.0, "mandi_variance_pct": 5.0,
+        "default_product": "Syngenta CropBio+", "dosage_l_acre": 2.0, "unit_cost_per_l": 620.0, "labor_cost_acre": 200.0,
+        "season": "Perennial Plantation", "icon": "🥥", "family": "Arecaceae / Plantation",
+        "description": "High-value plantation commodity; foliar biostimulants improve nut weight and copra oil content."
+    },
+    "Safflower": {
+        "msp_cacp_2024": 6540.0, "cacp_cost_a2_fl": 4360.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Rabi Season", "icon": "🌼", "family": "Asteraceae / Oilseed",
+        "description": "Drought-tolerant rabi oilseed; protects capitulum flower setting from dry thermal winds."
+    },
+    "Sesamum(Sesame,Gingelly,Til)": {
+        "msp_cacp_2024": 9846.0, "cacp_cost_a2_fl": 6564.0, "mandi_variance_pct": 4.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Summer", "icon": "🌱", "family": "Pedaliaceae / Oilseed",
+        "description": "High-value edible oilseed; foliar amino acids prevent capsule shedding and maximize oil quality."
+    },
+    "Sesamum": {
+        "msp_cacp_2024": 9846.0, "cacp_cost_a2_fl": 6564.0, "mandi_variance_pct": 4.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Summer", "icon": "🌱", "family": "Pedaliaceae / Oilseed",
+        "description": "High-value edible oilseed; foliar amino acids prevent capsule shedding and maximize oil quality."
+    },
+    "Sunflower/Sunflower Seed": {
+        "msp_cacp_2024": 7721.0, "cacp_cost_a2_fl": 5147.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🌻", "family": "Asteraceae / Oilseed",
+        "description": "Major oilseed; protects central head floret fertilization to eliminate empty seed centers."
+    },
+    "Sunflower": {
+        "msp_cacp_2024": 7721.0, "cacp_cost_a2_fl": 5147.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🌻", "family": "Asteraceae / Oilseed",
+        "description": "Major oilseed; protects central head floret fertilization to eliminate empty seed centers."
+    },
+    "Bengal Gram(Gram)(Whole)": {
+        "msp_cacp_2024": 5875.0, "cacp_cost_a2_fl": 3916.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Rabi Season", "icon": "🥣", "family": "Fabaceae / Pulse",
+        "description": "Deep-rooted winter pulse; prevents flower dropping during winter temperature fluctuations."
+    },
+    "Black Gram(Urd Beans)(Whole)": {
+        "msp_cacp_2024": 7800.0, "cacp_cost_a2_fl": 5200.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🥣", "family": "Fabaceae / Pulse",
+        "description": "Short-duration pulse; foliar biostimulants stimulate node branch flower retention and pod counts."
+    },
+    "Green Gram(Moong)(Whole)": {
+        "msp_cacp_2024": 8768.0, "cacp_cost_a2_fl": 5845.0, "mandi_variance_pct": 3.0,
+        "default_product": "Syngenta Isabion", "dosage_l_acre": 1.5, "unit_cost_per_l": 920.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Summer", "icon": "🥣", "family": "Fabaceae / Pulse",
+        "description": "60-day catch crop; buffers heat stress during bloom to ensure uniform pod maturation."
+    },
+    "Lentil(Masur)(Whole)": {
+        "msp_cacp_2024": 7000.0, "cacp_cost_a2_fl": 4666.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 1.5, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Rabi Season", "icon": "🥣", "family": "Fabaceae / Pulse",
+        "description": "Winter rainfed pulse; preserves root nodule nitrogen fixation during dry cold snaps."
+    },
+    "Potato": {
+        "msp_cacp_2024": 800.0, "cacp_cost_a2_fl": 550.0, "mandi_variance_pct": 8.0,
+        "default_product": "Syngenta CropBio+", "dosage_l_acre": 2.5, "unit_cost_per_l": 620.0, "labor_cost_acre": 200.0,
+        "season": "Rabi Cash Crop", "icon": "🥔", "family": "Solanaceae / Tuber",
+        "description": "Commercial tuber crop; biostimulants accelerate stolon tuber initiation and uniform sizing."
+    },
+    "Paddy(Common)": {
+        "msp_cacp_2024": 2369.0, "cacp_cost_a2_fl": 1533.0, "mandi_variance_pct": 1.8,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 2.0, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif/Rabi", "icon": "🍚", "family": "Poaceae / Cereal",
+        "description": "High acreage irrigated and wetland staple; prone to panicle blast and thermal stress."
+    },
+    "Soyabean": {
+        "msp_cacp_2024": 5328.0, "cacp_cost_a2_fl": 3261.0, "mandi_variance_pct": 2.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 2.0, "unit_cost_per_l": 850.0, "labor_cost_acre": 150.0,
+        "season": "Kharif Season", "icon": "🌱", "family": "Fabaceae / Oilseed",
+        "description": "Primary rainfed oilseed crop with high flower abortion risk during August heat spells."
+    },
+    "Red gram/Arhar/Tur(whole)": {
+        "msp_cacp_2024": 8000.0, "cacp_cost_a2_fl": 5033.0, "mandi_variance_pct": 3.5,
+        "default_product": "Syngenta Quantis (Biostimulant)", "dosage_l_acre": 2.0, "unit_cost_per_l": 850.0, "labor_cost_acre": 160.0,
+        "season": "Kharif Season", "icon": "🌿", "family": "Fabaceae / Pulse",
+        "description": "Long-duration rainfed pulse (180 days); intercropped with cotton/soybean."
     }
 }
 

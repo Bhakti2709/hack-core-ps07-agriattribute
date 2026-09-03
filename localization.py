@@ -1299,9 +1299,11 @@ def t(key: str, lang: str = "English", **kwargs) -> str:
     return text
 
 def t_crop(crop_name: str, lang: str = "English") -> str:
-    """Translates crop name to selected language."""
+    """Translates crop name to selected language, supporting all 24 Indian commodities."""
     code = get_lang_code(lang)
-    return CROP_TRANSLATIONS.get(crop_name, {}).get(code, crop_name)
+    if crop_name in CROP_TRANSLATIONS:
+        return CROP_TRANSLATIONS[crop_name].get(code, crop_name)
+    return t_commodity(crop_name, lang)
 
 def t_region(region_name: str, lang: str = "English") -> str:
     """Translates agro-climatic region name to selected language."""
