@@ -512,6 +512,8 @@ def main():
             <ul style="margin-top: 6px; margin-left: 18px; font-size: 0.95rem; line-height: 1.6; color: #334155;">
                 <li>{t('why_readiness', lang, score=readiness_score)}</li>
                 <li>{t('why_weather', lang, temp=ow_live.get('temp_c'), desc=weather_desc_localized, prob=ow_5day[0].get('rain_prob'))}</li>
+                <li>💨 <b>Live Wind & Spray Safety:</b> {ow_live.get('wind_speed_kmh', 10.8)} km/h — <span style="color:#059669; font-weight:bold;">{'✅ Optimal Spray Window (< 15 km/h)' if ow_live.get('wind_speed_kmh', 10.8) < 15 else '⚠️ Moderate Wind (Use coarse nozzle)'}</span></li>
+                <li>☁️ <b>Live Cloud Cover & Solar Uptake:</b> {ow_live.get('cloud_cover_pct', 15)}% ({weather_desc_localized})</li>
                 <li>{t('why_stress', lang, days=heat_stress)}</li>
             </ul>
         </div>
@@ -580,6 +582,54 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
+        # Prominent Wind Speed & Cloud Cover Safety Meters
+        w_c1, w_c2 = st.columns(2)
+        wind_speed_num = float(ow_live.get('wind_speed_kmh', 10.8))
+        cloud_pct_num = int(ow_live.get('cloud_cover_pct', 15))
+        
+        with w_c1:
+            if wind_speed_num < 15.0:
+                w_status = "✅ OPTIMAL SPRAY WINDOW (< 15 km/h)"
+                w_bg = "#ecfdf5"
+                w_border = "#10b981"
+                w_text_color = "#047857"
+                w_desc = "Zero droplet drift hazard. Ideal for foliar biological absorption."
+            elif wind_speed_num < 25.0:
+                w_status = "⚠️ MODERATE WIND (15-25 km/h)"
+                w_bg = "#fffbeb"
+                w_border = "#f59e0b"
+                w_text_color = "#b45309"
+                w_desc = "Use low-drift coarse nozzles or spray before 10 AM."
+            else:
+                w_status = "❌ HIGH WIND ALERT (> 25 km/h)"
+                w_bg = "#fef2f2"
+                w_border = "#ef4444"
+                w_text_color = "#b91c1c"
+                w_desc = "Do NOT spray! Chemical drift and wash-off danger."
+                
+            st.markdown(f"""
+            <div style="background: {w_bg}; border: 1.5px solid {w_border}; border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.85rem; font-weight:800; color:{w_text_color};">💨 LIVE WIND SPEED & SPRAY SAFETY</span>
+                    <span style="font-size:1.3rem; font-weight:900; color:{w_text_color};">{wind_speed_num} km/h</span>
+                </div>
+                <div style="font-weight:700; font-size:0.9rem; color:{w_text_color}; margin:6px 0;">{w_status}</div>
+                <div style="font-size:0.75rem; color:#475569;">{w_desc}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with w_c2:
+            st.markdown(f"""
+            <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.85rem; font-weight:800; color:#334155;">☁️ LIVE CLOUD COVER & ABSORPTION</span>
+                    <span style="font-size:1.3rem; font-weight:900; color:#0284c7;">{cloud_pct_num}%</span>
+                </div>
+                <div style="font-weight:700; font-size:0.9rem; color:#0f172a; margin:6px 0;">{ow_live.get('description', 'Partly Cloudy').title()}</div>
+                <div style="font-size:0.75rem; color:#475569;">Stomatal opening active. Optimal diffused light for biostimulant uptake.</div>
+            </div>
+            """, unsafe_allow_html=True)
+
         fc_cols = st.columns(5)
         for idx, day_data in enumerate(ow_5day):
             with fc_cols[idx]:

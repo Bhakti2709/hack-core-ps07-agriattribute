@@ -3,15 +3,15 @@ interactive_map_service.py - Live Satellite Weather & Cyclone Radar Map (Leaflet
 AgriAttribute AI — Syngenta Biologicals & ANNAM.AI Hack Core 2026 (Team 15)
 
 Features:
-1. Dynamic Real-Time RainViewer Doppler Radar (Fetches latest live radar timestamp dynamically).
-2. OpenWeather Satellite Cloud Cover (High-Contrast Mode) & Wind Streamlines.
-3. Interactive Real-Time Weather HUD:
-   - ☁️ Cloud Cover % & Sky Condition
-   - 💨 Wind Speed (km/h), Direction & Spray Drift Safety Gauge
-   - 🌡️ Temperature & Humidity
-   - 🌀 IMD Cyclone & Storm Status
-4. Direct One-Tap Layer Toggle Pills: [☁️ Clouds] [🌧️ Rain Radar] [💨 Wind Streamlines] [🛰️ Satellite]
-5. HTML5 "Locate My Exact Farm GPS" button + Indian Village / Taluka Nominatim Search.
+1. Dynamic Real-Time Weather Updates:
+   - When searching any Indian village (e.g. Pune, Akola, Ludhiana) or dragging marker or clicking GPS,
+     client-side JavaScript immediately fetches live OpenWeather telemetry for those EXACT coordinates
+     and updates the HUD (Temp, Cloud Cover %, Wind Speed km/h, Humidity %, Spray Drift Badge) instantly!
+2. Dynamic RainViewer Doppler Radar:
+   - Automatically queries RainViewer API for the latest scan timestamp so rain radar is never 404.
+3. High-Contrast Satellite Clouds & Wind Streamlines:
+   - Visibly active on map with one-tap toolbar buttons.
+4. Full localization & map title parity.
 """
 import os
 try:
@@ -31,7 +31,7 @@ def generate_interactive_weather_map_html(
 ) -> str:
     """
     Generates a full interactive HTML Leaflet widget with live dynamic Doppler radar,
-    high-contrast satellite cloud tiles, wind drift streamlines, and direct on-map layer controls.
+    high-contrast satellite clouds, wind streamlines, and instant on-map telemetry recalculation.
     """
     w = weather_info or {}
     temp = w.get("temp_c", 28.5)
@@ -41,7 +41,7 @@ def generate_interactive_weather_map_html(
     desc = w.get("description", "Partly Cloudy")
     wind_deg = w.get("wind_deg", 120)
     
-    # Spray Drift Safety Assessment
+    # Spray Drift Assessment
     if wind_kmh < 15.0:
         wind_badge = "✅ OPTIMAL SPRAY WINDOW (< 15 km/h)"
         wind_color = "#10b981"
@@ -64,12 +64,12 @@ def generate_interactive_weather_map_html(
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         body {{ margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-        #map {{ height: 500px; width: 100%; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); position: relative; }}
+        #map {{ height: 520px; width: 100%; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); position: relative; }}
         
         .map-banner {{
             background: linear-gradient(90deg, #065f46, #047857);
             color: white;
-            padding: 8px 14px;
+            padding: 9px 16px;
             border-radius: 10px 10px 0 0;
             display: flex;
             justify-content: space-between;
@@ -86,7 +86,7 @@ def generate_interactive_weather_map_html(
             top: 12px;
             left: 55px;
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.90);
+            background: rgba(15, 23, 42, 0.92);
             backdrop-filter: blur(8px);
             color: #ffffff;
             padding: 12px 16px;
@@ -95,6 +95,7 @@ def generate_interactive_weather_map_html(
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             max-width: 340px;
             font-size: 0.82rem;
+            transition: all 0.3s ease;
         }}
         .hud-row {{ display: flex; justify-content: space-between; align-items: center; margin: 4px 0; }}
         .hud-val {{ font-weight: 800; color: #34d399; font-size: 0.95rem; }}
@@ -106,7 +107,7 @@ def generate_interactive_weather_map_html(
             top: 12px;
             right: 12px;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(6px);
             padding: 6px 10px;
             border-radius: 12px;
@@ -148,7 +149,7 @@ def generate_interactive_weather_map_html(
             align-items: center;
             gap: 6px;
             width: 85%;
-            max-width: 460px;
+            max-width: 480px;
         }}
         .search-input {{
             border: none;
@@ -174,7 +175,7 @@ def generate_interactive_weather_map_html(
 </head>
 <body>
     <div class="map-banner">
-        <div>🛰️ <b>Live Doppler Radar, Cloud Cover & Wind Drift Engine</b> — {region_name}</div>
+        <div id="mapBannerTitle">🛰️ <b>Live Doppler Radar, Cloud Cover & Wind Drift Engine</b> — {region_name}</div>
         <div style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:12px; font-size:0.75rem;">
             🌀 IMD Cyclone Alert: NORMAL (Safe for Application)
         </div>
@@ -184,22 +185,22 @@ def generate_interactive_weather_map_html(
         <!-- Floating Live Weather & Wind HUD -->
         <div class="weather-hud">
             <div style="font-weight: 800; font-size: 0.85rem; color: #a7f3d0; margin-bottom: 6px; display:flex; justify-content:space-between; align-items:center;">
-                <span>📍 LIVE FIELD TELEMETRY</span>
-                <span style="font-size: 1.1rem; color: #ffffff;">{temp}°C</span>
+                <span id="hudLocationTitle">📍 LIVE FIELD: {region_name.upper()}</span>
+                <span id="hudTemp" style="font-size: 1.15rem; color: #ffffff;">{temp}°C</span>
             </div>
             <div class="hud-row">
                 <span>☁️ <b>Cloud Cover:</b></span>
-                <span class="hud-val">{clouds}% <span style="font-size:0.75rem; font-weight:normal; color:#cbd5e1;">({desc})</span></span>
+                <span id="hudClouds" class="hud-val">{clouds}% <span style="font-size:0.75rem; font-weight:normal; color:#cbd5e1;">({desc})</span></span>
             </div>
             <div class="hud-row">
                 <span>💨 <b>Wind Speed:</b></span>
-                <span class="hud-val">{wind_kmh} km/h</span>
+                <span id="hudWind" class="hud-val">{wind_kmh} km/h</span>
             </div>
             <div class="hud-row">
-                <span>💧 <b>Humidity:</b> {humidity}% RH</span>
-                <span class="hud-tag">{wind_badge}</span>
+                <span>💧 <b>Humidity:</b> <span id="hudHumidity">{humidity}% RH</span></span>
+                <span id="hudSprayBadge" class="hud-tag">{wind_badge}</span>
             </div>
-            <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px;">
+            <div id="hudSprayAdvisory" style="font-size: 0.68rem; color: #94a3b8; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px;">
                 💡 <em>{wind_advisory}</em>
             </div>
         </div>
@@ -208,19 +209,20 @@ def generate_interactive_weather_map_html(
         <div class="layer-toolbar">
             <button id="btnClouds" class="layer-pill active" onclick="toggleLayer('clouds')">☁️ Clouds</button>
             <button id="btnRadar" class="layer-pill active" onclick="toggleLayer('radar')">🌧️ Rain Radar</button>
-            <button id="btnWind" class="layer-pill" onclick="toggleLayer('wind')">💨 Wind Stream</button>
+            <button id="btnWind" class="layer-pill active" onclick="toggleLayer('wind')">💨 Wind Stream</button>
             <button id="btnSatellite" class="layer-pill" onclick="toggleSatellite()">🛰️ Satellite</button>
         </div>
 
         <!-- Interactive Search & GPS Locate Bar -->
         <div class="search-container">
-            <input type="text" id="locSearch" class="search-input" placeholder="🔍 Search Village / Taluka (e.g. Akola, Baramati, Ludhiana, Guntur)..." />
+            <input type="text" id="locSearch" class="search-input" placeholder="🔍 Search Village / Taluka (e.g. Pune, Akola, Baramati, Ludhiana)..." />
             <button onclick="searchLocation()" class="gps-btn" style="background:#0284c7;">Search</button>
             <button onclick="locateUserGPS()" class="gps-btn">🎯 My GPS</button>
         </div>
     </div>
 
     <script>
+        var apiKey = "{OPENWEATHER_MAP_KEY}";
         var map = L.map('map', {{
             center: [{lat}, {lon}],
             zoom: 7,
@@ -240,18 +242,18 @@ def generate_interactive_weather_map_html(
         }});
 
         // 3. OpenWeatherMap Live Satellite Clouds (High-Contrast Opacity 0.88)
-        var cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_MAP_KEY}', {{
+        var cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid=' + apiKey, {{
             maxZoom: 18,
             opacity: 0.88,
             attribution: 'Clouds &copy; OpenWeatherMap'
         }}).addTo(map);
 
         // 4. OpenWeatherMap Wind Streamlines Layer
-        var windLayer = L.tileLayer('https://tile.openweathermap.org/map/wind_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_MAP_KEY}', {{
+        var windLayer = L.tileLayer('https://tile.openweathermap.org/map/wind_new/{{z}}/{{x}}/{{y}}.png?appid=' + apiKey, {{
             maxZoom: 18,
             opacity: 0.80,
             attribution: 'Wind &copy; OpenWeatherMap'
-        }});
+        }}).addTo(map);
 
         // 5. Dynamic RainViewer Doppler Radar Layer (Always fetches latest live scan timestamp!)
         var radarLayer = null;
@@ -270,7 +272,7 @@ def generate_interactive_weather_map_html(
             }})
             .catch(function(err) {{
                 console.log("RainViewer fallback to OpenWeather precipitation:", err);
-                radarLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_MAP_KEY}', {{
+                radarLayer = L.tileLayer('https://tile.openweathermap.org/map/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid=' + apiKey, {{
                     maxZoom: 18, opacity: 0.80
                 }}).addTo(map);
             }});
@@ -335,9 +337,67 @@ def generate_interactive_weather_map_html(
         var marker = L.marker([{lat}, {lon}], {{ icon: farmIcon, draggable: true }}).addTo(map);
         marker.bindPopup("<b>📍 Active Field: {active_crop}</b><br>{region_name}<br><small>GPS: {lat:.4f}°N, {lon:.4f}°E</small><br><b>Wind:</b> {wind_kmh} km/h | <b>Cloud:</b> {clouds}%<br><span style='color:{wind_color}; font-weight:bold;'>{wind_badge}</span>").openPopup();
 
+        // DYNAMIC FIELD WEATHER UPDATER FUNCTION
+        function updateFieldWeather(targetLat, targetLon, placeName) {{
+            if (placeName) {{
+                document.getElementById('hudLocationTitle').innerText = "📍 " + placeName.toUpperCase();
+                document.getElementById('mapBannerTitle').innerHTML = "🛰️ <b>Live Radar & Weather Telemetry</b> — " + placeName;
+            }}
+            
+            var apiUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + targetLat + "&lon=" + targetLon + "&appid=" + apiKey + "&units=metric";
+            fetch(apiUrl)
+                .then(function(res) {{ return res.json(); }})
+                .then(function(data) {{
+                    if (data && data.main) {{
+                        var newTemp = Math.round(data.main.temp);
+                        var newHumidity = data.main.humidity;
+                        var newWindKmh = (data.wind.speed * 3.6).toFixed(1);
+                        var newClouds = data.clouds ? data.clouds.all : 0;
+                        var newDesc = data.weather[0] ? data.weather[0].description : "Clear";
+                        var cityName = data.name || placeName || "Field";
+
+                        // Update HUD Elements Instantly
+                        document.getElementById('hudTemp').innerText = newTemp + "°C";
+                        document.getElementById('hudClouds').innerHTML = newClouds + "% <span style='font-size:0.75rem; font-weight:normal; color:#cbd5e1;'>(" + newDesc + ")</span>";
+                        document.getElementById('hudWind').innerText = newWindKmh + " km/h";
+                        document.getElementById('hudHumidity').innerText = newHumidity + "% RH";
+                        document.getElementById('hudLocationTitle').innerText = "📍 " + cityName.toUpperCase();
+                        document.getElementById('mapBannerTitle').innerHTML = "🛰️ <b>Live Radar & Weather Telemetry</b> — " + cityName;
+
+                        // Update Spray Drift Badge
+                        var badgeEl = document.getElementById('hudSprayBadge');
+                        var advisoryEl = document.getElementById('hudSprayAdvisory');
+                        if (parseFloat(newWindKmh) < 15.0) {{
+                            badgeEl.innerText = "✅ OPTIMAL SPRAY WINDOW (< 15 km/h)";
+                            badgeEl.style.background = "#10b981";
+                            advisoryEl.innerText = "💡 Safe for biological foliar spraying (zero droplet drift risk).";
+                        }} else if (parseFloat(newWindKmh) < 25.0) {{
+                            badgeEl.innerText = "⚠️ MODERATE WIND (15-25 km/h)";
+                            badgeEl.style.background = "#f59e0b";
+                            advisoryEl.innerText = "💡 Use low-drift coarse nozzles or spray early morning.";
+                        }} else {{
+                            badgeEl.innerText = "❌ HIGH WIND ALERT (> 25 km/h)";
+                            badgeEl.style.background = "#ef4444";
+                            advisoryEl.innerText = "💡 Do NOT spray! High chemical drift and wash-off risk.";
+                        }}
+
+                        // Update marker popup
+                        marker.setPopupContent("<b>📍 " + cityName + "</b><br><small>GPS: " + targetLat.toFixed(4) + "°N, " + targetLon.toFixed(4) + "°E</small><br><b>Temp:</b> " + newTemp + "°C | <b>Wind:</b> " + newWindKmh + " km/h | <b>Cloud:</b> " + newClouds + "%<br><span style='font-weight:bold; color:#059669;'>" + badgeEl.innerText + "</span>").openPopup();
+                    }}
+                }})
+                .catch(function(err) {{
+                    console.error("Live weather update error:", err);
+                }});
+        }}
+
         marker.on('dragend', function(e) {{
             var pos = marker.getLatLng();
-            marker.setPopupContent("<b>📍 Field Relocated</b><br><small>Lat: " + pos.lat.toFixed(4) + ", Lon: " + pos.lng.toFixed(4) + "</small><br><b>Weather Updated</b>").openPopup();
+            updateFieldWeather(pos.lat, pos.lng, "Relocated Field");
+        }});
+
+        map.on('click', function(e) {{
+            marker.setLatLng(e.latlng);
+            updateFieldWeather(e.latlng.lat, e.latlng.lng, "Selected Field");
         }});
 
         // Real Browser Geolocation Trigger
@@ -348,7 +408,7 @@ def generate_interactive_weather_map_html(
                     var userLon = position.coords.longitude;
                     map.setView([userLat, userLon], 12);
                     marker.setLatLng([userLat, userLon]);
-                    marker.setPopupContent("<b>🎯 Exact Farm Location Detected via GPS!</b><br><small>Lat: " + userLat.toFixed(4) + ", Lon: " + userLon.toFixed(4) + "</small>").openPopup();
+                    updateFieldWeather(userLat, userLon, "Exact GPS Field");
                 }}, function(error) {{
                     alert("Unable to retrieve GPS location: " + error.message);
                 }}, {{ enableHighAccuracy: true, timeout: 8000 }});
@@ -368,9 +428,10 @@ def generate_interactive_weather_map_html(
                         var item = data[0];
                         var sLat = parseFloat(item.lat);
                         var sLon = parseFloat(item.lon);
+                        var placeName = item.display_name.split(',')[0];
                         map.setView([sLat, sLon], 11);
                         marker.setLatLng([sLat, sLon]);
-                        marker.setPopupContent("<b>📍 " + item.display_name.split(',')[0] + "</b><br><small>Lat: " + sLat.toFixed(4) + ", Lon: " + sLon.toFixed(4) + "</small>").openPopup();
+                        updateFieldWeather(sLat, sLon, placeName);
                     }} else {{
                         alert("Location not found. Try entering district or taluka name.");
                     }}
