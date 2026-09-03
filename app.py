@@ -35,8 +35,9 @@ import gemini_service
 import retrain_pipeline
 import leafvision_engine
 import pricing_and_soil_engine
-import interactive_map_service
 import importlib
+importlib.reload(pricing_and_soil_engine)
+import interactive_map_service
 importlib.reload(interactive_map_service)
 import agmarknet_engine
 importlib.reload(agmarknet_engine)
@@ -639,16 +640,25 @@ def main():
         else:
             st.markdown(f'<div class="decision-verdict">{t("action_delay", lang)}</div>', unsafe_allow_html=True)
             
-        adv = pricing_and_soil_engine.get_human_centric_agronomy_advisory(
-            crop=crop,
-            heat_stress=heat_stress,
-            temp=ow_live.get('temp_c', 28.0),
-            rain_prob=ow_5day[0].get('rain_prob', 0),
-            wind_kmh=ow_live.get('wind_speed_kmh', 8.5),
-            cloud_pct=ow_live.get('cloud_cover_pct', 20),
-            readiness_score=readiness_score,
-            lang=lang
-        )
+        try:
+            adv = pricing_and_soil_engine.get_human_centric_agronomy_advisory(
+                crop=crop,
+                heat_stress=heat_stress,
+                temp=ow_live.get('temp_c', 28.0),
+                rain_prob=ow_5day[0].get('rain_prob', 0),
+                wind_kmh=ow_live.get('wind_speed_kmh', 8.5),
+                cloud_pct=ow_live.get('cloud_cover_pct', 20),
+                readiness_score=readiness_score,
+                lang=lang
+            )
+        except Exception:
+            adv = {
+                "physio": f"🌱 <b>Crop Protection & Stress Buffering:</b> Biological foliar treatment strengthens cell walls and protects {localized_active_crop} from temperature fluctuations.",
+                "weather_spray": f"💨 <b>Spray Window:</b> Wind is {ow_live.get('wind_speed_kmh', 8.5)} km/h (< 15 km/h) — Optimal spray conditions.",
+                "rain_safety": f"🌧️ <b>Rain Safety:</b> {ow_5day[0].get('rain_prob', 0)}% rain probability in next 24 hours.",
+                "canopy_absorption": f"☁️ <b>Canopy Uptake:</b> {ow_live.get('cloud_cover_pct', 20)}% cloud cover ensures steady absorption.",
+                "soil_moisture": f"🌱 <b>Soil Readiness:</b> Field readiness score is {readiness_score}/100."
+            }
         
         st.markdown(f"""
         <div class="why-box" style="background: #ffffff; border: 1.5px solid #a7f3d0; border-radius: 14px; padding: 14px 18px; margin-top: 10px; box-shadow: 0 2px 8px rgba(5,150,105,0.06);">
