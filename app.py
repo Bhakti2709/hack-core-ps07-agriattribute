@@ -318,16 +318,22 @@ def main():
                 st.session_state.farm_lon = REGION_COORDS[reg_name]["lon"]
                 st.rerun()
 
-    # INTERACTIVE WEATHER RADAR & CLOUD POSITION MAP
+    # Real-Time OpenWeather Telemetry for Map & Farm
+    coords = REGION_COORDS.get(st.session_state.selected_region, {"lat": st.session_state.farm_lat, "lon": st.session_state.farm_lon})
+    ow_live = openweather_service.fetch_live_current_weather(lat=coords["lat"], lon=coords["lon"])
+    ow_5day = openweather_service.fetch_live_5day_forecast(lat=coords["lat"], lon=coords["lon"])
+
+    # INTERACTIVE WEATHER RADAR & CLOUD POSITION MAP WITH LIVE HUD
     with st.expander(t("radar_map_title", lang), expanded=True):
-        st.caption("Live Satellite Cloud Cover, Precipitation Radar & Wind Streamlines powered by OpenWeatherMap GIS Engine.")
+        st.caption("Live Satellite Cloud Cover, Precipitation Radar, Wind Drift Engine & Exact Farm GPS Locator.")
         map_html = interactive_map_service.generate_interactive_weather_map_html(
             lat=st.session_state.farm_lat,
             lon=st.session_state.farm_lon,
             region_name=localized_reg,
-            active_crop=t_crop(st.session_state.selected_crop, lang)
+            active_crop=t_crop(st.session_state.selected_crop, lang),
+            weather_info=ow_live
         )
-        components.html(map_html, height=450)
+        components.html(map_html, height=520)
 
     # Visual Crop Cultivation Intelligence Cards
     st.markdown("---")
@@ -452,9 +458,6 @@ def main():
         st.caption(f"*{algo_pricing['cacp_citation']}*")
 
     # Ingestion & Prediction Logic
-    coords = REGION_COORDS.get(region, {"lat": st.session_state.farm_lat, "lon": st.session_state.farm_lon})
-    ow_live = openweather_service.fetch_live_current_weather(lat=coords["lat"], lon=coords["lon"])
-    ow_5day = openweather_service.fetch_live_5day_forecast(lat=coords["lat"], lon=coords["lon"])
 
     base_data = {
         "soil_organic_carbon": soc, "soil_ph": ph, "nitrogen_kgha": nitrogen,
