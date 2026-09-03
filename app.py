@@ -36,6 +36,10 @@ import retrain_pipeline
 import leafvision_engine
 import pricing_and_soil_engine
 import interactive_map_service
+import importlib
+importlib.reload(interactive_map_service)
+import localization
+importlib.reload(localization)
 
 # Centralized Localization Architecture
 from localization import (

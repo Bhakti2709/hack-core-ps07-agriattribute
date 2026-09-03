@@ -27,7 +27,9 @@ def generate_interactive_weather_map_html(
     lon: float = 79.0882, 
     region_name: str = "Maharashtra & Vidarbha", 
     active_crop: str = "Soybean",
-    weather_info: dict = None
+    weather_info: dict = None,
+    *args,
+    **kwargs
 ) -> str:
     """
     Generates a full interactive HTML Leaflet widget with live dynamic Doppler radar,
