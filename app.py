@@ -371,33 +371,90 @@ def main():
         badge_html = f"<span style='background:#059669; color:white; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px;'>★ {t('active_field_badge', lang)}</span>" if is_selected else f"<span style='background:#f1f5f9; color:#475569; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:12px;'>{localized_season}</span>"
         
         with crop_card_cols[c_idx]:
-            st.markdown(f"""
-            <div style="border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 8px; border: {border_style}; min-height: 235px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 1.5rem;">{c_info['icon']}</span>
-                        {badge_html}
-                    </div>
-                    <div style="font-weight: 800; font-size: 0.98rem; color: #0f172a; line-height: 1.2;">{localized_crop_name}</div>
-                    <div style="font-size: 0.75rem; font-weight: 700; color: #059669; margin: 3px 0;">{acreage_text}</div>
-                    <div style="background: #e2e8f0; border-radius: 6px; height: 5px; width: 100%; overflow: hidden; margin-bottom: 8px;">
-                        <div style="background: #059669; height: 100%; width: {c_info['share']}%;"></div>
-                    </div>
-                    
-                    <!-- Live Agmarknet 2.0 Price Badge -->
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; margin: 6px 0;">
-                        <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Agmarknet 2.0 Mandi</div>
-                        <div style="font-size: 1.05rem; font-weight: 900; color: #047857;">₹{c_price:,.0f} <span style="font-size: 0.68rem; font-weight: normal; color: #64748b;">/q</span></div>
-                        <div style="font-size: 0.65rem; font-weight: 700; color: {mandi_tag_color};">{mandi_tag_text}</div>
-                    </div>
-                </div>
-                <div style="font-size: 0.68rem; color: #64748b; line-height: 1.25; margin-top: 4px;">{localized_crop_desc}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            card_html = (
+                f'<div style="border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 8px; border: {border_style}; min-height: 225px;">'
+                f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">'
+                f'<span style="font-size: 1.5rem;">{c_info["icon"]}</span>'
+                f'{badge_html}'
+                f'</div>'
+                f'<div style="font-weight: 800; font-size: 0.98rem; color: #0f172a; line-height: 1.2;">{localized_crop_name}</div>'
+                f'<div style="font-size: 0.75rem; font-weight: 700; color: #059669; margin: 3px 0;">{acreage_text}</div>'
+                f'<div style="background: #e2e8f0; border-radius: 6px; height: 5px; width: 100%; overflow: hidden; margin-bottom: 8px;">'
+                f'<div style="background: #059669; height: 100%; width: {c_info["share"]}%;"></div>'
+                f'</div>'
+                f'<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; margin: 6px 0;">'
+                f'<div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Agmarknet 2.0 Mandi</div>'
+                f'<div style="font-size: 1.05rem; font-weight: 900; color: #047857;">₹{c_price:,.0f} <span style="font-size: 0.68rem; font-weight: normal; color: #64748b;">/q</span></div>'
+                f'<div style="font-size: 0.65rem; font-weight: 700; color: {mandi_tag_color};">{mandi_tag_text}</div>'
+                f'</div>'
+                f'<div style="font-size: 0.68rem; color: #64748b; line-height: 1.25; margin-top: 4px;">{localized_crop_desc}</div>'
+                f'</div>'
+            )
+            st.markdown(card_html, unsafe_allow_html=True)
             if not is_selected:
                 if st.button(t("select_crop_btn", lang, crop=localized_crop_name.split()[0]), key=f"btn_crop_{c_idx}", use_container_width=True):
                     st.session_state.selected_crop = c_name
                     st.rerun()
+
+    # 🏛️ AGMARKNET 2.0 MULTI-SECTION COMMODITY MARKETPLACE (Official 24-Commodity Grid)
+    with st.expander("🏛️ Explore All Indian Commodity Groups (Official Agmarknet 2.0 Marketplace)", expanded=False):
+        st.caption("Live APMC Mandi modal prices, official Govt MSP 2026-27, and daily arrival volumes across all 6 national commodity classifications ([agmarknet.gov.in/home](https://agmarknet.gov.in/home)):")
+        
+        tab_cereals, tab_oilseeds, tab_pulses, tab_fibre, tab_veg = st.tabs([
+            "🌾 Cereals (7)", "🌻 Oil Seeds (7)", "🥣 Pulses (5)", "🧵 Fibre (Cotton)", "🥦 Vegetables & Sugar (4)"
+        ])
+        
+        agmark_full_df = agmarknet_engine.load_agmarknet_data()
+        
+        def render_commodity_group_cards(group_filter, key_prefix):
+            if agmark_full_df.empty:
+                return
+            g_df = agmark_full_df[agmark_full_df["commodity_group"].isin(group_filter)] if isinstance(group_filter, list) else agmark_full_df[agmark_full_df["commodity_group"] == group_filter]
+            cols = st.columns(min(len(g_df), 4))
+            for i, (_, row) in enumerate(g_df.iterrows()):
+                c_name_raw = row["commodity"]
+                msp_val = float(row.get("msp_2026_27", 0))
+                p_01 = float(row.get("price_01_sep", 0))
+                p_30 = float(row.get("price_30_aug", 0))
+                arr_01 = float(row.get("arrival_01_sep", 0))
+                delta = p_01 - msp_val if msp_val > 0 else 0
+                trend_delta = p_01 - p_30
+                trend_sym = f"+₹{trend_delta:,.0f}" if trend_delta >= 0 else f"-₹{abs(trend_delta):,.0f}"
+                
+                with cols[i % 4]:
+                    box_html = (
+                        f'<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">'
+                        f'<div style="font-weight: 800; font-size: 0.95rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{c_name_raw}">{c_name_raw}</div>'
+                        f'<div style="font-size: 1.25rem; font-weight: 900; color: #059669; margin: 4px 0;">₹{p_01:,.0f} <span style="font-size: 0.72rem; font-weight: normal; color: #64748b;">/q</span></div>'
+                        f'<div style="font-size: 0.72rem; color: #475569;">Govt MSP: <strong>{"₹" + f"{msp_val:,.0f}" if msp_val > 0 else "Perishable"}</strong></div>'
+                        f'<div style="font-size: 0.72rem; color: {"#047857" if delta >= 0 else "#b91c1c"}; font-weight: 700;">{"🟢 +" if delta >= 0 else "🔴 -"}{abs(delta):,.0f} vs MSP</div>'
+                        f'<div style="font-size: 0.70rem; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 4px;">Arrival: <strong>{arr_01:,.1f} MT</strong> | 72h: <strong>{trend_sym}</strong></div>'
+                        f'</div>'
+                    )
+                    st.markdown(box_html, unsafe_allow_html=True)
+                    matched_app_crop = None
+                    for app_c, ag_c in agmarknet_engine.CROP_TO_AGMARKNET.items():
+                        if ag_c.lower() in c_name_raw.lower():
+                            matched_app_crop = app_c
+                            break
+                    if matched_app_crop:
+                        if st.session_state.selected_crop != matched_app_crop:
+                            if st.button(f"Select {matched_app_crop.split()[0]}", key=f"sel_ag_{key_prefix}_{i}", use_container_width=True):
+                                st.session_state.selected_crop = matched_app_crop
+                                st.rerun()
+                        else:
+                            st.caption("★ Active Field")
+                            
+        with tab_cereals:
+            render_commodity_group_cards("Cereals", "cereals")
+        with tab_oilseeds:
+            render_commodity_group_cards("Oil Seeds", "oilseeds")
+        with tab_pulses:
+            render_commodity_group_cards("Pulses", "pulses")
+        with tab_fibre:
+            render_commodity_group_cards("Fibre Crops", "fibre")
+        with tab_veg:
+            render_commodity_group_cards(["Vegetables", "Others"], "veg")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
