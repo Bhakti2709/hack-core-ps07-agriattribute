@@ -38,6 +38,8 @@ import pricing_and_soil_engine
 import interactive_map_service
 import importlib
 importlib.reload(interactive_map_service)
+import agmarknet_engine
+importlib.reload(agmarknet_engine)
 import localization
 importlib.reload(localization)
 
@@ -448,18 +450,40 @@ def main():
     bio_product = st.sidebar.selectbox(t("select_product", lang), ["Syngenta Quantis (Biostimulant)", "Syngenta Isabion", "Syngenta CropBio+"]) if bio_toggle else "None"
     dosage = st.sidebar.slider(t("dosage_rate", lang), 0.5, 4.0, st.session_state.s_dosage) if bio_toggle else 0.0
     
-    # SCIENTIFIC CACP MARKET ECONOMICS & ALGORITHMIC PRICING
-    st.sidebar.subheader(t("market_sec", lang))
+    # 🏛️ AGMARKNET 2.0 LIVE MANDI INTELLIGENCE & MARKET ECONOMICS
+    st.sidebar.subheader("🏛️ Agmarknet 2.0 Mandi & Prices")
+    mandi_info = agmarknet_engine.get_mandi_intelligence_for_crop(crop, bio_toggle)
     algo_pricing = pricing_and_soil_engine.calculate_algorithmic_market_pricing(crop, bio_toggle)
     
-    product_cost = st.sidebar.number_input(t("product_cost", lang), min_value=300.0, max_value=8000.0, value=float(algo_pricing["total_product_cost"]), step=50.0)
-    crop_price = st.sidebar.number_input(t("crop_price", lang), min_value=200.0, max_value=15000.0, value=float(algo_pricing["predicted_mandi_price"]), step=50.0)
+    # Real-Time Mandi Badge Card
+    st.sidebar.markdown(f"""
+    <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <strong style="color: #0f172a; font-size: 0.95rem;">{mandi_info['commodity']}</strong>
+            <span style="font-size: 0.72rem; background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Agmarknet 2.0</span>
+        </div>
+        <div style="font-size: 1.4rem; font-weight: 900; color: #059669;">₹{mandi_info['latest_price']:,.0f} <span style="font-size: 0.8rem; font-weight: normal; color: #64748b;">/ quintal</span></div>
+        <div style="font-size: 0.75rem; font-weight: 700; margin: 4px 0;">{mandi_info['market_verdict']}</div>
+        <div style="font-size: 0.75rem; color: #475569; border-top: 1px dashed #cbd5e1; padding-top: 6px; margin-top: 6px; line-height: 1.4;">
+            Govt MSP 2026-27: <strong>₹{mandi_info['msp']:,.0f}</strong><br>
+            ★ Grade-A Quality Bonus: <strong style="color: #2563eb;">+₹{mandi_info['quality_premium']:,.0f}</strong><br>
+            Daily Mandi Influx: <strong>{mandi_info['latest_arrival_mt']:,.1f} MT</strong>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    with st.sidebar.expander("📐 CACP Pricing Math"):
-        st.caption(f"**MSP Baseline:** ₹{algo_pricing['base_msp']}/q")
-        st.caption(f"**Mandi Variance:** +₹{algo_pricing['mandi_variance']}/q")
-        st.caption(f"**Quality Premium:** +₹{algo_pricing['quality_premium']}/q")
-        st.caption(f"*{algo_pricing['cacp_citation']}*")
+    # Dynamic Input Defaults from Agmarknet & CE Hub
+    default_crop_price = float(mandi_info["realizable_price"]) if mandi_info["realizable_price"] > 0 else float(algo_pricing["predicted_mandi_price"])
+    crop_price = st.sidebar.number_input(t("crop_price", lang), min_value=200.0, max_value=25000.0, value=default_crop_price, step=50.0, help="Pre-calibrated with official Agmarknet 2.0 spot rates + Syngenta Grade-A quality premium.")
+    product_cost = st.sidebar.number_input(t("product_cost", lang), min_value=300.0, max_value=8000.0, value=float(algo_pricing["total_product_cost"]), step=50.0, help="Syngenta CE Hub recommended application dosage (L/acre) x product price + labor.")
+    
+    with st.sidebar.expander("📐 CACP MSP & Agmarknet Math"):
+        st.caption(f"**Agmarknet Spot Modal:** ₹{mandi_info['latest_price']:,.0f}/q")
+        st.caption(f"**Govt MSP Baseline:** ₹{mandi_info['msp']:,.0f}/q")
+        st.caption(f"**Mandi Variance:** {'+' if mandi_info['price_vs_msp_delta'] >= 0 else ''}₹{mandi_info['price_vs_msp_delta']:,.0f}/q")
+        st.caption(f"**Quality Premium (Biostimulant):** +₹{mandi_info['quality_premium']:,.0f}/q")
+        st.caption(f"*{mandi_info['source_citation']}*")
+        st.caption(f"[Portal: agmarknet.gov.in/home](https://agmarknet.gov.in/home)")
 
     # Ingestion & Prediction Logic
 
@@ -900,6 +924,68 @@ def main():
                 st.markdown(f'<a href="https://wa.me/?text={encoded_wa}" target="_blank" class="wa-button" style="width: 100%;">{t("share_wa_btn", lang)}</a>', unsafe_allow_html=True)
             with col_pdf:
                 st.download_button(label=t("download_pdf_btn", lang), data=pdf_bytes, file_name=f"Syngenta_ROI_{crop.split()[0]}.pdf", mime="application/pdf", use_container_width=True)
+
+        # 🏛️ INTERACTIVE AGMARKNET 2.0 MANDI TERMINAL
+        st.markdown("---")
+        st.markdown("### 🏛️ Agmarknet 2.0 Live Mandi Pulse & Daily Influx Terminal")
+        st.caption("Real-Time APMC Daily Price & Influx Telemetry from Directorate of Marketing & Inspection ([agmarknet.gov.in/home](https://agmarknet.gov.in/home))")
+        
+        # Dual-Axis Price & Influx Chart
+        mandi_fig = agmarknet_engine.create_mandi_trend_chart(mandi_info)
+        st.plotly_chart(mandi_fig, use_container_width=True)
+        
+        # 3 Strategic Decision Cards
+        m_c1, m_c2, m_c3 = st.columns(3)
+        with m_c1:
+            st.markdown(f"""
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #166534;">MANDI MODAL SPOT RATE</div>
+                <div style="font-size: 1.6rem; font-weight: 900; color: #059669; margin: 4px 0;">₹{mandi_info['latest_price']:,.0f} <span style="font-size: 0.8rem; font-weight: normal;">/q</span></div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #15803d;">{mandi_info['market_verdict']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with m_c2:
+            st.markdown(f"""
+            <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #1e40af;">SYNGENTA GRADE-A REALIZABLE</div>
+                <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb; margin: 4px 0;">₹{mandi_info['realizable_price']:,.0f} <span style="font-size: 0.8rem; font-weight: normal;">/q</span></div>
+                <div style="font-size: 0.75rem; color: #1e40af;"><strong>+₹{mandi_info['quality_premium']:,.0f}/q</strong> Quality Auction Premium</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with m_c3:
+            st.markdown(f"""
+            <div style="background: #fdf4ff; border: 1.5px solid #f0abfc; border-radius: 12px; padding: 14px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #86198f;">DAILY MANDI INFLUX PRESSURE</div>
+                <div style="font-size: 1.6rem; font-weight: 900; color: #a21caf; margin: 4px 0;">{mandi_info['latest_arrival_mt']:,.1f} <span style="font-size: 0.8rem; font-weight: normal;">MT</span></div>
+                <div style="font-size: 0.75rem; color: #701a75;">72h Trend: <strong>{mandi_info['momentum_tag']}</strong></div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        st.info(f"💡 **Market Action Advisory for Farmers:** {mandi_info['action_advice']}")
+        
+        # Complete 24-Commodity Agmarknet 2.0 Report Expander
+        with st.expander("📑 View Complete Agmarknet 2.0 Daily Commodity & Arrival Matrix (24 Commodities)"):
+            agmark_df = agmarknet_engine.load_agmarknet_data()
+            if not agmark_df.empty:
+                st.dataframe(
+                    agmark_df,
+                    column_config={
+                        "commodity_group": "Group",
+                        "commodity": "Commodity Name",
+                        "msp_2026_27": st.column_config.NumberColumn("Govt MSP (₹/q)", format="₹%d"),
+                        "price_01_sep": st.column_config.NumberColumn("Price 01 Sep (₹/q)", format="₹%.2f"),
+                        "price_31_aug": st.column_config.NumberColumn("Price 31 Aug (₹/q)", format="₹%.2f"),
+                        "price_30_aug": st.column_config.NumberColumn("Price 30 Aug (₹/q)", format="₹%.2f"),
+                        "arrival_01_sep": st.column_config.NumberColumn("Arrival 01 Sep (MT)", format="%.1f MT"),
+                        "arrival_31_aug": st.column_config.NumberColumn("Arrival 31 Aug (MT)", format="%.1f MT"),
+                        "arrival_30_aug": st.column_config.NumberColumn("Arrival 30 Aug (MT)", format="%.1f MT"),
+                    },
+                    use_container_width=True,
+                    hide_index=True
+                )
+                st.caption("Official Daily Bulletin: [Home-Agmarknet 2.0 (agmarknet.gov.in/home)](https://agmarknet.gov.in/home) — Ministry of Agriculture & Farmers Welfare")
                 
         st.markdown('</div>', unsafe_allow_html=True)
 
