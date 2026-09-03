@@ -102,12 +102,18 @@ st.markdown("""
     }
     
     .benefit-card {
-        background: linear-gradient(135deg, #059669, #0284c7);
-        color: #ffffff !important;
-        border-radius: 16px;
-        padding: 20px;
+        background: linear-gradient(145deg, #064e3b 0%, #047857 55%, #059669 100%);
+        border: 1.5px solid rgba(52, 211, 153, 0.45);
+        border-radius: 20px;
+        padding: 24px 20px;
         text-align: center;
-        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+        box-shadow: 0 16px 32px -8px rgba(4, 120, 87, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        color: #ffffff !important;
+        position: relative;
+        overflow: hidden;
+    }
+    .benefit-card * {
+        color: #ffffff;
     }
     
     .badge-container { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -701,10 +707,17 @@ def main():
         unit_str = f"/ {t('yield_unit', lang).split('/')[1]}" if '/' in t('yield_unit', lang) else "/ acre"
         st.markdown(f"""
         <div class="benefit-card">
-            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9;">{t('financial_benefit_title', lang)}</div>
-            <div style="font-size: 2.2rem; font-weight: 800; margin: 8px 0;">+₹{net_profit:,.0f} <span style="font-size: 0.9rem; font-weight: normal;">{unit_str}</span></div>
-            <div style="font-size: 0.85rem; opacity: 0.95;">{t('financial_range', lang, low=f"{net_profit*0.9:,.0f}", high=f"{net_profit*1.1:,.0f}")}</div>
-            <div style="margin-top: 10px; font-size: 0.8rem; font-weight: 700; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; display: inline-block;">
+            <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.12em; color: #a7f3d0 !important; font-weight: 800; margin-bottom: 4px;">
+                ✨ {t('financial_benefit_title', lang)}
+            </div>
+            <div style="font-size: 2.6rem; font-weight: 900; color: #ffffff !important; margin: 4px 0 6px 0; letter-spacing: -0.02em; line-height: 1.1; text-shadow: 0 2px 12px rgba(0,0,0,0.35);">
+                +₹{net_profit:,.0f} <span style="font-size: 1.05rem; font-weight: 700; color: #fde047 !important;">{unit_str}</span>
+            </div>
+            <div style="font-size: 0.84rem; color: #d1fae5 !important; font-weight: 600; margin-bottom: 12px;">
+                {t('financial_range', lang, low=f"{net_profit*0.9:,.0f}", high=f"{net_profit*1.1:,.0f}")}
+            </div>
+            <div style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.35); color: #ffffff !important; font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                <span style="display: inline-block; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></span>
                 {t('confidence_badge', lang)}
             </div>
         </div>
