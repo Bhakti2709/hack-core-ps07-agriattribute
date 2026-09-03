@@ -217,6 +217,24 @@ CROPS_DATABASE = {
     }
 }
 
+def get_crop_proxy(c_name: str) -> str:
+    """Maps all 24 Indian agricultural commodities to the closest trained XGBoost causal proxy model."""
+    c = str(c_name).lower()
+    if any(x in c for x in ["cotton"]): return "Cotton"
+    elif any(x in c for x in ["soybean", "soyabean"]): return "Soybean"
+    elif any(x in c for x in ["rice", "paddy"]): return "Rice (Paddy)"
+    elif any(x in c for x in ["wheat", "barley"]): return "Wheat"
+    elif any(x in c for x in ["sugarcane"]): return "Sugarcane"
+    elif any(x in c for x in ["maize", "bajra", "jowar", "ragi", "millet", "sorghum"]): return "Maize"
+    elif any(x in c for x in ["groundnut", "peanut"]): return "Groundnut (Peanut)"
+    elif any(x in c for x in ["mustard", "rapeseed"]): return "Mustard / Rapeseed"
+    elif any(x in c for x in ["gram", "chickpea", "chana", "moong", "urd", "masur", "lentil"]): return "Gram / Chickpea (Chana)"
+    elif any(x in c for x in ["tur", "arhar", "pigeon pea", "red gram"]): return "Tur / Pigeon Pea (Arhar)"
+    elif any(x in c for x in ["onion", "potato"]): return "Onion"
+    elif any(x in c for x in ["tomato"]): return "Tomato"
+    elif any(x in c for x in ["sunflower", "sesame", "sesamum", "til", "safflower", "copra"]): return "Soybean"
+    return "Soybean"
+
 def calculate_algorithmic_market_pricing(crop_name: str, has_bio_treatment: bool = True) -> dict:
     """
     Computes accurate, unconfounded market economics based on:
