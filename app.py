@@ -1051,6 +1051,87 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
+        # IMD KALP (Krishi Advisory based on Location-specific Weather Prediction) Framework
+        # Ministry of Earth Sciences & India Meteorological Department (webgis.imd.gov.in/agro)
+        st.markdown("<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>🌾 <strong>Step 1: Select Active Crop Growth Stage (IMD Phenological Calendar):</strong></div>", unsafe_allow_html=True)
+        stage_options = [
+            "🌱 Vegetative Growth & Branching (20-45 DAS)",
+            "🌸 Flowering & Square / Boll / Pod Setting (45-75 DAS)",
+            "🌾 Grain Filling & Pod Maturation (75-105 DAS)",
+            "🍂 Physiological Maturity & Pre-Harvest (105+ DAS)"
+        ]
+        selected_growth_stage = st.selectbox(
+            "Crop Growth Stage",
+            options=stage_options,
+            index=1,
+            label_visibility="collapsed"
+        )
+
+        stage_key = selected_growth_stage.split()[1].lower()
+        if "flowering" in stage_key:
+            stage_impact = f"Extreme thermal spikes (>38°C) during flowering accelerate respiration over photosynthesis, desiccate pollen grains, and trigger premature flower and boll drop. Field risks losing 12-18% harvest volume without physiological shielding."
+            stage_action = f"Apply {bio_product} @ {dosage:.1f} L/ha before 10 AM. Free amino acids, betaines, and osmoprotectants preserve floral cellular turgor and anchor reproductive bolls."
+            risk_level = "⚠️ CAUTION: Thermal Stress Window"
+            risk_color = "#b45309"
+            risk_bg = "#fffbeb"
+        elif "grain" in stage_key:
+            stage_impact = f"Midday heat shock shortens the critical grain filling duration, causing shriveled grains, reduced 1,000-grain test weight, and forced premature senescence."
+            stage_action = f"Apply foliar biostimulant spray to extend flag leaf stay-green photosynthesis, ensuring dense starch and lipid translocation into grains."
+            risk_level = "⚠️ MODERATE RISK: Terminal Heat"
+            risk_color = "#b45309"
+            risk_bg = "#fffbeb"
+        elif "vegetative" in stage_key:
+            stage_impact = f"Atmospheric dryness causes excessive evapotranspiration, slowing vegetative branching, canopy development, and root nodule nitrogen fixation."
+            stage_action = f"Maintain light root zone moisture and apply {bio_product} to stimulate root biomass, vascular elongation, and vegetative canopy expansion."
+            risk_level = "✅ NORMAL: Active Growth"
+            risk_color = "#047857"
+            risk_bg = "#f0fdf4"
+        else:
+            stage_impact = f"Crop approaching physiological maturity. Excess humidity could delay drying and trigger fungal mold or seed spoilage."
+            stage_action = f"Withhold foliar applications. Monitor field dry-down and prepare for harvesting during clear sky weather window."
+            risk_level = "✅ HARVEST READY"
+            risk_color = "#047857"
+            risk_bg = "#f0fdf4"
+
+        # 3-Pillar Visual Grid: Forecast -> Impact -> Action
+        st.markdown(f"""
+        <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 16px 20px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div style="font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.2rem;">🏛️</span>
+                    <span>IMD KALP Agromet Framework — Forecast · Impact · Action</span>
+                </div>
+                <a href="https://webgis.imd.gov.in/agro/" target="_blank" style="font-size: 0.75rem; font-weight: 700; color: #0284c7; text-decoration: none; background: #f0f9ff; border: 1px solid #bae6fd; padding: 4px 10px; border-radius: 6px;">
+                    Govt KALP Portal (webgis.imd.gov.in/agro) ↗
+                </a>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: #0284c7; letter-spacing: 0.05em;">1. Localized Forecast</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin: 4px 0;">{ow_live['temp_c']}°C • {ow_live['humidity_pct']}% RH</div>
+                    <div style="font-size: 0.78rem; color: #64748b;">Wind: {ow_live['wind_speed_kmh']} km/h • 24h Rain: {ow_5day[0]['rain_prob']}%</div>
+                    <div style="margin-top: 8px; display: inline-block; background: {risk_bg}; color: {risk_color}; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 4px;">
+                        {risk_level}
+                    </div>
+                </div>
+                <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: #b45309; letter-spacing: 0.05em;">2. Likely Crop Impact</div>
+                    <div style="font-size: 0.82rem; font-weight: 700; color: #78350f; margin-top: 4px; line-height: 1.45;">
+                        {stage_impact}
+                    </div>
+                </div>
+                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: #047857; letter-spacing: 0.05em;">3. Recommended Action</div>
+                    <div style="font-size: 0.82rem; font-weight: 700; color: #065f46; margin-top: 4px; line-height: 1.45;">
+                        {stage_action}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;'>⚖️ <strong>Step 2: Causal Harvest Prediction & Economic Return (Digital Field Twin):</strong></div>", unsafe_allow_html=True)
+        
         col_no, col_yes = st.columns(2)
         with col_no:
             st.markdown(f"""
