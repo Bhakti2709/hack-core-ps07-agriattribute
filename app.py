@@ -102,26 +102,13 @@ st.markdown("""
     }
     
     .benefit-card {
-        background: radial-gradient(130% 130% at 50% 10%, #064e3b 0%, #022c22 60%, #011d17 100%);
-        color: #ffffff !important;
-        border: 1px solid rgba(52, 211, 153, 0.4);
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        border: 2px solid #10b981;
         border-radius: 20px;
         padding: 22px 24px;
-        box-shadow: 0 16px 36px -8px rgba(2, 44, 34, 0.4), 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.16), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
         position: relative;
         overflow: hidden;
-    }
-    
-    .benefit-card::before {
-        content: "";
-        position: absolute;
-        top: -30px;
-        right: -30px;
-        width: 120px;
-        height: 120px;
-        background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0) 70%);
-        border-radius: 50%;
-        pointer-events: none;
     }
     
     .badge-container { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -719,39 +706,39 @@ def main():
         
         benefit_card_html = (
             f'<div class="benefit-card">'
-            f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">'
             f'<div style="display: flex; align-items: center; gap: 7px;">'
-            f'<span style="font-size: 1.05rem;">💹</span>'
-            f'<span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 800; color: #a7f3d0;">'
+            f'<span style="font-size: 1.1rem;">💹</span>'
+            f'<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.10em; font-weight: 800; color: #047857 !important;">'
             f'{t("financial_benefit_title", lang)}'
             f'</span>'
             f'</div>'
-            f'<div style="display: flex; align-items: center; gap: 5px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(52, 211, 153, 0.35); padding: 3px 9px; border-radius: 12px;">'
-            f'<span style="width: 7px; height: 7px; background: #34d399; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #34d399;"></span>'
-            f'<span style="font-size: 0.68rem; font-weight: 800; color: #6ee7b7; letter-spacing: 0.05em;">LIVE ROI</span>'
+            f'<div style="display: flex; align-items: center; gap: 5px; background: #ecfdf5; border: 1.5px solid #86efac; padding: 3px 10px; border-radius: 14px;">'
+            f'<span style="width: 7px; height: 7px; background: #059669; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span>'
+            f'<span style="font-size: 0.70rem; font-weight: 800; color: #047857 !important; letter-spacing: 0.05em;">LIVE ROI</span>'
             f'</div>'
             f'</div>'
             f'<div style="margin: 4px 0 14px 0; display: flex; align-items: baseline; justify-content: flex-start; flex-wrap: wrap; gap: 8px;">'
-            f'<span style="font-size: 2.55rem; font-weight: 900; line-height: 1; color: #ffffff; letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(0,0,0,0.3);">'
+            f'<span style="font-size: 2.75rem; font-weight: 900; line-height: 1; color: #059669 !important; letter-spacing: -0.02em;">'
             f'+₹{net_profit:,.0f}'
             f'</span>'
-            f'<span style="font-size: 0.88rem; font-weight: 700; color: #6ee7b7; background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);">'
+            f'<span style="font-size: 0.90rem; font-weight: 700; color: #334155 !important; background: #f1f5f9; padding: 4px 10px; border-radius: 8px; border: 1px solid #cbd5e1;">'
             f'{unit_str}'
             f'</span>'
             f'</div>'
-            f'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">'
-            f'<div style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 10px; text-align: left;">'
-            f'<div style="font-size: 0.65rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700;">Expected 95% Band</div>'
-            f'<div style="font-size: 0.88rem; font-weight: 800; color: #f1f5f9; margin-top: 2px;">₹{low_range} – ₹{high_range}</div>'
+            f'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">'
+            f'<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">'
+            f'<div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b !important; letter-spacing: 0.05em; font-weight: 700;">Expected 95% Band</div>'
+            f'<div style="font-size: 1.02rem; font-weight: 800; color: #0f172a !important; margin-top: 3px;">₹{low_range} – ₹{high_range}</div>'
             f'</div>'
-            f'<div style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 10px; text-align: left;">'
-            f'<div style="font-size: 0.65rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700;">Net Farmer Return</div>'
-            f'<div style="font-size: 0.88rem; font-weight: 800; color: #34d399; margin-top: 2px;">{roi_badge} Yield Upside</div>'
+            f'<div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 10px 12px; text-align: left; box-shadow: 0 2px 4px rgba(5,150,105,0.03);">'
+            f'<div style="font-size: 0.68rem; text-transform: uppercase; color: #047857 !important; letter-spacing: 0.05em; font-weight: 700;">Net Farmer Return</div>'
+            f'<div style="font-size: 1.02rem; font-weight: 800; color: #059669 !important; margin-top: 3px;">{roi_badge} Yield Upside</div>'
             f'</div>'
             f'</div>'
-            f'<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.72rem; color: #cbd5e1;">'
-            f'<span>🔬 <b>SHAP TreeExplainer</b> Verified</span>'
-            f'<span style="color: #6ee7b7; font-weight: 700; background: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(52, 211, 153, 0.25);">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 0.74rem; color: #475569 !important;">'
+            f'<span>🔬 <b style="color: #1e293b !important;">SHAP TreeExplainer</b> Verified</span>'
+            f'<span style="color: #166534 !important; font-weight: 800; background: #dcfce7; padding: 3px 9px; border-radius: 12px; border: 1.5px solid #86efac;">'
             f'{t("confidence_badge", lang)}'
             f'</span>'
             f'</div>'
