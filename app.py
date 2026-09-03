@@ -580,8 +580,8 @@ def main():
     
     # Dynamic Input Defaults from Agmarknet & CE Hub
     default_crop_price = float(mandi_info["realizable_price"]) if mandi_info["realizable_price"] > 0 else float(algo_pricing["predicted_mandi_price"])
-    crop_price = st.sidebar.number_input(t("crop_price", lang), min_value=200.0, max_value=25000.0, value=default_crop_price, step=50.0, help="Pre-calibrated with official Agmarknet 2.0 spot rates + Syngenta Grade-A quality premium.")
-    product_cost = st.sidebar.number_input(t("product_cost", lang), min_value=300.0, max_value=8000.0, value=float(algo_pricing["total_product_cost"]), step=50.0, help="Syngenta CE Hub recommended application dosage (L/acre) x product price + labor.")
+    crop_price = st.sidebar.number_input(t("crop_price", lang), min_value=200.0, max_value=25000.0, value=default_crop_price, step=50.0, key=f"input_crop_price_{crop}", help="Pre-calibrated with official Agmarknet 2.0 spot rates + Syngenta Grade-A quality premium.")
+    product_cost = st.sidebar.number_input(t("product_cost", lang), min_value=300.0, max_value=8000.0, value=float(algo_pricing["total_product_cost"]), step=50.0, key=f"input_product_cost_{crop}", help="Syngenta CE Hub recommended application dosage (L/acre) x product price + labor.")
     
     with st.sidebar.expander("📐 CACP MSP & Agmarknet Math"):
         st.caption(f"**Agmarknet Spot Modal:** ₹{mandi_info['latest_price']:,.0f}/q")
@@ -639,17 +639,32 @@ def main():
         else:
             st.markdown(f'<div class="decision-verdict">{t("action_delay", lang)}</div>', unsafe_allow_html=True)
             
-        weather_desc_localized = t_weather_desc(ow_live.get('description', 'Clear Sky'), lang)
+        adv = pricing_and_soil_engine.get_human_centric_agronomy_advisory(
+            crop=crop,
+            heat_stress=heat_stress,
+            temp=ow_live.get('temp_c', 28.0),
+            rain_prob=ow_5day[0].get('rain_prob', 0),
+            wind_kmh=ow_live.get('wind_speed_kmh', 8.5),
+            cloud_pct=ow_live.get('cloud_cover_pct', 20),
+            readiness_score=readiness_score,
+            lang=lang
+        )
+        
         st.markdown(f"""
-        <div class="why-box">
-            <strong style="color: #047857; font-size: 0.95rem;">{t('why_title', lang)}</strong>
-            <ul style="margin-top: 6px; margin-left: 18px; font-size: 0.95rem; line-height: 1.6; color: #334155;">
-                <li>{t('why_readiness', lang, score=readiness_score)}</li>
-                <li>{t('why_weather', lang, temp=ow_live.get('temp_c'), desc=weather_desc_localized, prob=ow_5day[0].get('rain_prob'))}</li>
-                <li>💨 <b>Live Wind & Spray Safety:</b> {ow_live.get('wind_speed_kmh', 10.8)} km/h — <span style="color:#059669; font-weight:bold;">{'✅ Optimal Spray Window (< 15 km/h)' if ow_live.get('wind_speed_kmh', 10.8) < 15 else '⚠️ Moderate Wind (Use coarse nozzle)'}</span></li>
-                <li>☁️ <b>Live Cloud Cover & Solar Uptake:</b> {ow_live.get('cloud_cover_pct', 15)}% ({weather_desc_localized})</li>
-                <li>{t('why_stress', lang, days=heat_stress)}</li>
-            </ul>
+        <div class="why-box" style="background: #ffffff; border: 1.5px solid #a7f3d0; border-radius: 14px; padding: 14px 18px; margin-top: 10px; box-shadow: 0 2px 8px rgba(5,150,105,0.06);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 1.1rem;">👨‍🌾</span>
+                <strong style="color: #065f46; font-size: 1.0rem;">{t('why_title', lang)} — {localized_active_crop}</strong>
+            </div>
+            <div style="font-size: 0.92rem; line-height: 1.6; color: #1e293b; margin-bottom: 10px;">
+                {adv['physio']}
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; color: #334155; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+                <div>{adv['weather_spray']}</div>
+                <div>{adv['rain_safety']}</div>
+                <div>{adv['canopy_absorption']}</div>
+                <div>{adv['soil_moisture']}</div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         

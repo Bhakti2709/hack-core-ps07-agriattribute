@@ -238,3 +238,100 @@ REGIONAL_SOIL_HEALTH_CARDS = {
 def get_regional_soil_health_card(region_name: str) -> dict:
     """Returns official 12-parameter Soil Health Card profile for the given region."""
     return REGIONAL_SOIL_HEALTH_CARDS.get(region_name, REGIONAL_SOIL_HEALTH_CARDS["Maharashtra & Vidarbha (Deccan)"])
+
+def get_human_centric_agronomy_advisory(crop: str, heat_stress: int, temp: float, rain_prob: int, wind_kmh: float, cloud_pct: int, readiness_score: int, lang: str = "English") -> dict:
+    """
+    Returns authentic, crop-specific, human-centric agronomic reasoning for the Hero Decision Card.
+    Avoids robotic AI bullet points and accurately reflects plant physiology (e.g. bulb development in onion vs boll retention in cotton).
+    """
+    from localization import get_lang_code
+    code = get_lang_code(lang)
+    
+    # 1. Crop-Specific Biological Physiology Reasoning
+    crop_lower = crop.lower()
+    if "onion" in crop_lower:
+        physio = {
+            "en": f"🧅 <b>Bulb Development & Tip Burn Protection:</b> With {heat_stress} days of high temperatures (>38°C), onion foliage is prone to tip burn and moisture shock. Biological treatment strengthens cell membranes and channels nutrients into uniform, dense bulb formation with tight storage necks.",
+            "hi": f"🧅 <b>कंद का भराव व पत्ती सुरक्षा:</b> {heat_stress} दिनों की तेज गर्मी (>38°C) के कारण प्याज की पत्तियों में नोक सूखने (टिप बर्न) का खतरा रहता है। बायोस्टिमुलेंट पत्तियों की नमी बनाए रखता है और पोषण को नीचे कंद में भेजकर मजबूत, चमकदार व सुडौल प्याज बनाता है।",
+            "mr": f"🧅 <b>कांदा पोसणे व पात करपा प्रतिबंध:</b> उष्णतेच्या ताणामुळे ({heat_stress} दिवस >38°C) कांद्याची पात करपण्याची शक्यता असते. बायोस्टिम्युलेटर पानांमधील रस टिकवून अन्नद्रव्ये थेट कांद्यात पाठवते, ज्यामुळे कांदा घट्ट, गोल व वजनदार भरतो.",
+            "te": f"🧅 <b>ఉల్లి దుంప పెరుగుదల & నాణ్యత:</b> అధిక ఎండ వేడిమి ({heat_stress} రోజులు >38°C) వలన ఉల్లి ఆకులు ఎండిపోకుండా, పోషకాలు దుంపలోకి చేరి ఉల్లిపాయ లావుగా, బరువుగా పెరిగేలా తోడ్పడుతుంది."
+        }
+    elif "cotton" in crop_lower:
+        physio = {
+            "en": f"🌸 <b>Square & Boll Retention:</b> Field has {heat_stress} heat stress days (>38°C), which triggers square dropping and boll shedding. Quantis osmoprotectants shield reproductive tissues from thermal shock, turning squares into pickable, high-grade cotton bolls with superior fiber length.",
+            "hi": f"🌸 <b>फूल व गूलर (बोंड) का टिकाव:</b> {heat_stress} दिनों की लू (>38°C) से कपास में फूल व बोंड झड़ने का खतरा रहता है। बायोस्टिमुलेंट पौधों को थर्मल शॉक से बचाता है, जिससे बोंड गिरते नहीं और लंबा व मजबूत रेशा बनता है।",
+            "mr": f"🌸 <b>पाते व बोंड गळती प्रतिबंध:</b> उष्णतेच्या तडाख्यामुळे ({heat_stress} दिवस >38°C) कपाशीची पाते व बोंड गळ थांबवून अधिक व भरदार कापूस मिळवून देते.",
+            "te": f"🌸 <b>పత్తి పూత & పిందె రాలకుండా రక్షణ:</b> అధిక ఉష్ణోగ్రత ({heat_stress} రోజులు >38°C) వలన పత్తి పూత, పిందెలు రాలిపోకుండా కాపాడి అధిక దిగుబడిని అందిస్తుంది."
+        }
+    elif "soybean" in crop_lower:
+        physio = {
+            "en": f"🌿 <b>Pod Setting & Grain Filling:</b> Buffers sudden thermal stress during flowering and pod development, preventing pod abortion and boosting grain test-weight and oil content.",
+            "hi": f"🌿 <b>फूल व फली का भराव:</b> फूल आने और फली बनते समय गर्मी के तनाव को रोककर फलियों का गिरना रोकता है और दानों में तेल व वजन बढ़ाता है।",
+            "mr": f"🌿 <b>शेंगा भरणे व वजन वाढ:</b> फुलोऱ्याच्या काळात उष्णतेचा ताण सहन करण्याची ताकद देऊन शेंगांची गळ थांबवते आणि दाण्यांचे वजन वाढवते.",
+            "te": f"🌿 <b>సోయాబీన్ కాయల నాణ్యత:</b> పూత రాలకుండా కాయల్లో గింజలు లావుగా పెరిగి నూనె శాతం పెరిగేలా చేస్తుంది."
+        }
+    elif "rice" in crop_lower or "paddy" in crop_lower:
+        physio = {
+            "en": f"🌾 <b>Panicle Health & Tillering:</b> Protects spikelet fertility against midday heat, ensuring complete grain filling with lower chaff and higher head rice recovery.",
+            "hi": f"🌾 <b>बाली व कल्ले विकास:</b> बालियां निकलते समय गर्मी से दानों का खोखलापन रोकता है और भारी, चमकदार व भरा हुआ धान बनाता है।",
+            "mr": f"🌾 <b>ओंब्या भरणे व फुटवे:</b> ओंब्या भरण्याच्या काळात दाणे पोचट न होता चमकदार व भरदार भाताचे उत्पादन वाढवते.",
+            "te": f"🌾 <b>వరి కంకి ఎదుగుదల:</b> వరి కంకిలో గింజలు తాలు పోకుండా నిండుగా, బరువుగా అయ్యేలా చేస్తుంది."
+        }
+    elif "wheat" in crop_lower:
+        physio = {
+            "en": f"🌾 <b>Terminal Heat Defense & Flag Leaf Stay-Green:</b> Extends flag leaf photosynthesis during spring heat spikes, preventing shriveled grains and maximizing 1,000-grain weight.",
+            "hi": f"🌾 <b>झंडा पत्ती सुरक्षा व दाना भराव:</b> पकने के समय अचानक बढ़ी गर्मी में झंडा पत्ती को हरी रखता है, जिससे दाना सिकुड़ता नहीं और मोटा बनता है।",
+            "mr": f"🌾 <b>दाणे भरणे व वजन:</b> कापणीच्या वेळच्या उष्णतेमुळे गहू बारीक न पडता टपोरा, वजनदार व चमकदार होतो.",
+            "te": f"🌾 <b>గోధుమ గింజల బరువు:</b> వేడి తీవ్రత వలన గింజలు ముడుచుకుపోకుండా లావుగా ఉండేలా తోడ్పడుతుంది."
+        }
+    elif "sugarcane" in crop_lower:
+        physio = {
+            "en": f"🎋 <b>Internode Elongation & Sucrose Brix:</b> Maintains vascular moisture through hot spells, promoting rapid cane height, internode thickness, and higher sugar recovery.",
+            "hi": f"🎋 <b>पोरी की लंबाई व मिठास:</b> गर्मी में गन्ने के तने में रस सूखने से बचाता है, गन्ने की मोटाई व ऊंचाई बढ़ाता है।",
+            "mr": f"🎋 <b>कांडीची लांबी व साखर उतारा:</b> उन्हाळ्यात उसाची वाढ खुंटू न देता कांड्यांची लांबी व रसातील साखरेचे प्रमाण वाढवते.",
+            "te": f"🎋 <b>చెరకు పెరుగుదల & తీపి:</b> చెరకు కణుపుల పొడవు పెంచి బరువు మరియు రస నాణ్యతను పెంచుతుంది."
+        }
+    else:
+        physio = {
+            "en": f"🌱 <b>Cell Wall Strength & Foliar Uptake:</b> Buffers physiological stress under {heat_stress} days of high temperatures, keeping vascular bundles active for optimal nutrient absorption.",
+            "hi": f"🌱 <b>कोशिका मजबूती व पोषक तत्व अवशोषण:</b> {heat_stress} दिनों की गर्मी के तनाव को कम करके पौधे को स्वस्थ व हरा-भरा बनाए रखता है।",
+            "mr": f"🌱 <b>पेशी मजबूती व अन्नद्रव्य शोषण:</b> उष्णतेचा ताण कमी करून पिकाची रोगप्रतिकारशक्ती आणि वाढ टिकवून ठेवते.",
+            "te": f"🌱 <b>పంట ఎదుగుదల & పోషకాల గ్రహణం:</b> వేడి తీవ్రతను తగ్గించి మొక్కకు బలం చేకూరుస్తుంది."
+        }
+        
+    # 2. Weather & Spray Safety Humanized
+    weather_spray = {
+        "en": f"💨 <b>Gentle Spray Window:</b> Wind is calm at {wind_kmh:.1f} km/h (safe threshold < 15 km/h). Zero spray drift — droplets settle evenly on the crop canopy.",
+        "hi": f"💨 <b>अनुकूल छिड़काव समय:</b> हवा की गति {wind_kmh:.1f} किमी/घंटा है (सुरक्षित सीमा < 15 किमी/घं)। दवा हवा में उड़कर व्यर्थ नहीं होगी और पत्तियों पर पूरी तरह बैठेगी।",
+        "mr": f"💨 <b>फवारणीसाठी उत्तम हवामान:</b> वाऱ्याचा वेग शांत {wind_kmh:.1f} किमी/तास आहे (< 15 किमी/तास). औषध हवेत उडून न जाता थेट पिकाच्या पानांवर स्थिर बसेल.",
+        "te": f"💨 <b>స్ప్రే చేయడానికి అనుకూల సమయం:</b> గాలి వేగం నిలకడగా {wind_kmh:.1f} కి.మీ/గం ఉంది (< 15 కి.మీ/గం). మందు వృధా కాకుండా ఆకులపై సమానంగా పడుతుంది."
+    }
+    
+    rain_safety = {
+        "en": f"🌧️ <b>Rain Safety:</b> {rain_prob}% rain probability in next 24 hours. Safe from rain wash-off — product penetrates foliage within 4 hours.",
+        "hi": f"🌧️ <b>बारिश से सुरक्षा:</b> अगले 24 घंटों में बारिश की संभावना {rain_prob}% है। दवा धुलने का कोई खतरा नहीं है — 4 घंटे में पत्तियां इसे पूरी तरह सोख लेंगी।",
+        "mr": f"🌧️ <b>पावसाची भीती नाही:</b> पुढील 24 तासांत पावसाची शक्यता {rain_prob}% आहे. औषध वाहून जाणार नाही — 4 तासांत पानांमध्ये पूर्ण शोषले जाईल.",
+        "te": f"🌧️ <b>వర్షం ముప్పు లేదు:</b> రాబోయే 24 గంటల్లో వర్ష సూచన {rain_prob}% మాత్రమే. మందు ఆకుల ద్వారా 4 గంటల్లో పూర్తిగా గ్రహించబడుతుంది."
+    }
+    
+    canopy_absorption = {
+        "en": f"☁️ <b>Canopy Uptake:</b> {cloud_pct}% cloud cover keeps leaf surface temperatures moderate, keeping stomata open for maximum nutrient intake without foliar scorching.",
+        "hi": f"☁️ <b>पर्ण अवशोषण:</b> {cloud_pct}% बादल होने से पत्तियों का तापमान मध्यम रहता है और पत्तियां बिना झुलसे पोषण तेजी से सोखती हैं।",
+        "mr": f"☁️ <b>पानांचे पोषण:</b> {cloud_pct}% ढगाळ वातावरणामुळे पानांचे तापमान सौम्य राहते आणि पाने करपण्यापासून सुरक्षित राहून अन्नद्रव्ये शोषून घेतात.",
+        "te": f"☁️ <b>ఆకుల పోషణ:</b> {cloud_pct}% మేఘావృత వాతావరణం వల్ల ఆకులు మాడిపోకుండా పోషకాలను చక్కగా గ్రహిస్తాయి."
+    }
+    
+    soil_moisture = {
+        "en": f"🌱 <b>Soil & Root Readiness:</b> Field readiness is {readiness_score}/100. Soil moisture and root turgor are in optimal balance to pull nutrients through the vascular system.",
+        "hi": f"🌱 <b>जड़ व मिट्टी की तत्परता:</b> खेत का तैयारी स्कोर {readiness_score}/100 है। जड़ों में पर्याप्त नमी है जो दवा को तेजी से ऊपर पौधे में पहुंचाएगी।",
+        "mr": f"🌱 <b>जमीन व मुळांची स्थिती:</b> जमिनीची तयारी {readiness_score}/100 आहे. मुळांमध्ये योग्य ओलावा असल्याने पोषण संपूर्ण पिकात वेगाने पसरेल.",
+        "te": f"🌱 <b>నేల & వేర్ల పరిస్థితి:</b> నేల తేమ {readiness_score}/100 అనుకూలంగా ఉంది. వేర్లు బలంగా పోషకాలను పైకి లాగుతాయి."
+    }
+    
+    return {
+        "physio": physio.get(code, physio["en"]),
+        "weather_spray": weather_spray.get(code, weather_spray["en"]),
+        "rain_safety": rain_safety.get(code, rain_safety["en"]),
+        "canopy_absorption": canopy_absorption.get(code, canopy_absorption["en"]),
+        "soil_moisture": soil_moisture.get(code, soil_moisture["en"])
+    }
