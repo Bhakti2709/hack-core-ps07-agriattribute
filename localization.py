@@ -28,6 +28,18 @@ LANG_MAP = {
 
 TRANSLATIONS = {
     "en": {
+        "agmark_expander_title": "🏛️ Explore All Indian Commodity Groups (Official Agmarknet 2.0 Marketplace)",
+        "agmark_caption": "Live APMC Mandi modal prices, official Govt MSP 2026-27, and daily arrival volumes across all 6 national commodity classifications (agmarknet.gov.in/home):",
+        "agmark_tab_cereals": "🌾 Cereals (7)",
+        "agmark_tab_oilseeds": "🌻 Oil Seeds (7)",
+        "agmark_tab_pulses": "🥣 Pulses (5)",
+        "agmark_tab_fibre": "🧵 Fibre Crops (1)",
+        "agmark_tab_veg": "🥦 Vegetables & Sugar (4)",
+        "agmark_card_msp": "Govt MSP:",
+        "agmark_card_perishable": "Perishable",
+        "agmark_card_vs_msp": "vs MSP",
+        "agmark_card_arrival": "Arrival:",
+        "agmark_card_72h": "72h:",
         # App Header & Meta
         
         "radar_map_title": "🛰️ Interactive Weather Radar & Field Satellite Map",
@@ -269,6 +281,18 @@ TRANSLATIONS = {
     },
 
     "hi": {
+        "agmark_expander_title": "🏛️ सभी भारतीय कृषि जींस समूह देखें (आधिकारिक Agmarknet 2.0 मंडी)",
+        "agmark_caption": "निदेशालय विपणन एवं निरीक्षण (agmarknet.gov.in) से वास्तविक समय मंडी थोक भाव, न्यूनतम समर्थन मूल्य (MSP) और दैनिक आवक:",
+        "agmark_tab_cereals": "🌾 अनाज (7)",
+        "agmark_tab_oilseeds": "🌻 तिलहन (7)",
+        "agmark_tab_pulses": "🥣 दालें (5)",
+        "agmark_tab_fibre": "🧵 रेशा / कपास (1)",
+        "agmark_tab_veg": "🥦 सब्जियां व गन्ना (4)",
+        "agmark_card_msp": "सरकारी MSP:",
+        "agmark_card_perishable": "नाशवान",
+        "agmark_card_vs_msp": "MSP तुलना",
+        "agmark_card_arrival": "दैनिक आवक:",
+        "agmark_card_72h": "72 घंटे:",
         # App Header & Meta
         "title": "🌾 एग्री-एट्रीब्यूट AI: किसान निर्णय मंच",
         "subtitle": "“कदम उठाने से पहले कारण जानें। कदम उठाने के बाद परिणाम सिद्ध करें।”",
@@ -478,6 +502,18 @@ TRANSLATIONS = {
     },
 
     "mr": {
+        "agmark_expander_title": "🏛️ सर्व भारतीय कृषी कमोडिटी गट पहा (अधिकृत Agmarknet 2.0 बाजारपेठ)",
+        "agmark_caption": "विपणन आणि तपासणी संचालनालय (agmarknet.gov.in) कडून थेट बाजारभाव, हमीभाव (MSP) आणि दैनिक आवक:",
+        "agmark_tab_cereals": "🌾 अन्नधान्ये (7)",
+        "agmark_tab_oilseeds": "🌻 गळीत धान्ये (7)",
+        "agmark_tab_pulses": "🥣 कडधान्ये (5)",
+        "agmark_tab_fibre": "🧵 कापूस (1)",
+        "agmark_tab_veg": "🥦 भाजीपाला व ऊस (4)",
+        "agmark_card_msp": "सरकारी हमीभाव:",
+        "agmark_card_perishable": "नाशवंत",
+        "agmark_card_vs_msp": "हमीभाव तुलना",
+        "agmark_card_arrival": "दैनिक आवक:",
+        "agmark_card_72h": "72 तास:",
         # App Header & Meta
         "title": "🌾 ऍग्री-अॅट्रिब्युट AI: शेतकरी निर्णय मंच",
         "subtitle": "“कृती करण्यापूर्वी कारण जाणून घ्या. कृती केल्यानंतर परिणाम सिद्ध करा.”",
@@ -687,6 +723,18 @@ TRANSLATIONS = {
     },
 
     "te": {
+        "agmark_expander_title": "🏛️ అన్ని భారతీయ వ్యవసాయ వస్తువుల సమూహాలు (అధికారిక Agmarknet 2.0 మార్కెట్)",
+        "agmark_caption": "మార్కెటింగ్ డైరెక్టరేట్ (agmarknet.gov.in) నుండి ప్రత్యక్ష మార్కెట్ ధరలు, MSP మరియు రోజువారీ రాకలు:",
+        "agmark_tab_cereals": "🌾 తృణధాన్యాలు (7)",
+        "agmark_tab_oilseeds": "🌻 నూనెగింజలు (7)",
+        "agmark_tab_pulses": "🥣 పప్పుధాన్యాలు (5)",
+        "agmark_tab_fibre": "🧵 పత్తి (1)",
+        "agmark_tab_veg": "🥦 కూరగాయలు & చెరకు (4)",
+        "agmark_card_msp": "ప్రభుత్వ MSP:",
+        "agmark_card_perishable": "పాడైపోయేవి",
+        "agmark_card_vs_msp": "MSP పోలిక",
+        "agmark_card_arrival": "రాక:",
+        "agmark_card_72h": "72 గం:",
         # App Header & Meta
         "title": "🌾 అగ్రి-అట్రిబ్యూట్ AI: రైతు నిర్ణయ వేదిక",
         "subtitle": "“చర్య తీసుకునే ముందు ఎందుకు అని తెలుసుకోండి. తీసుకున్న తర్వాత ఫలితం నిరూపించండి.”",
@@ -1032,6 +1080,12 @@ SEASON_TRANSLATIONS = {
         "mr": "खरीप / रब्बी",
         "te": "ఖరీఫ్ / రబీ"
     },
+    "Rabi/Kharif": {
+        "en": "Rabi/Kharif",
+        "hi": "रबी / खरीफ",
+        "mr": "रब्बी / खरीप",
+        "te": "రబీ / ఖరీఫ్"
+    },
     "Kharif/Zaid": {
         "en": "Kharif/Zaid",
         "hi": "खरीफ / ज़ायद",
@@ -1047,6 +1101,18 @@ CROP_DESC_TRANSLATIONS = {
         "hi": "मुख्य वर्षा-आधारित तिलहन फसल",
         "mr": "पावसावर अवलंबून असणारे मुख्य गळीत धान्य",
         "te": "ప్రధాన వర్షాధార నూనెగింజల పంట"
+    },
+    "Intercropped rainfed pulse": {
+        "en": "Intercropped rainfed pulse",
+        "hi": "अंतर्वर्ती वर्षा-आधारित दलहन",
+        "mr": "आंतरपीक पावसावर आधारित कडधान्य",
+        "te": "అంతరపంటగా వర్షాధార పప్పుదినుసు"
+    },
+    "Commercial bulb cash crop": {
+        "en": "Commercial bulb cash crop",
+        "hi": "व्यावसायिक कंद नकदी फसल",
+        "mr": "व्यावसायिक कंदवर्गीय नगदी पीक",
+        "te": "వాణిజ్య దుంప నగదు పంట"
     },
     "Dominant black cotton soil cash crop": {
         "en": "Dominant black cotton soil cash crop",
@@ -1172,6 +1238,43 @@ WEATHER_DESC_TRANSLATIONS = {
     "drizzle": {"en": "Drizzle", "hi": "बूंदाबांदी", "mr": "रिमझिम पाऊस", "te": "చిరుజల్లులు"},
     "haze": {"en": "Haze", "hi": "धुंध", "mr": "धुकट वातावरण", "te": "పొగమంచు"}
 }
+
+
+# 24 Official Agmarknet 2.0 Commodity Multilingual Mappings
+COMMODITY_TRANSLATIONS = {
+    "Bajra(Pearl Millet/Cumbu)": {"en": "Bajra (Pearl Millet)", "hi": "बाजरा", "mr": "बाजरी", "te": "సజ్జలు"},
+    "Barley(Jau)": {"en": "Barley (Jau)", "hi": "जौ", "mr": "जव", "te": "యావలు"},
+    "Jowar(Sorghum)": {"en": "Jowar (Sorghum)", "hi": "ज्वार", "mr": "ज्वारी", "te": "జొన్నలు"},
+    "Maize": {"en": "Maize (Corn)", "hi": "मक्का", "mr": "मका", "te": "మొక్కజొన్న"},
+    "Paddy(Common)": {"en": "Paddy (Rice)", "hi": "चावल (धान)", "mr": "भात (धान)", "te": "వరి (ధాన్యం)"},
+    "Ragi(Finger Millet)": {"en": "Ragi (Finger Millet)", "hi": "रागी (मडुआ)", "mr": "नाचणी (रागी)", "te": "రాగులు"},
+    "Wheat": {"en": "Wheat", "hi": "गेहूं", "mr": "गहू", "te": "గోధుమలు"},
+    "Cotton": {"en": "Cotton", "hi": "कपास", "mr": "कापूस", "te": "పత్తి"},
+    "Copra": {"en": "Copra (Dry Coconut)", "hi": "खोपरा (सूखा नारियल)", "mr": "खोबरं (कोपरा)", "te": "కొబ్బరి (కొప్రా)"},
+    "Groundnut": {"en": "Groundnut (Peanut)", "hi": "मूंगफली", "mr": "भुईमूग", "te": "వేరుశెనగ"},
+    "Mustard": {"en": "Mustard (Sarson)", "hi": "सरसों / राई", "mr": "मोहरी", "te": "ఆవాలు"},
+    "Safflower": {"en": "Safflower (Kardi)", "hi": "कुसुम (करड़ी)", "mr": "करडई", "te": "కుసుమలు"},
+    "Sesamum(Sesame,Gingelly,Til)": {"en": "Sesame (Til)", "hi": "तिल", "mr": "तीळ", "te": "నువ్వులు"},
+    "Soyabean": {"en": "Soybean", "hi": "सोयाबीन", "mr": "सोयाबीन", "te": "సోయాబీన్"},
+    "Sunflower/Sunflower Seed": {"en": "Sunflower", "hi": "सूरजमुखी", "mr": "सूर्यफूल", "te": "పొద్దుతిరుగుడు"},
+    "Sugarcane": {"en": "Sugarcane", "hi": "गन्ना", "mr": "ऊस", "te": "చెరకు"},
+    "Bengal Gram(Gram)(Whole)": {"en": "Bengal Gram (Chana)", "hi": "चना (साबुत)", "mr": "हरभरा (चना)", "te": "శనగలు"},
+    "Black Gram(Urd Beans)(Whole)": {"en": "Black Gram (Urad)", "hi": "उड़द (साबुत)", "mr": "उडीद", "te": "మినుములు"},
+    "Green Gram(Moong)(Whole)": {"en": "Green Gram (Moong)", "hi": "मूंग (साबुत)", "mr": "मूग", "te": "పెసలు"},
+    "Lentil(Masur)(Whole)": {"en": "Lentil (Masur)", "hi": "मसूर (साबुत)", "mr": "मसूर", "te": "మసూర్ పప్పు"},
+    "Red gram/Arhar/Tur(whole)": {"en": "Red Gram (Tur/Arhar)", "hi": "अरहर (तुअर)", "mr": "तूर (अरहर)", "te": "కందులు"},
+    "Onion": {"en": "Onion", "hi": "प्याज", "mr": "कांदा", "te": "ఉల్లిపాయ"},
+    "Potato": {"en": "Potato", "hi": "आलू", "mr": "बटाटा", "te": "బంగాళాదుంప"},
+    "Tomato": {"en": "Tomato", "hi": "टमाटर", "mr": "टोमॅटो", "te": "టమోటా"}
+}
+
+def t_commodity(name: str, lang: str = "English") -> str:
+    """Translates any Agmarknet commodity name into the active language."""
+    code = get_lang_code(lang)
+    for k, v in COMMODITY_TRANSLATIONS.items():
+        if k.lower() in name.lower() or name.lower() in k.lower():
+            return v.get(code, v.get("en", name))
+    return name
 
 def get_lang_code(lang_str: str) -> str:
     """Resolves language string to short code 'en', 'hi', 'mr', or 'te'."""
