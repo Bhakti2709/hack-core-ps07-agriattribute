@@ -397,8 +397,9 @@ def generate_interactive_weather_map_html(
                             advisoryEl.innerText = "💡 Do NOT spray! High chemical drift and wash-off risk.";
                         }}
 
-                        // Update marker popup
-                        marker.setPopupContent("<b>📍 " + cityName + "</b><br><small>GPS: " + targetLat.toFixed(4) + "°N, " + targetLon.toFixed(4) + "°E</small><br><b>Temp:</b> " + newTemp + "°C | <b>Wind:</b> " + newWindKmh + " km/h | <b>Cloud:</b> " + newClouds + "%<br><span style='font-weight:bold; color:#059669;'>" + badgeEl.innerText + "</span>").openPopup();
+                        // Update marker popup with 1-tap parent sync link
+                        var syncBtn = "<br><a href='?lat=" + targetLat.toFixed(4) + "&lon=" + targetLon.toFixed(4) + "&place=" + encodeURIComponent(cityName) + "' target='_parent' style='display:inline-block; margin-top:8px; padding:6px 12px; background:#059669; color:white; font-size:0.75rem; font-weight:800; border-radius:6px; text-decoration:none; box-shadow:0 2px 6px rgba(0,0,0,0.2);'>📍 Set as My Farm in Decision Engine ↗</a>";
+                        marker.setPopupContent("<b>📍 " + cityName + "</b><br><small>GPS: " + targetLat.toFixed(4) + "°N, " + targetLon.toFixed(4) + "°E</small><br><b>Temp:</b> " + newTemp + "°C | <b>Wind:</b> " + newWindKmh + " km/h | <b>Cloud:</b> " + newClouds + "%<br><span style='font-weight:bold; color:#059669;'>" + badgeEl.innerText + "</span>" + syncBtn).openPopup();
                     }}
                 }})
                 .catch(function(err) {{

@@ -263,22 +263,66 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
+    # URL Query Sync for Farm GPS & Location
+    qp = st.query_params
+    if "lat" in qp and "lon" in qp:
+        try:
+            st.session_state.farm_lat = float(qp["lat"])
+            st.session_state.farm_lon = float(qp["lon"])
+            if "place" in qp:
+                st.session_state.farm_location_name = qp["place"]
+        except Exception:
+            pass
+
     # Initialize Location & Crop in Session State
     if 'selected_region' not in st.session_state:
         st.session_state.selected_region = "Maharashtra & Vidarbha (Deccan)"
     if 'selected_crop' not in st.session_state:
         st.session_state.selected_crop = "Soybean"
+    if 'farm_location_name' not in st.session_state:
+        st.session_state.farm_location_name = "Kopargaon"
     if 'farm_lat' not in st.session_state:
-        st.session_state.farm_lat = REGION_COORDS[st.session_state.selected_region]["lat"]
+        st.session_state.farm_lat = 19.8833
     if 'farm_lon' not in st.session_state:
-        st.session_state.farm_lon = REGION_COORDS[st.session_state.selected_region]["lon"]
+        st.session_state.farm_lon = 74.4833
         
     region_crop_options = list(REGIONAL_CROP_SHARES.get(st.session_state.selected_region, {}).keys())
     if 'selected_crop' not in st.session_state or not st.session_state.selected_crop:
         st.session_state.selected_crop = region_crop_options[0]
 
+    def resolve_farm_location(query):
+        clean_q = str(query).strip()
+        if not clean_q: return None
+        for k_inf in openweather_service.OPENWEATHER_KEYS:
+            k = k_inf["key"]
+            if not k: continue
+            try:
+                url = f"https://api.openweathermap.org/data/2.5/weather?q={clean_q},IN&appid={k}&units=metric"
+                r = requests.get(url, timeout=3)
+                if r.status_code == 200:
+                    d = r.json()
+                    return {
+                        "name": d.get("name", clean_q),
+                        "lat": float(d["coord"]["lat"]),
+                        "lon": float(d["coord"]["lon"])
+                    }
+            except Exception:
+                continue
+        return None
+
+    def get_closest_region(lat, lon):
+        min_sq = float("inf")
+        best_r = "Maharashtra & Vidarbha (Deccan)"
+        for r_n, r_c in REGION_COORDS.items():
+            dist_sq = (lat - r_c["lat"])**2 + (lon - r_c["lon"])**2
+            if dist_sq < min_sq:
+                min_sq = dist_sq
+                best_r = r_n
+        return best_r
+
     # LOCATION & GPS INTELLIGENCE LAYER
     localized_reg = t_region(st.session_state.selected_region, lang)
+    farm_disp_name = st.session_state.get('farm_location_name', 'Kopargaon')
     st.markdown('<div class="section-card" style="padding: 18px 24px; margin-bottom: 20px; border-left: 5px solid #059669;">', unsafe_allow_html=True)
     col_loc1, col_loc2, col_loc3 = st.columns([2, 1, 1])
     with col_loc1:
@@ -287,7 +331,7 @@ def main():
             <span style="font-size: 1.6rem;">📍</span>
             <div>
                 <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #047857; letter-spacing: 0.05em;">{t('loc_title', lang)}</div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">{localized_reg}</div>
+                <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">{farm_disp_name} • <span style="font-size: 0.95rem; font-weight: 600; color: #475569;">{localized_reg}</span></div>
                 <div style="font-size: 0.8rem; color: #64748b;">GPS: {st.session_state.farm_lat:.4f}°N, {st.session_state.farm_lon:.4f}°E</div>
             </div>
         </div>
@@ -296,8 +340,9 @@ def main():
         if st.button(t("loc_detect_btn", lang), use_container_width=True):
             st.session_state.selected_region = "Maharashtra & Vidarbha (Deccan)"
             st.session_state.selected_crop = "Soybean"
-            st.session_state.farm_lat = 21.1458
-            st.session_state.farm_lon = 79.0882
+            st.session_state.farm_location_name = "Kopargaon"
+            st.session_state.farm_lat = 19.8833
+            st.session_state.farm_lon = 74.4833
             st.success(t("loc_verified", lang, region=t_region("Maharashtra & Vidarbha (Deccan)", lang)))
             st.rerun()
     with col_loc3:
@@ -307,7 +352,53 @@ def main():
             if st.button("Set Coordinates", use_container_width=True):
                 st.session_state.farm_lat = new_lat
                 st.session_state.farm_lon = new_lon
+                st.session_state.farm_location_name = f"{new_lat:.2f}N, {new_lon:.2f}E"
+                st.session_state.selected_region = get_closest_region(new_lat, new_lon)
                 st.rerun()
+
+    # Village & Taluka Search Bar
+    st.markdown('<div style="margin-top: 14px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">', unsafe_allow_html=True)
+    c_s1, c_s2 = st.columns([3, 1])
+    with c_s1:
+        loc_search_input = st.text_input(
+            "🔍 Search Any Village / Taluka / Mandi in India:",
+            placeholder="e.g. Kopargaon, Akola, Baramati, Nashik, Ludhiana, Pune, Guntur...",
+            key="loc_search_field"
+        )
+    with c_s2:
+        st.write("")
+        st.write("")
+        if st.button("🎯 Locate Farm", key="btn_locate_field", use_container_width=True) and loc_search_input:
+            res_loc = resolve_farm_location(loc_search_input)
+            if res_loc:
+                st.session_state.farm_lat = res_loc["lat"]
+                st.session_state.farm_lon = res_loc["lon"]
+                st.session_state.farm_location_name = res_loc["name"]
+                st.session_state.selected_region = get_closest_region(res_loc["lat"], res_loc["lon"])
+                st.rerun()
+            else:
+                st.warning(f"Could not locate '{loc_search_input}'. Please try nearby taluka/district name.")
+
+    # 1-Tap Quick Agricultural Hub Pills
+    st.markdown("<div style='font-size: 0.78rem; font-weight: 700; color: #64748b; margin-top: 6px; margin-bottom: 4px;'>⚡ Quick Farm Hubs:</div>", unsafe_allow_html=True)
+    hub_cols = st.columns(6)
+    farm_hubs = [
+        ("📍 Kopargaon", 19.8833, 74.4833, "Maharashtra & Vidarbha (Deccan)", "Kopargaon"),
+        ("📍 Akola", 20.7333, 77.0000, "Maharashtra & Vidarbha (Deccan)", "Akola"),
+        ("📍 Baramati", 18.1500, 74.5800, "Maharashtra & Vidarbha (Deccan)", "Baramati"),
+        ("📍 Nashik", 19.9975, 73.7898, "Maharashtra & Vidarbha (Deccan)", "Nashik"),
+        ("📍 Ludhiana", 30.9010, 75.8573, "Punjab & Haryana (Indo-Gangetic)", "Ludhiana"),
+        ("📍 Guntur", 16.3067, 80.4365, "Andhra Pradesh & Telangana", "Guntur")
+    ]
+    for h_i, (h_lbl, h_lat, h_lon, h_reg, h_loc) in enumerate(farm_hubs):
+        with hub_cols[h_i]:
+            if st.button(h_lbl, key=f"quick_hub_pill_{h_i}", use_container_width=True):
+                st.session_state.farm_lat = h_lat
+                st.session_state.farm_lon = h_lon
+                st.session_state.farm_location_name = h_loc
+                st.session_state.selected_region = h_reg
+                st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # Quick Region Switcher Pills
     st.markdown(f"<div style='font-size: 0.8rem; font-weight: 600; color: #64748b; margin-top: 10px; margin-bottom: 6px;'>{t('loc_change_belt', lang)}</div>", unsafe_allow_html=True)
@@ -324,12 +415,14 @@ def main():
                 st.session_state.selected_crop = list(REGIONAL_CROP_SHARES[reg_name].keys())[0]
                 st.session_state.farm_lat = REGION_COORDS[reg_name]["lat"]
                 st.session_state.farm_lon = REGION_COORDS[reg_name]["lon"]
+                st.session_state.farm_location_name = reg_name.split()[0]
                 st.rerun()
 
-    # Real-Time OpenWeather Telemetry for Map & Farm
-    coords = REGION_COORDS.get(st.session_state.selected_region, {"lat": st.session_state.farm_lat, "lon": st.session_state.farm_lon})
-    ow_live = openweather_service.fetch_live_current_weather(lat=coords["lat"], lon=coords["lon"])
-    ow_5day = openweather_service.fetch_live_5day_forecast(lat=coords["lat"], lon=coords["lon"])
+    # Real-Time OpenWeather Telemetry for Map & Farm (SYNCHRONIZED WITH EXACT FARM GPS)
+    ow_live = openweather_service.fetch_live_current_weather(lat=st.session_state.farm_lat, lon=st.session_state.farm_lon)
+    ow_5day = openweather_service.fetch_live_5day_forecast(lat=st.session_state.farm_lat, lon=st.session_state.farm_lon)
+    if 'farm_location_name' in st.session_state and st.session_state.farm_location_name:
+        ow_live['location'] = st.session_state.farm_location_name
 
     # INTERACTIVE WEATHER RADAR & CLOUD POSITION MAP WITH LIVE HUD
     with st.expander(t("radar_map_title", lang), expanded=True):
