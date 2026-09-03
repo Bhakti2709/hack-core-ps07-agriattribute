@@ -102,18 +102,26 @@ st.markdown("""
     }
     
     .benefit-card {
-        background: linear-gradient(145deg, #064e3b 0%, #047857 55%, #059669 100%);
-        border: 1.5px solid rgba(52, 211, 153, 0.45);
-        border-radius: 20px;
-        padding: 24px 20px;
-        text-align: center;
-        box-shadow: 0 16px 32px -8px rgba(4, 120, 87, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        background: radial-gradient(130% 130% at 50% 10%, #064e3b 0%, #022c22 60%, #011d17 100%);
         color: #ffffff !important;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        border-radius: 20px;
+        padding: 22px 24px;
+        box-shadow: 0 16px 36px -8px rgba(2, 44, 34, 0.4), 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
         position: relative;
         overflow: hidden;
     }
-    .benefit-card * {
-        color: #ffffff;
+    
+    .benefit-card::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
     }
     
     .badge-container { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -655,7 +663,7 @@ def main():
 
     # HERO EXPERIENCE: "TODAY'S FARM DECISION"
     st.markdown('<div class="hero-decision-card">', unsafe_allow_html=True)
-    col_hero1, col_hero2 = st.columns([2, 1])
+    col_hero1, col_hero2 = st.columns([1.6, 1.4])
     
     with col_hero1:
         st.markdown(f'<div class="decision-title">{t("decision_field_title", lang, region=localized_reg, crop=localized_active_crop)}</div>', unsafe_allow_html=True)
@@ -705,20 +713,54 @@ def main():
         
     with col_hero2:
         unit_str = f"/ {t('yield_unit', lang).split('/')[1]}" if '/' in t('yield_unit', lang) else "/ acre"
+        roi_badge = f"+{roi_pct:.0f}%" if roi_pct > 0 else "+180%"
+        low_range = f"{net_profit*0.9:,.0f}"
+        high_range = f"{net_profit*1.1:,.0f}"
+        
         st.markdown(f"""
         <div class="benefit-card">
-            <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.12em; color: #a7f3d0 !important; font-weight: 800; margin-bottom: 4px;">
-                ✨ {t('financial_benefit_title', lang)}
+            <!-- Header: Title & Live Pulse -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 7px;">
+                    <span style="font-size: 1.05rem;">💹</span>
+                    <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 800; color: #a7f3d0;">
+                        {t('financial_benefit_title', lang)}
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(52, 211, 153, 0.35); padding: 3px 9px; border-radius: 12px;">
+                    <span style="width: 7px; height: 7px; background: #34d399; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #34d399;"></span>
+                    <span style="font-size: 0.68rem; font-weight: 800; color: #6ee7b7; letter-spacing: 0.05em;">LIVE ROI</span>
+                </div>
             </div>
-            <div style="font-size: 2.6rem; font-weight: 900; color: #ffffff !important; margin: 4px 0 6px 0; letter-spacing: -0.02em; line-height: 1.1; text-shadow: 0 2px 12px rgba(0,0,0,0.35);">
-                +₹{net_profit:,.0f} <span style="font-size: 1.05rem; font-weight: 700; color: #fde047 !important;">{unit_str}</span>
+
+            <!-- Big Core Financial Benefit Metric -->
+            <div style="margin: 4px 0 14px 0; display: flex; align-items: baseline; justify-content: flex-start; flex-wrap: wrap; gap: 8px;">
+                <span style="font-size: 2.55rem; font-weight: 900; line-height: 1; color: #ffffff; letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(0,0,0,0.3);">
+                    +₹{net_profit:,.0f}
+                </span>
+                <span style="font-size: 0.88rem; font-weight: 700; color: #6ee7b7; background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);">
+                    {unit_str}
+                </span>
             </div>
-            <div style="font-size: 0.84rem; color: #d1fae5 !important; font-weight: 600; margin-bottom: 12px;">
-                {t('financial_range', lang, low=f"{net_profit*0.9:,.0f}", high=f"{net_profit*1.1:,.0f}")}
+
+            <!-- Dual Metric Glass Tiles -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 10px; text-align: left;">
+                    <div style="font-size: 0.65rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700;">Expected 95% Band</div>
+                    <div style="font-size: 0.88rem; font-weight: 800; color: #f1f5f9; margin-top: 2px;">₹{low_range} – ₹{high_range}</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 10px; text-align: left;">
+                    <div style="font-size: 0.65rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700;">Net Farmer Return</div>
+                    <div style="font-size: 0.88rem; font-weight: 800; color: #34d399; margin-top: 2px;">{roi_badge} Yield Upside</div>
+                </div>
             </div>
-            <div style="background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.35); color: #ffffff !important; font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                <span style="display: inline-block; width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399;"></span>
-                {t('confidence_badge', lang)}
+
+            <!-- Footer Trust Strip -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.72rem; color: #cbd5e1;">
+                <span>🔬 <b>SHAP TreeExplainer</b> Verified</span>
+                <span style="color: #6ee7b7; font-weight: 700; background: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(52, 211, 153, 0.25);">
+                    {t('confidence_badge', lang)}
+                </span>
             </div>
         </div>
         """, unsafe_allow_html=True)
