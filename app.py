@@ -1132,6 +1132,27 @@ def main():
         
         st.markdown("<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;'>⚖️ <strong>Step 2: Causal Harvest Prediction & Economic Return (Digital Field Twin):</strong></div>", unsafe_allow_html=True)
         
+        # Growth Stage Agronomic Response Multiplier
+        stage_mult = 1.0
+        if "flowering" in stage_key:
+            stage_mult = 1.0
+            unbuffered_desc = f"Zero thermal shock defense across {heat_stress} heat-stress days (>38°C). Stomatal closure and pollen desiccation trigger severe flower and boll abortion."
+        elif "grain" in stage_key:
+            stage_mult = 0.92
+            unbuffered_desc = f"Terminal heat spikes (>38°C) shorten the grain filling period, producing shriveled grains and reduced test-weight."
+        elif "vegetative" in stage_key:
+            stage_mult = 0.88
+            unbuffered_desc = f"Excessive transpiration shock across {heat_stress} heat-stress days (>38°C) suppresses secondary tillering, canopy closure, and root nodule development."
+        else:
+            stage_mult = 0.35
+            unbuffered_desc = f"Crop unbuffered against late-season ambient humidity spikes, increasing vulnerability to foliar mold and delayed field dry-down."
+
+        eff_delta = yield_delta * stage_mult
+        eff_actual = pred_counterfactual + eff_delta
+        eff_profit = (eff_delta * crop_price) - product_cost
+        eff_roi = (eff_profit / product_cost * 100.0) if product_cost > 0 else 0.0
+        pct_boost = (eff_delta / pred_counterfactual * 100.0) if pred_counterfactual > 0 else 0.0
+
         col_no, col_yes = st.columns(2)
         with col_no:
             st.markdown(f"""
@@ -1139,32 +1160,31 @@ def main():
                 <span style="background: #ffe4e6; color: #be123c; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">❌ {t('cf_without_title', lang).upper()}</span>
                 <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #64748b; margin-top: 14px;">Baseline Harvest Prediction</div>
                 <div style="font-size: 2.3rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin: 4px 0;">{pred_counterfactual:.2f} <span style="font-size: 1.1rem; font-weight: 600; color: #64748b;">{t('yield_unit', lang)}</span></div>
-                <div style="font-size: 1.05rem; font-weight: 700; color: #475569; margin-top: 6px;">Expected Gross Mandi Revenue: <strong style="color: #0f172a;">₹{pred_counterfactual * crop_price:,.0f} / {t('yield_unit', lang)}</strong></div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: #475569; margin-top: 6px;">Expected Gross Mandi Revenue: <strong style="color: #0f172a;">₹{pred_counterfactual * crop_price:,.0f} / acre</strong></div>
                 <div style="margin-top: 16px; background: rgba(255,255,255,0.85); border-left: 3px solid #e11d48; padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; color: #9f1239; line-height: 1.4;">
-                    ⚠️ <strong>Crop Unbuffered:</strong> Zero thermal shock defense across {heat_stress} heat-stress days (>38°C). Stomatal closure risk causes flower abortion.
+                    ⚠️ <strong>Crop Unbuffered:</strong> {unbuffered_desc}
                 </div>
             </div>
             """, unsafe_allow_html=True)
             
         with col_yes:
-            pct_boost = (yield_delta / pred_counterfactual * 100.0) if pred_counterfactual > 0 else 0.0
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 2px solid #10b981; border-radius: 18px; padding: 22px; box-shadow: 0 4px 20px rgba(16,185,129,0.12);">
                 <span style="background: #dcfce7; color: #047857; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">✅ {t('cf_with_title', lang).upper()}</span>
                 <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #047857; margin-top: 14px;">Causal Boosted Harvest Prediction</div>
                 <div style="font-size: 2.3rem; font-weight: 900; color: #047857; line-height: 1.1; margin: 4px 0;">
-                    {pred_actual:.2f} <span style="font-size: 1.1rem; font-weight: 600; color: #047857;">{t('yield_unit', lang)}</span>
-                    <span style="background: #059669; color: white; font-size: 0.85rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">+{yield_delta:.2f} {t('yield_unit', lang)} (+{pct_boost:.1f}%)</span>
+                    {eff_actual:.2f} <span style="font-size: 1.1rem; font-weight: 600; color: #047857;">{t('yield_unit', lang)}</span>
+                    <span style="background: #059669; color: white; font-size: 0.85rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">+{eff_delta:.2f} {t('yield_unit', lang)} (+{pct_boost:.1f}%)</span>
                 </div>
-                <div style="font-size: 1.05rem; font-weight: 700; color: #065f46; margin-top: 6px;">Expected Gross Mandi Revenue: <strong style="color: #047857;">₹{pred_actual * crop_price:,.0f} / {t('yield_unit', lang)}</strong></div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: #065f46; margin-top: 6px;">Expected Gross Mandi Revenue: <strong style="color: #047857;">₹{eff_actual * crop_price:,.0f} / acre</strong></div>
                 <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div style="background: #ffffff; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 12px;">
                         <div style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Product Investment</div>
-                        <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a;">₹{product_cost:,.0f} <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">/ {t('yield_unit', lang)}</span></div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a;">₹{product_cost:,.0f} <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">/ acre</span></div>
                     </div>
                     <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px 12px;">
                         <div style="font-size: 0.7rem; font-weight: 800; color: #047857; text-transform: uppercase;">Net Farmer Profit</div>
-                        <div style="font-size: 1.15rem; font-weight: 900; color: #059669;">+₹{net_profit:,.0f} <span style="font-size: 0.75rem; font-weight: 700; color: #047857;">({roi_pct:.0f}% ROI)</span></div>
+                        <div style="font-size: 1.15rem; font-weight: 900; color: #059669;">+₹{eff_profit:,.0f} <span style="font-size: 0.75rem; font-weight: 700; color: #047857;">({eff_roi:.0f}% ROI)</span></div>
                     </div>
                 </div>
             </div>
