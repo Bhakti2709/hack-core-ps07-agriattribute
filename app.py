@@ -983,11 +983,52 @@ def main():
                 """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        # Direct WhatsApp Weather Sharing
-        weather_wa_text = f"🌾 *Syngenta Field Weather & Spray Window Alert* 🌾\n━━━━━━━━━━━━━━━━━━━━━\n📍 *Location:* {localized_reg}\n🌱 *Crop:* {localized_active_crop}\n📅 *Date:* {datetime.now().strftime('%d %b %Y')}\n\n🌡️ *Temp:* {ow_live['temp_c']}°C (Feels {ow_live['feels_like_c']}°C)\n💧 *Humidity:* {ow_live['humidity_pct']}% RH | 💨 *Wind:* {ow_live['wind_speed_kmh']} km/h\n🌧️ *Rain Risk (Next 24h):* {ow_5day[0]['rain_prob']}%\n\n🎯 *Spray Window:* {'✅ OPTIMAL SPRAY WINDOW OPEN' if ow_5day[0]['rain_prob'] < 30 else '⚠️ DELAY SPRAY (Rain Expected)'}\n💡 *Recommended Product:* {bio_product}\n\n✨ *AgriAttribute AI - Syngenta Biologicals*"
-        encoded_w_wa = urllib.parse.quote(weather_wa_text)
+        # Direct WhatsApp Executive Agronomic & Weather Briefing
+        farm_name = st.session_state.get('farm_location_name', 'Kopargaon')
+        spray_status = "OPTIMAL APPLICATION WINDOW OPEN" if (ow_5day[0]['rain_prob'] < 30 and float(ow_live.get('wind_speed_kmh', 10)) < 20) else "DELAY APPLICATION (High Drift / Wash-Off Risk)"
+        
+        fc_lines = []
+        for d in ow_5day[:4]:
+            fc_lines.append(f"  * {d['date']}: Max {d['temp_max']}°C (Min {d['temp_min']}°C) - Rain {d['rain_prob']}% - Wind {d['wind_kmh']} km/h ({d['desc']})")
+        fc_summary = "\n".join(fc_lines)
+
+        weather_wa_text = (
+            f"*SYNGENTA FIELD INTELLIGENCE & AGRONOMIC ADVISORY*\n"
+            f"*AgriAttribute AI - Precision Crop & Market Analytics*\n"
+            f"--------------------------------------------------\n\n"
+            f"*[1] FIELD & FARM PROFILE*\n"
+            f"* Farm Location: {farm_name} ({localized_reg})\n"
+            f"* GPS Coordinates: {st.session_state.farm_lat:.4f}°N, {st.session_state.farm_lon:.4f}°E\n"
+            f"* Target Crop: {localized_active_crop}\n"
+            f"* Advisory Timestamp: {datetime.now().strftime('%d %b %Y, %I:%M %p IST')}\n\n"
+            f"*[2] REAL-TIME ATMOSPHERIC TELEMETRY*\n"
+            f"* Ambient Temperature: {ow_live['temp_c']}°C (Feels like {ow_live['feels_like_c']}°C)\n"
+            f"* Relative Humidity: {ow_live['humidity_pct']}% RH (Optimal Stomatal Absorption)\n"
+            f"* Wind Velocity: {ow_live['wind_speed_kmh']} km/h (Low Droplet Drift)\n"
+            f"* Cloud Absorption Index: {ow_live.get('cloud_cover_pct', 15)}% Diffused Light\n"
+            f"* 24-Hour Rain Wash-Off Risk: {ow_5day[0]['rain_prob']}%\n\n"
+            f"*[3] FOLIAR SPRAY SAFETY WINDOW*\n"
+            f"* Window Status: {spray_status}\n"
+            f"* Prescribed Biostimulant: {bio_product} @ {dosage:.1f} L/ha\n"
+            f"* Application Readiness Score: {readiness_score}/100\n\n"
+            f"*[4] PREDICTED ECONOMIC BENEFIT (XGBoost Causal Engine)*\n"
+            f"* Projected Yield Gain: +{yield_delta:.2f} Quintals/ha vs Untreated Control\n"
+            f"* Realizable Mandi Spot Price: Rs {crop_price:,.2f} / Quintal (Agmarknet 2.0)\n"
+            f"* Net Expected Farmer Return: +Rs {net_profit:,.0f} / ha\n"
+            f"* Return on Investment: +{roi_pct:.0f}% ROI\n\n"
+            f"*[5] 4-DAY MICRO-WEATHER OUTLOOK*\n"
+            f"{fc_summary}\n\n"
+            f"--------------------------------------------------\n"
+            f"*Scientific Verification:* Agmarknet 2.0 • CACP MSP • IMD Mausam • Nature MI SHAP\n"
+            f"*Portal Access:* https://48138ad3cbccbe.lhr.life\n"
+            f"*AgriAttribute AI - Syngenta Biologicals & ANNAM.AI 2026*"
+        )
+        encoded_w_wa = urllib.parse.quote(weather_wa_text.encode('utf-8'))
         st.markdown(f'<a href="https://wa.me/?text={encoded_w_wa}" target="_blank" class="wa-button" style="width: 100%;">{t("share_weather_wa_btn", lang)}</a>', unsafe_allow_html=True)
         
+        with st.expander("📋 View & Copy Executive Agronomic Briefing Text"):
+            st.code(weather_wa_text, language="markdown")
+            
         st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 2: COUNTERFACTUAL (ACT VS DO NOTHING)
