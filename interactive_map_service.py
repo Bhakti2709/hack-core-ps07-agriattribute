@@ -65,12 +65,17 @@ def generate_interactive_weather_map_html(lat: float = 21.1458, lon: float = 79.
             zoomControl: true
         }});
 
-        // Base CartoDB Voyager Layer
-        var baseLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png', {{
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 19
+        // 100% Free OpenStreetMap Base Layer (Zero API key required, No watermarks)
+        var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }}).addTo(map);
+
+        // 100% Free Esri High-Resolution Farm Satellite View
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri &mdash; High-Resolution Agriculture Satellite'
+        }});
 
         // OpenWeatherMap Live Layers
         var cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={OPENWEATHER_MAP_KEY}', {{
@@ -93,7 +98,8 @@ def generate_interactive_weather_map_html(lat: float = 21.1458, lon: float = 79.
 
         // Layer Control
         var baseMaps = {{
-            "Base Map (Topography)": baseLayer
+            "🗺️ OpenStreetMap (Roads & Villages)": osmLayer,
+            "🛰️ High-Res Farm Satellite": satelliteLayer
         }};
 
         var overlayMaps = {{
