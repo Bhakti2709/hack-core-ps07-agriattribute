@@ -341,10 +341,10 @@ def main():
         )
         components.html(map_html, height=570)
 
-    # Visual Crop Cultivation Intelligence Cards
+    # 🌾 ICAR REGIONAL CULTIVATION INTELLIGENCE & AGMARKNET 2.0 INTEGRATION
     st.markdown("---")
-    st.markdown(f"#### {t('crop_sec_heading', lang, region=localized_reg)}")
-    st.caption(t('crop_sec_caption', lang))
+    st.markdown(f"#### 🌾 {t('crop_sec_heading', lang, region=localized_reg)} & Agmarknet 2.0 Benchmark")
+    st.caption("Official regional crop acreage distribution (ICAR) synchronized with live APMC daily market rates from [Home-Agmarknet 2.0 (agmarknet.gov.in/home)](https://agmarknet.gov.in/home). Tap any crop to run the ML causal attribution model and update all market economics:")
 
     cur_crops = REGIONAL_CROP_SHARES.get(st.session_state.selected_region, {})
     crop_card_cols = st.columns(len(cur_crops))
@@ -356,22 +356,42 @@ def main():
         localized_crop_desc = t_crop_desc(c_info['desc'], lang)
         acreage_text = t("acreage_share", lang, share=c_info['share'])
         
-        border_style = "2.5px solid #059669; background: #ecfdf5; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);" if is_selected else "1px solid #e2e8f0; background: #ffffff;"
-        badge_html = f"<span style='background:#059669; color:white; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px;'>{t('active_field_badge', lang)}</span>" if is_selected else f"<span style='background:#f1f5f9; color:#475569; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:12px;'>{localized_season}</span>"
+        # Ingest live Agmarknet 2.0 data for each card
+        c_mandi = agmarknet_engine.get_mandi_intelligence_for_crop(c_name, True)
+        c_price = c_mandi.get("latest_price", 0)
+        c_delta = c_mandi.get("price_vs_msp_delta", 0)
+        if c_delta >= 0:
+            mandi_tag_color = "#047857"
+            mandi_tag_text = f"🟢 +₹{c_delta:,.0f} > MSP"
+        else:
+            mandi_tag_color = "#b91c1c"
+            mandi_tag_text = f"🔴 -₹{abs(c_delta):,.0f} < MSP"
+            
+        border_style = "2.5px solid #059669; background: #ecfdf5; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2);" if is_selected else "1px solid #e2e8f0; background: #ffffff;"
+        badge_html = f"<span style='background:#059669; color:white; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px;'>★ {t('active_field_badge', lang)}</span>" if is_selected else f"<span style='background:#f1f5f9; color:#475569; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:12px;'>{localized_season}</span>"
         
         with crop_card_cols[c_idx]:
             st.markdown(f"""
-            <div style="border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 8px; border: {border_style};">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 1.5rem;">{c_info['icon']}</span>
-                    {badge_html}
+            <div style="border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 8px; border: {border_style}; min-height: 235px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 1.5rem;">{c_info['icon']}</span>
+                        {badge_html}
+                    </div>
+                    <div style="font-weight: 800; font-size: 0.98rem; color: #0f172a; line-height: 1.2;">{localized_crop_name}</div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #059669; margin: 3px 0;">{acreage_text}</div>
+                    <div style="background: #e2e8f0; border-radius: 6px; height: 5px; width: 100%; overflow: hidden; margin-bottom: 8px;">
+                        <div style="background: #059669; height: 100%; width: {c_info['share']}%;"></div>
+                    </div>
+                    
+                    <!-- Live Agmarknet 2.0 Price Badge -->
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; margin: 6px 0;">
+                        <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Agmarknet 2.0 Mandi</div>
+                        <div style="font-size: 1.05rem; font-weight: 900; color: #047857;">₹{c_price:,.0f} <span style="font-size: 0.68rem; font-weight: normal; color: #64748b;">/q</span></div>
+                        <div style="font-size: 0.65rem; font-weight: 700; color: {mandi_tag_color};">{mandi_tag_text}</div>
+                    </div>
                 </div>
-                <div style="font-weight: 800; font-size: 1.0rem; color: #0f172a;">{localized_crop_name}</div>
-                <div style="font-size: 0.8rem; font-weight: 700; color: #059669; margin: 4px 0;">{acreage_text}</div>
-                <div style="background: #e2e8f0; border-radius: 6px; height: 6px; width: 100%; overflow: hidden; margin-bottom: 6px;">
-                    <div style="background: #059669; height: 100%; width: {c_info['share']}%;"></div>
-                </div>
-                <div style="font-size: 0.7rem; color: #64748b; line-height: 1.3;">{localized_crop_desc}</div>
+                <div style="font-size: 0.68rem; color: #64748b; line-height: 1.25; margin-top: 4px;">{localized_crop_desc}</div>
             </div>
             """, unsafe_allow_html=True)
             if not is_selected:
