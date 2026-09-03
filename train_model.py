@@ -19,13 +19,15 @@ def train_yield_attribution_model(data_path: str = "data/field_trials.csv"):
         
     df = pd.read_csv(data_path)
     
-    # Feature Selection
+    # Feature Selection (Base + 12-Parameter Soil Health Card features)
     feature_cols = [
         "soil_organic_carbon", "soil_ph", "nitrogen_kgha", "phosphorus_kgha", 
-        "potassium_kgha", "clay_content_pct", "cumulative_rainfall_mm", 
-        "growing_degree_days", "avg_temperature_c", "heat_stress_days", 
+        "potassium_kgha", "clay_content_pct", "sulphur_ppm", "zinc_ppm", "boron_ppm",
+        "cumulative_rainfall_mm", "growing_degree_days", "avg_temperature_c", "heat_stress_days", 
         "peak_ndvi", "bio_applied", "bio_dosage_l_ha"
     ]
+    # Filter to features actually present in df
+    feature_cols = [c for c in feature_cols if c in df.columns]
     
     # One-hot encode crop_type and region
     categorical_cols = ["crop_type", "region"]
@@ -33,8 +35,9 @@ def train_yield_attribution_model(data_path: str = "data/field_trials.csv"):
     
     encoded_feature_cols = feature_cols + [c for c in df_encoded.columns if c.startswith("crop_type_") or c.startswith("region_")]
     
+    target_col = "yield_q_per_acre" if "yield_q_per_acre" in df_encoded.columns else "observed_yield_q_acre"
     X = df_encoded[encoded_feature_cols]
-    y = df_encoded["yield_q_per_acre"]
+    y = df_encoded[target_col]
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
     

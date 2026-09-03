@@ -901,6 +901,42 @@ CROP_TRANSLATIONS = {
         "hi": "सोयाबीन",
         "mr": "सोयाबीन",
         "te": "సోయాబీన్"
+    },
+    "Groundnut (Peanut)": {
+        "en": "Groundnut (Peanut)",
+        "hi": "मूंगफली",
+        "mr": "भुईमूग",
+        "te": "వేరుశెనగ"
+    },
+    "Mustard / Rapeseed": {
+        "en": "Mustard / Rapeseed",
+        "hi": "सरसों / राई",
+        "mr": "मोहरी",
+        "te": "ఆవాలు"
+    },
+    "Gram / Chickpea (Chana)": {
+        "en": "Gram / Chickpea (Chana)",
+        "hi": "चना",
+        "mr": "हरभरा (चना)",
+        "te": "శనగలు"
+    },
+    "Tur / Pigeon Pea (Arhar)": {
+        "en": "Tur / Pigeon Pea (Arhar)",
+        "hi": "अरहर (तुअर)",
+        "mr": "तूर (अरहर)",
+        "te": "కందులు"
+    },
+    "Onion": {
+        "en": "Onion",
+        "hi": "प्याज",
+        "mr": "कांदा",
+        "te": "ఉల్లిపాయ"
+    },
+    "Tomato": {
+        "en": "Tomato",
+        "hi": "टमाटर",
+        "mr": "टोमॅटो",
+        "te": "టమోటా"
     }
 }
 
