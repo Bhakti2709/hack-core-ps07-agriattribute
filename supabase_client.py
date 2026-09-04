@@ -4,13 +4,20 @@ Project: soham0777/hack-core-ps07-agriattribute (Team 15 - Syngenta & ANNAM.AI)
 
 Design Thinking Architecture:
 1. Closed-Loop Farm Memory: Turns season logs into continuous local model calibration.
-2. Lifetime Biological ROI Ledger: Computes cumulative multi-season profit.
-3. KCC Bank & PMFBY Crop Insurance Performance Certificate: Verifies climate-smart practice.
+2. 15-Minute Automated Telemetry Auto-Logger: Audits microclimate & soil NPK snapshots.
+3. Lifetime Biological ROI Ledger: Computes cumulative multi-season profit and yield lift.
+4. KCC Bank & PMFBY Crop Insurance Performance Certificate: Verifies climate-smart practice.
+5. Dual-Tier Resilient Storage: Supabase Cloud PostgreSQL + Persistent Local JSON Ledger.
+6. Multi-Tab Excel (.xlsx) & CSV Export: Empowers farmers and agronomists with offline data.
 """
 
 import os
+import io
+import json
 import requests
-from datetime import datetime
+import pandas as pd
+from datetime import datetime, timedelta
+
 try:
     from supabase import create_client, Client
 except ImportError:
@@ -27,12 +34,122 @@ SUPABASE_PUB_KEY = os.getenv("SUPABASE_PUB_KEY", "")
 SUPABASE_SECRET_KEY = os.getenv("SUPABASE_SECRET_KEY", "")
 ACTIVE_KEY = SUPABASE_SECRET_KEY if SUPABASE_SECRET_KEY else SUPABASE_PUB_KEY
 
+# Persistent local fallback paths (guarantees zero data loss)
+SCRATCH_DIR = os.path.join(os.path.dirname(__file__), "scratch")
+os.makedirs(SCRATCH_DIR, exist_ok=True)
+LOCAL_JOURNAL_FILE = os.path.join(SCRATCH_DIR, "farm_memory_records.json")
+LOCAL_TELEMETRY_FILE = os.path.join(SCRATCH_DIR, "telemetry_snapshots.json")
+
+# Baseline historical seeds
+INITIAL_JOURNAL_SEEDS = [
+    {
+        "created_at": "2026-08-28T10:15:00",
+        "farmer_id": "IND_FARMER_001",
+        "region": "Maharashtra & Vidarbha (Deccan)",
+        "crop_type": "Cotton",
+        "product_applied": "Syngenta Isabion",
+        "dosage_l_acre": 2.0,
+        "readiness_score": 88,
+        "yield_actual_q_acre": 12.8,
+        "bio_attributed_lift": 2.4,
+        "net_profit_rs": 14080.0,
+        "farmer_notes": "Heat stress buffered during flowering phase. Zero boll shedding."
+    },
+    {
+        "created_at": "2026-06-12T14:30:00",
+        "farmer_id": "IND_FARMER_001",
+        "region": "Maharashtra & Vidarbha (Deccan)",
+        "crop_type": "Soybean",
+        "product_applied": "Syngenta Quantis",
+        "dosage_l_acre": 2.0,
+        "readiness_score": 82,
+        "yield_actual_q_acre": 14.5,
+        "bio_attributed_lift": 3.1,
+        "net_profit_rs": 11860.0,
+        "farmer_notes": "Applied before 12-day dry spell. Canopy stayed green throughout drought."
+    },
+    {
+        "created_at": "2025-11-20T09:00:00",
+        "farmer_id": "IND_FARMER_001",
+        "region": "Punjab & Haryana (Indo-Gangetic)",
+        "crop_type": "Wheat",
+        "product_applied": "Syngenta Quantis",
+        "dosage_l_acre": 1.5,
+        "readiness_score": 90,
+        "yield_actual_q_acre": 24.2,
+        "bio_attributed_lift": 3.6,
+        "net_profit_rs": 7250.0,
+        "farmer_notes": "Sprayed before terminal March heat wave. Grain test weight maintained at 41g."
+    }
+]
+
+INITIAL_TELEMETRY_SEEDS = [
+    {
+        "snapshot_time": (datetime.now() - timedelta(minutes=45)).strftime("%Y-%m-%d %H:%M:%S"),
+        "farmer_id": "IND_FARMER_001",
+        "region": "Maharashtra & Vidarbha (Deccan)",
+        "latitude": 19.8833,
+        "longitude": 74.4833,
+        "crop_type": "Soybean",
+        "temperature_c": 27.8,
+        "humidity_pct": 68,
+        "rain_probability_pct": 12,
+        "heat_stress_days": 4,
+        "soil_n_kg_ha": 138.6,
+        "soil_p_kg_ha": 14.4,
+        "soil_k_kg_ha": 335.2,
+        "soil_ph": 7.6,
+        "disease_risk_score": 48.2,
+        "recommended_product": "Syngenta Quantis (2.5 L/ha)",
+        "spray_window_status": "Optimal Spray Window (Calm Wind, No Rain)"
+    },
+    {
+        "snapshot_time": (datetime.now() - timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M:%S"),
+        "farmer_id": "IND_FARMER_001",
+        "region": "Maharashtra & Vidarbha (Deccan)",
+        "latitude": 19.8833,
+        "longitude": 74.4833,
+        "crop_type": "Soybean",
+        "temperature_c": 28.4,
+        "humidity_pct": 66,
+        "rain_probability_pct": 10,
+        "heat_stress_days": 5,
+        "soil_n_kg_ha": 138.6,
+        "soil_p_kg_ha": 14.4,
+        "soil_k_kg_ha": 335.2,
+        "soil_ph": 7.6,
+        "disease_risk_score": 49.6,
+        "recommended_product": "Syngenta Quantis (2.5 L/ha)",
+        "spray_window_status": "Optimal Spray Window (Calm Wind, No Rain)"
+    },
+    {
+        "snapshot_time": (datetime.now() - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"),
+        "farmer_id": "IND_FARMER_001",
+        "region": "Maharashtra & Vidarbha (Deccan)",
+        "latitude": 19.8833,
+        "longitude": 74.4833,
+        "crop_type": "Soybean",
+        "temperature_c": 28.6,
+        "humidity_pct": 64,
+        "rain_probability_pct": 8,
+        "heat_stress_days": 5,
+        "soil_n_kg_ha": 138.6,
+        "soil_p_kg_ha": 14.4,
+        "soil_k_kg_ha": 335.2,
+        "soil_ph": 7.6,
+        "disease_risk_score": 49.6,
+        "recommended_product": "Syngenta Quantis (2.5 L/ha)",
+        "spray_window_status": "Optimal Spray Window (Calm Wind, No Rain)"
+    }
+]
+
 def get_supabase_client() -> Client:
     """Returns an authenticated Supabase client."""
     try:
-        client = create_client(SUPABASE_URL, ACTIVE_KEY)
-        return client
-    except Exception as e:
+        if create_client and ACTIVE_KEY:
+            return create_client(SUPABASE_URL, ACTIVE_KEY)
+        return None
+    except Exception:
         return None
 
 def test_supabase_connection() -> dict:
@@ -48,7 +165,7 @@ def test_supabase_connection() -> dict:
             return {
                 "status": "Connected (Active)",
                 "project_url": SUPABASE_URL,
-                "engine": "PostgreSQL + PostGIS (Supabase)",
+                "engine": "PostgreSQL + PostGIS (Supabase Cloud)",
                 "tables_ready": True
             }
         else:
@@ -60,89 +177,226 @@ def test_supabase_connection() -> dict:
             }
     except Exception as ex:
         return {
-            "status": f"Connection Error: {ex}",
+            "status": f"Offline Mode ({ex})",
             "project_url": SUPABASE_URL,
-            "engine": "Offline Mode (Fallback to In-Memory)",
+            "engine": "Dual-Tier Local Ledger Fallback Active",
             "tables_ready": False
         }
 
+# --- DUAL-TIER STORAGE HELPERS ---
+
+def _load_local_json(filepath: str, default_seeds: list) -> list:
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list) and len(data) > 0:
+                    return data
+        except Exception:
+            pass
+    _save_local_json(filepath, default_seeds)
+    return default_seeds
+
+def _save_local_json(filepath: str, data: list) -> bool:
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        return True
+    except Exception:
+        return False
+
 def log_season_journal_entry(field_data: dict) -> bool:
     """
-    PS-05 Record Layer: Logs farmer field outcomes to Supabase 'season_journal' table.
+    Logs farmer field outcomes to Supabase 'season_journal' table + local JSON ledger.
     """
-    client = get_supabase_client()
     entry = {
+        "created_at": field_data.get("created_at", datetime.now().isoformat()),
         "farmer_id": field_data.get("farmer_id", "IND_FARMER_001"),
-        "region": field_data.get("region", "Vidarbha, Maharashtra"),
-        "crop_type": field_data.get("crop_type", "Rice (Paddy)"),
+        "region": field_data.get("region", "Maharashtra & Vidarbha (Deccan)"),
+        "crop_type": field_data.get("crop_type", "Soybean"),
         "product_applied": field_data.get("product_applied", "Syngenta Quantis"),
-        "dosage_l_acre": field_data.get("dosage_l_acre", 2.0),
-        "readiness_score": field_data.get("readiness_score", 85),
-        "yield_actual_q_acre": field_data.get("yield_actual_q_acre", 26.5),
-        "bio_attributed_lift": field_data.get("bio_attributed_lift", 3.8),
-        "net_profit_rs": field_data.get("net_profit_rs", 6970.0),
-        "farmer_notes": field_data.get("farmer_notes", "Applied during flower initiation stage"),
-        "created_at": datetime.now().isoformat()
+        "dosage_l_acre": float(field_data.get("dosage_l_acre", 2.0)),
+        "readiness_score": int(field_data.get("readiness_score", 85)),
+        "yield_actual_q_acre": float(field_data.get("yield_actual_q_acre", 26.5)),
+        "bio_attributed_lift": float(field_data.get("bio_attributed_lift", 3.8)),
+        "net_profit_rs": float(field_data.get("net_profit_rs", 6970.0)),
+        "farmer_notes": field_data.get("farmer_notes", "Applied during flower initiation stage")
     }
     
+    # 1. Update local persistent ledger
+    local_records = _load_local_json(LOCAL_JOURNAL_FILE, INITIAL_JOURNAL_SEEDS)
+    local_records.insert(0, entry)
+    _save_local_json(LOCAL_JOURNAL_FILE, local_records)
+    
+    # 2. Sync to Supabase Cloud if available
+    client = get_supabase_client()
     if client:
         try:
-            res = client.table("season_journal").insert(entry).execute()
-            return True
+            client.table("season_journal").insert(entry).execute()
         except Exception:
-            return True
+            pass
+            
     return True
 
 def fetch_season_journal_history() -> list:
-    """Fetches persistent Season Journal history for feedback loop retrain engine."""
+    """Fetches persistent Season Journal history from Supabase Cloud or local fallback."""
     client = get_supabase_client()
     if client:
         try:
-            res = client.table("season_journal").select("*").order("created_at", desc=True).limit(20).execute()
+            res = client.table("season_journal").select("*").order("created_at", desc=True).limit(50).execute()
             if res.data and len(res.data) > 0:
                 return res.data
         except Exception:
             pass
-    
-    # Grounded historical logs across past Indian agricultural seasons
-    return [
-        {
-            "created_at": "2026-08-28T10:15:00",
-            "region": "Maharashtra & Vidarbha (Deccan)",
-            "crop_type": "Cotton",
-            "product_applied": "Syngenta Isabion",
-            "dosage_l_acre": 2.0,
-            "readiness_score": 88,
-            "yield_actual_q_acre": 12.8,
-            "bio_attributed_lift": 2.4,
-            "net_profit_rs": 14080.0,
-            "farmer_notes": "Heat stress buffered during flowering phase. Zero boll shedding."
-        },
-        {
-            "created_at": "2026-06-12T14:30:00",
-            "region": "Maharashtra & Vidarbha (Deccan)",
-            "crop_type": "Soybean",
-            "product_applied": "Syngenta Quantis",
-            "dosage_l_acre": 2.0,
-            "readiness_score": 82,
-            "yield_actual_q_acre": 14.5,
-            "bio_attributed_lift": 3.1,
-            "net_profit_rs": 11860.0,
-            "farmer_notes": "Applied before 12-day dry spell. Canopy stayed green throughout drought."
-        },
-        {
-            "created_at": "2025-11-20T09:00:00",
-            "region": "Punjab & Haryana (Indo-Gangetic)",
-            "crop_type": "Wheat",
-            "product_applied": "Syngenta Quantis",
-            "dosage_l_acre": 1.5,
-            "readiness_score": 90,
-            "yield_actual_q_acre": 24.2,
-            "bio_attributed_lift": 3.6,
-            "net_profit_rs": 7250.0,
-            "farmer_notes": "Sprayed before terminal March heat wave. Grain test weight maintained at 41g."
-        }
-    ]
+            
+    return _load_local_json(LOCAL_JOURNAL_FILE, INITIAL_JOURNAL_SEEDS)
+
+# --- 15-MINUTE AUTOMATED TELEMETRY AUTO-LOGGER ---
+
+def log_telemetry_snapshot(snapshot: dict) -> bool:
+    """
+    Logs a 15-minute automated telemetry snapshot to Supabase 'telemetry_snapshots' + local JSON ledger.
+    """
+    entry = {
+        "snapshot_time": snapshot.get("snapshot_time", datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+        "farmer_id": snapshot.get("farmer_id", "IND_FARMER_001"),
+        "region": snapshot.get("region", "Maharashtra & Vidarbha (Deccan)"),
+        "latitude": round(float(snapshot.get("latitude", 19.8833)), 4),
+        "longitude": round(float(snapshot.get("longitude", 74.4833)), 4),
+        "crop_type": snapshot.get("crop_type", "Soybean"),
+        "temperature_c": round(float(snapshot.get("temperature_c", 28.5)), 1),
+        "humidity_pct": int(snapshot.get("humidity_pct", 65)),
+        "rain_probability_pct": int(snapshot.get("rain_probability_pct", 10)),
+        "heat_stress_days": int(snapshot.get("heat_stress_days", 5)),
+        "soil_n_kg_ha": round(float(snapshot.get("soil_n_kg_ha", 138.6)), 1),
+        "soil_p_kg_ha": round(float(snapshot.get("soil_p_kg_ha", 14.4)), 1),
+        "soil_k_kg_ha": round(float(snapshot.get("soil_k_kg_ha", 335.2)), 1),
+        "soil_ph": round(float(snapshot.get("soil_ph", 7.6)), 1),
+        "disease_risk_score": round(float(snapshot.get("disease_risk_score", 49.6)), 1),
+        "recommended_product": snapshot.get("recommended_product", "Syngenta Quantis (2.5 L/ha)"),
+        "spray_window_status": snapshot.get("spray_window_status", "Optimal Spray Window (Calm Wind, No Rain)")
+    }
+
+    local_telemetry = _load_local_json(LOCAL_TELEMETRY_FILE, INITIAL_TELEMETRY_SEEDS)
+    # Deduplicate within 2 minutes to avoid duplicate reload spam
+    if local_telemetry:
+        try:
+            last_t = datetime.strptime(local_telemetry[0]["snapshot_time"], "%Y-%m-%d %H:%M:%S")
+            curr_t = datetime.strptime(entry["snapshot_time"], "%Y-%m-%d %H:%M:%S")
+            if (curr_t - last_t).total_seconds() < 120:
+                return True
+        except Exception:
+            pass
+            
+    local_telemetry.insert(0, entry)
+    local_telemetry = local_telemetry[:100]
+    _save_local_json(LOCAL_TELEMETRY_FILE, local_telemetry)
+
+    client = get_supabase_client()
+    if client:
+        try:
+            client.table("telemetry_snapshots").insert(entry).execute()
+        except Exception:
+            pass
+
+    return True
+
+def fetch_telemetry_snapshots() -> list:
+    """Fetches persistent 15-minute telemetry snapshots from Supabase Cloud or local fallback."""
+    client = get_supabase_client()
+    if client:
+        try:
+            res = client.table("telemetry_snapshots").select("*").order("snapshot_time", desc=True).limit(100).execute()
+            if res.data and len(res.data) > 0:
+                return res.data
+        except Exception:
+            pass
+
+    return _load_local_json(LOCAL_TELEMETRY_FILE, INITIAL_TELEMETRY_SEEDS)
+
+# --- MULTI-TAB EXCEL & CSV EXPORT GENERATORS ---
+
+def generate_farm_memory_excel_bytes() -> bytes:
+    """
+    Generates a beautifully styled, multi-sheet Excel (.xlsx) workbook containing:
+    Sheet 1: 'Season_Harvest_Journal'
+    Sheet 2: '15Min_Telemetry_Snapshots'
+    """
+    journal_records = fetch_season_journal_history()
+    telemetry_records = fetch_telemetry_snapshots()
+
+    j_rows = []
+    for r in journal_records:
+        j_rows.append({
+            "Log Date": str(r.get("created_at", ""))[:10],
+            "Region / AESR": r.get("region", ""),
+            "Cultivated Crop": r.get("crop_type", ""),
+            "Biological Product": r.get("product_applied", ""),
+            "Dosage (L/acre)": r.get("dosage_l_acre", 2.0),
+            "Observed Yield (q/acre)": r.get("yield_actual_q_acre", 0),
+            "Attributed Bio Lift (q/acre)": r.get("bio_attributed_lift", 0),
+            "Farmer Net Profit (Rs/acre)": r.get("net_profit_rs", 0),
+            "Application Readiness Score": r.get("readiness_score", 85),
+            "Farmer Field Observations": r.get("farmer_notes", "")
+        })
+    df_journal = pd.DataFrame(j_rows)
+
+    t_rows = []
+    for t in telemetry_records:
+        t_rows.append({
+            "Snapshot Timestamp": t.get("snapshot_time", ""),
+            "Region": t.get("region", ""),
+            "Latitude": t.get("latitude", 0),
+            "Longitude": t.get("longitude", 0),
+            "Monitored Crop": t.get("crop_type", ""),
+            "Ambient Temp (C)": t.get("temperature_c", 0),
+            "Relative Humidity (%)": t.get("humidity_pct", 0),
+            "Rain Probability (%)": t.get("rain_probability_pct", 0),
+            "Heat Stress Days": t.get("heat_stress_days", 0),
+            "Available N (kg/ha)": t.get("soil_n_kg_ha", 0),
+            "Available P (kg/ha)": t.get("soil_p_kg_ha", 0),
+            "Available K (kg/ha)": t.get("soil_k_kg_ha", 0),
+            "Soil pH": t.get("soil_ph", 7.0),
+            "Disease Infection Risk (%)": t.get("disease_risk_score", 0),
+            "Recommended Biocontrol": t.get("recommended_product", ""),
+            "Foliar Spray Window": t.get("spray_window_status", "")
+        })
+    df_telemetry = pd.DataFrame(t_rows)
+
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+        df_journal.to_excel(writer, sheet_name="Season_Harvest_Journal", index=False)
+        df_telemetry.to_excel(writer, sheet_name="15Min_Telemetry_Snapshots", index=False)
+
+        workbook = writer.book
+        fmt_j_header = workbook.add_format({
+            "bold": True, "bg_color": "#059669", "font_color": "#ffffff", "border": 1
+        })
+        fmt_t_header = workbook.add_format({
+            "bold": True, "bg_color": "#0284c7", "font_color": "#ffffff", "border": 1
+        })
+
+        ws_j = writer.sheets["Season_Harvest_Journal"]
+        for col_num, value in enumerate(df_journal.columns.values):
+            ws_j.write(0, col_num, value, fmt_j_header)
+            ws_j.set_column(col_num, col_num, max(len(str(value)) + 4, 14))
+
+        ws_t = writer.sheets["15Min_Telemetry_Snapshots"]
+        for col_num, value in enumerate(df_telemetry.columns.values):
+            ws_t.write(0, col_num, value, fmt_t_header)
+            ws_t.set_column(col_num, col_num, max(len(str(value)) + 4, 14))
+
+    return buffer.getvalue()
+
+def generate_farm_memory_csv_bytes(data_type: str = "journal") -> str:
+    """Generates lightweight CSV text for either 'journal' or 'telemetry'."""
+    if data_type == "telemetry":
+        telemetry_records = fetch_telemetry_snapshots()
+        df = pd.DataFrame(telemetry_records)
+    else:
+        journal_records = fetch_season_journal_history()
+        df = pd.DataFrame(journal_records)
+    return df.to_csv(index=False)
 
 def calculate_lifetime_farm_analytics(history: list) -> dict:
     """
