@@ -1363,10 +1363,10 @@ def main():
         forced_crop_hint = None
         
         if leaf_file is not None:
-            current_source_id = f"upload_{leaf_file.name}_{leaf_file.size}"
+            current_source_id = f"upload_{leaf_file.name}_{leaf_file.size}_{farm_lat:.3f}_{farm_lon:.3f}_{crop}"
             raw_input_data = leaf_file
         elif active_sample_data is not None:
-            current_source_id = f"sample_{active_sample_data[0]}_{active_sample_data[1]}"
+            current_source_id = f"sample_{active_sample_data[0]}_{active_sample_data[1]}_{farm_lat:.3f}_{farm_lon:.3f}_{crop}"
             raw_input_data = active_sample_data[0]
             forced_crop_hint = active_sample_data[1] if active_sample_data[1] != "Healthy" else None
             

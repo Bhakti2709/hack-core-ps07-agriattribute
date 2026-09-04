@@ -542,14 +542,18 @@ class LeafVisionFoundationModel:
             ph_val = soil_data.get("ph", 6.8)
             oc_val = soil_data.get("oc", 7.5)
             
-            if chlor_pct > 4.0 and n_val < 140.0:
+            if n_val < 280.0:
+                if chlor_pct >= 3.0:
+                    chlor_note = f"directly exacerbating the visual chlorotic halos ({chlor_pct}%)"
+                else:
+                    chlor_note = "restricting cellular protein repair across foliar tissue"
                 soil_insights.append({
                     "factor": "Nitrogen Depletion Induced Chlorosis",
                     "status": "Critical Synergy",
                     "badge_color": "#ea580c",
-                    "detail": f"Soil Nitrogen is deficient at {n_val:.1f} kg/ha (optimum > 140 kg/ha). Stunted chlorophyll thylakoid synthesis is directly exacerbating the visual chlorotic halos ({chlor_pct}%)."
+                    "detail": f"Soil Nitrogen is deficient at {n_val:.1f} kg/ha (target: 280-560 kg/ha). Stunted chlorophyll thylakoid synthesis is {chlor_note}."
                 })
-            elif chlor_pct > 4.0 and n_val >= 280.0:
+            elif n_val >= 560.0:
                 soil_insights.append({
                     "factor": "Excessive Nitrogen Vegetative Flaccidity",
                     "status": "Vulnerability Warning",
@@ -557,12 +561,20 @@ class LeafVisionFoundationModel:
                     "detail": f"High soil Nitrogen ({n_val:.1f} kg/ha) creates lush, tender cell walls with reduced lignin, accelerating foliar fungal penetration."
                 })
                 
-            if nec_pct > 3.0 and k_val < 150.0:
+            if p_val < 23.0 and (chlor_pct > 2.0 or lesion_pct > 5.0):
+                soil_insights.append({
+                    "factor": "Phosphorus Depletion & Energy Starvation",
+                    "status": "Deficiency Alert",
+                    "badge_color": "#ea580c",
+                    "detail": f"Soil Phosphorus is deficient at {p_val:.1f} kg/ha (target: 23-56 kg/ha). Limits root ATP phosphorylation and plant defense responses."
+                })
+                
+            if nec_pct > 3.0 and k_val < 145.0:
                 soil_insights.append({
                     "factor": "Potassium Deficiency Marginal Scorch",
                     "status": "High Impact",
                     "badge_color": "#dc2626",
-                    "detail": f"Soil Potassium is low at {k_val:.1f} kg/ha (optimum > 150 kg/ha). Guard cells cannot regulate stomatal turgor, causing marginal necrotic leaf scorch."
+                    "detail": f"Soil Potassium is low at {k_val:.1f} kg/ha (target: 145-336 kg/ha). Guard cells cannot regulate stomatal turgor, causing marginal necrotic leaf scorch."
                 })
                 
             if (zn_val < 0.6 or b_val < 0.5) and lesion_pct > 5.0:
@@ -570,7 +582,7 @@ class LeafVisionFoundationModel:
                     "factor": "Micronutrient Cell-Wall Fragility (Zn / B)",
                     "status": "Deficiency Alert",
                     "badge_color": "#b45309",
-                    "detail": f"Available Zinc ({zn_val:.2f} ppm) or Boron ({b_val:.2f} ppm) is below critical thresholds, weakening epidermal pectin cross-linking."
+                    "detail": f"Available Zinc ({zn_val:.2f} ppm vs target 0.60-1.20) or Boron ({b_val:.2f} ppm vs target 0.50-1.00) is below critical thresholds, weakening epidermal pectin cross-linking."
                 })
                 
             if not soil_insights:
@@ -664,6 +676,7 @@ class LeafVisionFoundationModel:
             "confidence_pct": round(conf, 1),
             "symptoms_observed": patho_match["symptoms"],
             "syngenta_prescription": patho_match["syngenta_prescription"],
+            "syngenta_biological_action": patho_match["syngenta_prescription"],
             "potential_loss_pct": patho_match["loss_risk_pct"],
             "lesion_surface_area_pct": lesion_pct,
             "necrotic_area_pct": nec_pct,
@@ -762,7 +775,7 @@ def render_unified_foliar_cockpit_html(res: dict) -> str:
     nec_pct = res.get('necrotic_area_pct', 0.0)
     chlor_pct = res.get('chlorotic_area_pct', 0.0)
     symptoms = res.get('symptoms_observed', '')
-    presc = res.get('syngenta_biological_action', '')
+    presc = res.get('syngenta_prescription') or res.get('syngenta_biological_action') or "Apply Syngenta Quantis (2.0 L/ha) to seal cellular micro-wounds and restore photosynthetic brix."
     loss_risk = res.get('potential_loss_pct', 0)
     lat = res.get('inference_time_ms', 24.5)
     
@@ -843,8 +856,15 @@ def render_unified_foliar_cockpit_html(res: dict) -> str:
         
         # Syngenta Biological Intervention Prescription
         f"<div style='background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:12px 14px; margin-bottom:10px;'>"
-        f"<div style='font-size:0.85rem; font-weight:800; color:#166534; display:flex; align-items:center; gap:6px; margin-bottom:4px;'><span>💊</span> <span>Syngenta Biological Prescription Protocol</span></div>"
-        f"<div style='font-size:0.8rem; color:#15803d; line-height:1.45;'>{presc}</div>"
+        f"<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'>"
+        f"<div style='font-size:0.85rem; font-weight:800; color:#166534; display:flex; align-items:center; gap:6px;'><span>💊</span> <span>Syngenta Biological Prescription Protocol</span></div>"
+        f"<span style='background:#dcfce7; color:#15803d; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:12px; border:1px solid #86efac;'>Targeted Phytopathology Intervention</span>"
+        f"</div>"
+        f"<div style='font-size:0.82rem; color:#14532d; line-height:1.5; font-weight:500;'>{presc}</div>"
+        f"<div style='display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;'>"
+        f"<span style='background:#ffffff; border:1px solid #bbf7d0; font-size:0.7rem; color:#166534; font-weight:700; padding:2px 8px; border-radius:6px;'>⏱️ Timing: Early morning or late afternoon (avoid >32°C peak sun)</span>"
+        f"<span style='background:#ffffff; border:1px solid #bbf7d0; font-size:0.7rem; color:#166534; font-weight:700; padding:2px 8px; border-radius:6px;'>💧 Calibration: 400–500 L/ha with hollow-cone nozzle</span>"
+        f"</div>"
         f"</div>"
         
         # Validated Field Trial Evidence
