@@ -1276,51 +1276,23 @@ def main():
         ph_curr = shc_data['parameters']['Soil pH']['val']
         oc_curr = shc_data['parameters']['Organic Carbon (OC)']['val']
         
-        st.markdown(f"""
-        <div style="background: #ffffff; border: 1.5px solid #10b981; border-radius: 14px; padding: 18px 20px; margin-top: 14px; box-shadow: 0 3px 12px rgba(16,185,129,0.08);">
-            <div style="font-size: 0.95rem; font-weight: 800; color: #065f46; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                <span>🎯</span> <span>Why This Data Matters: Soil Chemistry Diagnosis & Syngenta Biological Prescription</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 10px;">
-                <div style="background: #fef2f2; border: 1px solid #fecdd3; border-radius: 10px; padding: 12px;">
-                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #be123c;">1. Soil Nutrient Lockup Identified</div>
-                    <div style="font-size: 0.82rem; color: #9f1239; margin-top: 4px; line-height: 1.45;">
-                        Soil test shows <strong>Nitrogen ({n_curr} kg/ha)</strong> and <strong>Phosphorus ({p_curr} kg/ha)</strong> deficits. At <strong>pH {ph_curr}</strong> (alkaline), soil-applied phosphorus precipitates with calcium into insoluble phosphates, rendering 60% of broadcast DAP unavailable to roots.
-                    </div>
-                </div>
-                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 12px;">
-                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #047857;">2. Biological Foliar Solution</div>
-                    <div style="font-size: 0.82rem; color: #065f46; margin-top: 4px; line-height: 1.45;">
-                        <strong>Syngenta Isabion / Quantis</strong> bypasses root-zone lockup completely. Short-chain peptides deliver nitrogen and naturally chelate deficient <strong>Zinc ({zn_curr} ppm)</strong> and <strong>Boron ({b_curr} ppm)</strong> directly across the leaf cuticle within 4 hours, boosting bio-availability by <strong>+38%</strong>.
-                    </div>
-                </div>
-                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px;">
-                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #1d4ed8;">3. Tangible Farmer Value Created</div>
-                    <div style="font-size: 0.82rem; color: #1e40af; margin-top: 4px; line-height: 1.45;">
-                        Compensates for <strong>Low Organic Carbon ({oc_curr} g/kg)</strong> by priming root exudates, reducing chemical fertilizer waste by 15-20%, and protecting flowers against thermal shock to secure <strong>+₹{net_profit:,.0f} / acre Net Profit</strong>.
-                    </div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(pricing_and_soil_engine.render_actionable_agronomy_cockpit(
+            n_curr, p_curr, k_curr, zn_curr, b_curr, ph_curr, oc_curr, net_profit
+        ), unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<div style='margin: 16px 0;'></div>", unsafe_allow_html=True)
         col_dis, col_npk = st.columns(2)
+        dis_risk = min(95.0, max(12.0, (heat_stress * 4.5) + (rainfall / 35.0) + (1.0 - ndvi) * 20.0))
+        
         with col_dis:
-            st.markdown(f"#### {t('dis_warning_title', lang)}")
-            dis_risk = min(95.0, max(12.0, (heat_stress * 4.5) + (rainfall / 35.0) + (1.0 - ndvi) * 20.0))
-            if dis_risk > 60:
-                st.error(t("dis_high_risk", lang, risk=f"{dis_risk:.1f}", crop=localized_active_crop))
-                st.info(t("dis_high_rec", lang))
-            else:
-                st.success(t("dis_low_risk", lang, risk=f"{dis_risk:.1f}"))
-                
+            st.markdown(pricing_and_soil_engine.render_disease_risk_card(
+                dis_risk, heat_stress, rainfall, ndvi, localized_active_crop
+            ), unsafe_allow_html=True)
+            
         with col_npk:
-            st.markdown(f"#### {t('npk_title', lang)}")
-            npk_targets = {"Rice (Paddy)": (150, 40, 60), "Wheat": (140, 50, 40), "Cotton": (120, 45, 50), "Sugarcane": (250, 75, 120), "Maize": (160, 55, 50), "Soybean": (40, 70, 40)}
-            tn, tp, tk = npk_targets.get(crop, (140, 50, 50))
-            st.markdown(f"**{t('npk_baseline', lang)}** N: `{n_curr:.0f}` | P: `{p_curr:.0f}` | K: `{k_curr:.0f}` (kg/ha)<br>**{t('npk_deficit', lang)}** N: `+{max(0.0, tn-n_curr):.0f}` | P: `+{max(0.0, tp-p_curr):.0f}` | K: `+{max(0.0, tk-k_curr):.0f}` kg/ha", unsafe_allow_html=True)
-            st.caption(t("npk_caption", lang))
+            st.markdown(pricing_and_soil_engine.render_smart_npk_card(
+                crop, n_curr, p_curr, k_curr
+            ), unsafe_allow_html=True)
             
         st.markdown("---")
         st.markdown(f"#### {t('lv_heading', lang)}")
