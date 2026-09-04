@@ -461,7 +461,7 @@ def get_regional_soil_health_card(region_name: str, lat: float = None, lon: floa
         # District testing laboratory and sample registry code
         dist_hash = abs(int(lat * 100 + lon * 100)) % 8999 + 1000
         clean_loc = location_name.split()[0].replace(',', '').strip()
-        base_card["testing_lab"] = f"District Soil Testing Laboratory (STL) • {clean_loc} Agromet Division"
+        base_card["testing_lab"] = f"District Soil Testing Laboratory (STL) - {clean_loc} Agromet Division"
         base_card["sample_id"] = f"SHC/2026/{clean_loc[:3].upper()}-{dist_hash}"
     else:
         base_card["testing_lab"] = f"Regional Agromet Soil Testing Lab ({region_name})"
