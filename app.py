@@ -1296,102 +1296,99 @@ def main():
             
         st.markdown("---")
         
-        # LeafVision & ICAR Field Trial Benchmark Diagnostic Engine
+        # LeafVision: Autonomous Foliar Pathology & Multi-Source Intelligence
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1.5px solid #334155; border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; color: #ffffff;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="background: #10b981; color: white; width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem;">🍃</span>
+        <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 18px 22px; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        🍃
+                    </div>
                     <div>
-                        <div style="font-size: 1.12rem; font-weight: 900; letter-spacing: -0.3px; color: #f8fafc;">LeafVision & Field Trial Pathology Diagnostic Engine</div>
-                        <div style="font-size: 0.76rem; color: #94a3b8; font-weight: 500;">Seoul National University (LABA-SNU) • Calibrated against 1,200 ICAR & Syngenta Multi-Year Field Trials (2024–2026)</div>
+                        <div style="font-size: 1.15rem; font-weight: 900; color: #0f172a; letter-spacing: -0.2px;">
+                            LeafVision: Autonomous Foliar Pathology & Telemetry Synchronizer
+                        </div>
+                        <div style="font-size: 0.78rem; color: #64748b; font-weight: 500;">
+                            LABA-SNU Foundation Model (540,013 leaf pre-training) • Synchronized with live Soil NPK & OpenWeather microclimate
+                        </div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; border-radius: 6px;">⚡ 24.5 ms CPU EDGE</span>
-                    <span style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #7dd3fc; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; border-radius: 6px;">📁 1,200 Trials Calibrated</span>
-                    <span style="background: rgba(168, 85, 247, 0.2); border: 1px solid #c084fc; color: #e9d5ff; font-size: 0.72rem; font-weight: 800; padding: 4px 9px; border-radius: 6px;">🛡️ Syngenta Bio-Prescriptions</span>
+                    <span style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 20px;">⚡ 24.5 ms Edge CPU</span>
+                    <span style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 20px;">🧪 Soil NPK Synchronized</span>
+                    <span style="background: #fdf4ff; border: 1px solid #f0abfc; color: #86198f; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 20px;">🌦️ Live Weather Fused</span>
                 </div>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; border-top: 1px solid #334155; padding-top: 10px; font-size: 0.76rem; color: #cbd5e1;">
-                <div><strong style="color:#67e8f9;">• Scientific Grounding:</strong> Trained on 540,013 leaf images (LABA-SNU 2026) & cross-validated against 1,200 multi-location field trials (data/field_trials.csv).</div>
-                <div><strong style="color:#6ee7b7;">• Sub-second Edge Execution:</strong> Runs completely on CPU in &lt;25 ms without sending images or spending tokens on cloud LLMs.</div>
-                <div><strong style="color:#fde047;">• Pixel-Level Lesion Segmentation:</strong> Distinguishes active necrotic pathogens from chlorotic nutritional halos via color-space ExG matrices.</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Interactive Plant Verification & Multi-Year Benchmark Test Samples
-        col_sel1, col_sel2 = st.columns([1, 2])
-        with col_sel1:
-            crop_options = ["Auto-Detect Plant Species", "Soybean", "Cotton", "Rice (Paddy)", "Wheat", "Onion", "Tomato", "Maize", "Groundnut (Peanut)", "Sugarcane", "Chilli"]
-            c_low = crop.lower()
-            def_idx = 1 if "soybean" in c_low else (2 if "cotton" in c_low else (3 if "rice" in c_low else (4 if "wheat" in c_low else (5 if "onion" in c_low else 0))))
-            selected_crop_choice = st.selectbox("🌱 Confirm / Select Plant Species:", crop_options, index=def_idx)
-            
-        with col_sel2:
-            st.markdown("<div style='font-size:0.85rem; font-weight:700; color:#1e293b; margin-bottom:4px;'>🔬 Multi-Year Field Benchmark Test Samples (2024–2026 Series):</div>", unsafe_allow_html=True)
-            
-            # Row 1: Kharif Series Trials
-            st.caption("Kharif Benchmark Series (2024–2026 Trials):")
-            bm_r1 = st.columns(5)
-            if bm_r1[0].button("🌿 Soybean (Rust)", use_container_width=True, key="bm_soy"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/soybean_rust.jpg", "Soybean")
-            if bm_r1[1].button("🌸 Cotton (Blight)", use_container_width=True, key="bm_cot"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/cotton_bacterial_blight.jpg", "Cotton")
-            if bm_r1[2].button("🌾 Rice (Blast)", use_container_width=True, key="bm_rice"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/rice_blast.jpg", "Rice (Paddy)")
-            if bm_r1[3].button("🌽 Maize (Blight)", use_container_width=True, key="bm_maize"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/maize_leaf_blight.jpg", "Maize")
-            if bm_r1[4].button("🥜 Groundnut (Tikka)", use_container_width=True, key="bm_gnut"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/groundnut_tikka.jpg", "Groundnut (Peanut)")
-                
-            # Row 2: Rabi & Cash Crop Series Trials
-            st.caption("Rabi & Cash Crop Benchmark Series (2024–2026 Trials):")
-            bm_r2 = st.columns(5)
-            if bm_r2[0].button("🌾 Wheat (Stripe Rust)", use_container_width=True, key="bm_wht"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/wheat_stripe_rust.jpg", "Wheat")
-            if bm_r2[1].button("🧅 Onion (Purple Blotch)", use_container_width=True, key="bm_oni"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/onion_purple_blotch.jpg", "Onion")
-            if bm_r2[2].button("🍅 Tomato (Early Blight)", use_container_width=True, key="bm_tom"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/tomato_early_blight.jpg", "Tomato")
-            if bm_r2[3].button("🎋 Sugarcane (Red Rot)", use_container_width=True, key="bm_cane"):
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/sugarcane_red_rot.jpg", "Sugarcane")
-            if bm_r2[4].button("🍃 Healthy (Baseline)", use_container_width=True, key="bm_hlth"):
-                target_healthy = selected_crop_choice if selected_crop_choice != "Auto-Detect Plant Species" else crop
-                st.session_state["lv_active_sample"] = ("assets/leaf_samples/healthy_canopy.jpg", target_healthy)
+        # 1-Click Verification Test Chips (No manual selection needed)
+        st.markdown("<div style='font-size:0.85rem; font-weight:800; color:#1e293b; margin-bottom:6px;'>🔬 1-Click Verification Samples (Test Instantly Without Files):</div>", unsafe_allow_html=True)
+        demo_cols = st.columns(5)
+        if demo_cols[0].button("🌿 Soybean (Rust)", use_container_width=True, key="bm_soy"):
+            st.session_state["lv_active_sample"] = ("assets/leaf_samples/soybean_rust.jpg", "Soybean")
+        if demo_cols[1].button("🌸 Cotton (Blight)", use_container_width=True, key="bm_cot"):
+            st.session_state["lv_active_sample"] = ("assets/leaf_samples/cotton_bacterial_blight.jpg", "Cotton")
+        if demo_cols[2].button("🌾 Rice (Blast)", use_container_width=True, key="bm_rice"):
+            st.session_state["lv_active_sample"] = ("assets/leaf_samples/rice_blast.jpg", "Rice (Paddy)")
+        if demo_cols[3].button("🧅 Onion (Blotch)", use_container_width=True, key="bm_oni"):
+            st.session_state["lv_active_sample"] = ("assets/leaf_samples/onion_purple_blotch.jpg", "Onion")
+        if demo_cols[4].button("🍃 Healthy Canopy", use_container_width=True, key="bm_hlth"):
+            st.session_state["lv_active_sample"] = ("assets/leaf_samples/healthy_canopy.jpg", "Healthy")
 
         st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-        leaf_file = st.file_uploader("📷 Upload Custom Field Leaf Photo or Take Camera Picture:", type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
+        leaf_file = st.file_uploader("📷 Upload Custom Field Leaf Photo (Any Crop / Any Stage - Auto-Detected):", type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
         
-        # Zero-Lag Session Caching: Compute unique fingerprint
+        # Multi-Source Telemetry Package for Synchronizer
+        soil_telemetry_pkg = {
+            "n": float(n_curr),
+            "p": float(p_curr),
+            "k": float(k_curr),
+            "zn": float(zn_curr),
+            "b": float(b_curr),
+            "ph": float(ph_curr),
+            "oc": float(oc_curr)
+        }
+        weather_telemetry_pkg = {
+            "temp_c": float(ow_live.get("temp_c", 28.5)),
+            "humidity_pct": int(ow_live.get("humidity_pct", 65)),
+            "wind_speed_kmh": float(ow_live.get("wind_speed_kmh", 8.0)),
+            "rain_prob_pct": int(ow_live.get("rain_prob_pct", ow_live.get("rain_probability_pct", 10))),
+            "heat_stress_days": int(heat_stress)
+        }
+        
         active_sample_data = st.session_state.get("lv_active_sample", None)
-        target_crop_for_eval = selected_crop_choice if selected_crop_choice != "Auto-Detect Plant Species" else crop
-        
         current_source_id = None
         raw_input_data = None
+        forced_crop_hint = None
         
         if leaf_file is not None:
-            current_source_id = f"upload_{leaf_file.name}_{leaf_file.size}_{target_crop_for_eval}"
+            current_source_id = f"upload_{leaf_file.name}_{leaf_file.size}"
             raw_input_data = leaf_file
         elif active_sample_data is not None:
-            current_source_id = f"sample_{active_sample_data[0]}_{active_sample_data[1]}_{target_crop_for_eval}"
+            current_source_id = f"sample_{active_sample_data[0]}_{active_sample_data[1]}"
             raw_input_data = active_sample_data[0]
-            target_crop_for_eval = active_sample_data[1]
+            forced_crop_hint = active_sample_data[1] if active_sample_data[1] != "Healthy" else None
             
         if current_source_id is not None:
-            # Only compute inference if source actually changes!
+            # Zero-Lag Fingerprint Caching: Only compute if source changes!
             if st.session_state.get("lv_cached_source_id") != current_source_id or "lv_cached_res" not in st.session_state:
-                with st.spinner("LeafVision Edge Model analyzing foliar specimen..."):
+                with st.spinner("LeafVision analyzing specimen and synchronizing Soil NPK + Weather telemetry..."):
                     lv_engine = leafvision_engine.get_leafvision_engine()
-                    res = lv_engine.analyze_leaf_sample(raw_input_data, target_crop_for_eval)
+                    res = lv_engine.analyze_leaf_sample(
+                        image_input=raw_input_data,
+                        forced_crop=forced_crop_hint,
+                        soil_data=soil_telemetry_pkg,
+                        weather_data=weather_telemetry_pkg,
+                        active_field_crop=crop
+                    )
                     st.session_state["lv_cached_res"] = res
                     st.session_state["lv_cached_source_id"] = current_source_id
                     
             lv_res = st.session_state.get("lv_cached_res", None)
             
             if lv_res and lv_res.get("status") == "Success":
-                col_img1, col_img2, col_dossier = st.columns([1, 1, 2])
+                col_img1, col_img2, col_dossier = st.columns([1, 1, 2.5])
                 
                 orig_img = lv_res.get("original_image")
                 heatmap_img = lv_res.get("heatmap_image")
@@ -1406,16 +1403,16 @@ def main():
                         
                 with col_img1:
                     if orig_img is not None:
-                        st.image(orig_img, caption="1. Original Field Leaf Photo", use_container_width=True)
+                        st.image(orig_img, caption="1. Field Leaf Photo", use_container_width=True)
                     else:
-                        st.info("Field Leaf Photo Loaded")
+                        st.info("Specimen Loaded")
                 with col_img2:
                     if heatmap_img is not None:
-                        st.image(heatmap_img, caption="2. LeafVision AI Lesion Segmentation Heatmap", use_container_width=True)
+                        st.image(heatmap_img, caption="2. LeafVision AI Lesion Segmentation", use_container_width=True)
                     else:
-                        st.info("Heatmap Generated")
+                        st.info("Segmentation Ready")
                 with col_dossier:
-                    st.markdown(leafvision_engine.render_leafvision_dossier_html(lv_res), unsafe_allow_html=True)
+                    st.markdown(leafvision_engine.render_unified_foliar_cockpit_html(lv_res), unsafe_allow_html=True)
             elif lv_res:
                 st.error(f"LeafVision analysis note: {lv_res.get('message')}")
         st.markdown('</div>', unsafe_allow_html=True)
