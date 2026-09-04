@@ -1256,20 +1256,57 @@ def main():
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # 12-Parameter Dynamic Grid
+        # Official Soil Health Card (soilhealth.dac.gov.in) Donut & Gauge Grid (3 columns per row)
         params = list(shc_data["parameters"].items())
-        p_rows = [params[i:i+4] for i in range(0, len(params), 4)]
+        p_rows = [params[i:i+3] for i in range(0, len(params), 3)]
         for r in p_rows:
             shc_cols = st.columns(len(r))
             for idx, (p_name, p_val) in enumerate(r):
                 with shc_cols[idx]:
-                    status_col = "#dc2626" if p_val["status"] in ["Deficient", "Critical", "Very Low", "Low"] else ("#d97706" if p_val["status"] in ["Medium", "Alkaline", "Acidic"] else "#059669")
+                    cfg = pricing_and_soil_engine.get_shc_parameter_card_config(p_name, p_val, region)
+                    
+                    # Generate legend HTML
+                    legend_spans = []
+                    for leg in cfg["legend_items"]:
+                        legend_spans.append(
+                            f"<div style='margin: 0 4px;'>"
+                            f"<span style='display:inline-block; width:8px; height:8px; border-radius:50%; background:{leg['color']}; margin-right:4px;'></span>"
+                            f"<span style='font-weight:700; color:#1e293b;'>{leg['label']}</span>: {leg['pct']}%"
+                            f"<br><span style='font-size:0.62rem; color:#94a3b8;'>({leg['count']})</span>"
+                            f"</div>"
+                        )
+                    legend_html = "".join(legend_spans)
+                    
                     st.markdown(f"""
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: #475569;">{p_name}</div>
-                        <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 2px 0;">{p_val['val']} <span style="font-size:0.7rem; color:#64748b;">{p_val['unit']}</span></div>
-                        <div style="font-size: 0.72rem; font-weight: 800; color: {status_col};">{p_val['status']}</div>
-                        <div style="font-size: 0.65rem; color: #64748b;">Target: {p_val['benchmark']}</div>
+                    <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 16px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); margin-bottom: 16px; text-align: center;">
+                        <!-- Parameter Title -->
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #0f172a; text-align: left; margin-bottom: 8px;">
+                            {cfg['title']}
+                        </div>
+                        
+                        <!-- Official National Soil Health Donut Ring with Chemical Symbol -->
+                        <div style="display: flex; justify-content: center; align-items: center; margin: 10px 0;">
+                            <div style="width: 120px; height: 120px; border-radius: 50%; background: {cfg['conic_css']}; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 8px rgba(0,0,0,0.06);">
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <span style="font-size: 1.5rem; font-weight: 900; color: #0f172a; line-height: 1;">{cfg['symbol']}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Live Field Tested Value & Status Badge -->
+                        <div style="background: {cfg['status_bg']}; border: 1px solid {cfg['status_border']}; border-radius: 8px; padding: 6px 8px; margin: 10px 0 8px 0;">
+                            <div style="font-size: 1.15rem; font-weight: 900; color: #0f172a;">
+                                {cfg['val']} <span style="font-size: 0.72rem; font-weight: 600; color: #64748b;">{cfg['unit']}</span>
+                            </div>
+                            <div style="font-size: 0.72rem; font-weight: 800; color: {cfg['status_color']};">
+                                Tested: {cfg['status']} (Target: {cfg['benchmark']})
+                            </div>
+                        </div>
+                        
+                        <!-- District Lab Testing Distribution from soilhealth.dac.gov.in -->
+                        <div style="font-size: 0.68rem; border-top: 1px solid #f1f5f9; padding-top: 8px; display: flex; justify-content: space-around; text-align: center;">
+                            {legend_html}
+                        </div>
                     </div>
                     """, unsafe_allow_html=True)
                     

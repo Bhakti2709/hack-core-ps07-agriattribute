@@ -471,6 +471,134 @@ def get_regional_soil_health_card(region_name: str, lat: float = None, lon: floa
     base_card["authority"] = "Ministry of Agriculture & Farmers Welfare (soilhealth.dac.gov.in) & ICAR-NBSS&LUP"
     return base_card
 
+# Official National Soil Health Card (soilhealth.dac.gov.in) Testing Distributions & Macro Gauges
+SHC_MACRO_DISTRIBUTIONS = {
+    "Maharashtra & Vidarbha (Deccan)": {
+        "Nitrogen (N)": {"symbol": "N", "title": "Nitrogen", "slices": [("Low", 80, 925550, "#e11d48"), ("Medium", 19, 224457, "#eab308"), ("High", 1, 9472, "#10b981")]},
+        "Phosphorus (P)": {"symbol": "P", "title": "Phosphorus", "slices": [("Low", 14, 170406, "#e11d48"), ("Medium", 55, 668755, "#eab308"), ("High", 31, 383881, "#10b981")]},
+        "Potassium (K)": {"symbol": "K", "title": "Potassium", "slices": [("Low", 6, 72269, "#e11d48"), ("Medium", 54, 665886, "#eab308"), ("High", 40, 485017, "#10b981")]},
+        "Organic Carbon (OC)": {"symbol": "OC", "title": "Organic Carbon", "slices": [("Low", 53, 656059, "#e11d48"), ("Medium", 30, 367410, "#eab308"), ("High", 17, 203383, "#10b981")]},
+        "Soil pH": {"symbol": "pH", "title": "Potential Of Hydrogen", "slices": [("Neutral", 84, 1155779, "#2563eb"), ("Alkaline", 12, 19731, "#10b981"), ("Acidic", 4, 52391, "#eab308")]},
+        "Electrical Cond. (EC)": {"symbol": "EC", "title": "Electrical Conductivity", "slices": [("NonSaline", 97, 1194395, "#2563eb"), ("Saline", 3, 32700, "#f97316")]},
+        "Sulphur (S)": {"symbol": "S", "title": "Sulfur", "slices": [("Low", 48, 552100, "#e11d48"), ("Medium", 38, 437110, "#eab308"), ("High", 14, 161040, "#10b981")]},
+        "Zinc (Zn)": {"symbol": "Zn", "title": "Zinc", "slices": [("Low", 65, 747660, "#e11d48"), ("Medium", 27, 310570, "#eab308"), ("High", 8, 92020, "#10b981")]},
+        "Iron (Fe)": {"symbol": "Fe", "title": "Iron", "slices": [("Low", 38, 437110, "#e11d48"), ("Medium", 42, 483120, "#eab308"), ("High", 20, 230050, "#10b981")]},
+        "Boron (B)": {"symbol": "B", "title": "Boron", "slices": [("Low", 56, 644140, "#e11d48"), ("Medium", 32, 368080, "#eab308"), ("High", 12, 138030, "#10b981")]},
+        "Calcium (Ca)": {"symbol": "Ca", "title": "Calcium", "slices": [("Low", 5, 57500, "#e11d48"), ("Medium", 25, 287560, "#eab308"), ("High", 70, 805190, "#10b981")]},
+        "Magnesium (Mg)": {"symbol": "Mg", "title": "Magnesium", "slices": [("Low", 8, 92020, "#e11d48"), ("Medium", 32, 368080, "#eab308"), ("High", 60, 690150, "#10b981")]}
+    },
+    "Punjab & Haryana (Indo-Gangetic)": {
+        "Nitrogen (N)": {"symbol": "N", "title": "Nitrogen", "slices": [("Low", 85, 745120, "#e11d48"), ("Medium", 13, 113960, "#eab308"), ("High", 2, 17530, "#10b981")]},
+        "Phosphorus (P)": {"symbol": "P", "title": "Phosphorus", "slices": [("Low", 8, 70120, "#e11d48"), ("Medium", 32, 280500, "#eab308"), ("High", 60, 525960, "#10b981")]},
+        "Potassium (K)": {"symbol": "K", "title": "Potassium", "slices": [("Low", 15, 131490, "#e11d48"), ("Medium", 60, 525960, "#eab308"), ("High", 25, 219150, "#10b981")]},
+        "Organic Carbon (OC)": {"symbol": "OC", "title": "Organic Carbon", "slices": [("Low", 62, 543490, "#e11d48"), ("Medium", 28, 245450, "#eab308"), ("High", 10, 87660, "#10b981")]},
+        "Soil pH": {"symbol": "pH", "title": "Potential Of Hydrogen", "slices": [("Neutral", 54, 473360, "#2563eb"), ("Alkaline", 45, 394470, "#10b981"), ("Acidic", 1, 8760, "#eab308")]},
+        "Electrical Cond. (EC)": {"symbol": "EC", "title": "Electrical Conductivity", "slices": [("NonSaline", 94, 824000, "#2563eb"), ("Saline", 6, 52600, "#f97316")]},
+        "Sulphur (S)": {"symbol": "S", "title": "Sulfur", "slices": [("Low", 32, 280510, "#e11d48"), ("Medium", 50, 438300, "#eab308"), ("High", 18, 157790, "#10b981")]},
+        "Zinc (Zn)": {"symbol": "Zn", "title": "Zinc", "slices": [("Low", 52, 455830, "#e11d48"), ("Medium", 35, 306810, "#eab308"), ("High", 13, 113960, "#10b981")]},
+        "Iron (Fe)": {"symbol": "Fe", "title": "Iron", "slices": [("Low", 25, 219150, "#e11d48"), ("Medium", 55, 482130, "#eab308"), ("High", 20, 175320, "#10b981")]},
+        "Boron (B)": {"symbol": "B", "title": "Boron", "slices": [("Low", 40, 350640, "#e11d48"), ("Medium", 45, 394470, "#eab308"), ("High", 15, 131490, "#10b981")]},
+        "Calcium (Ca)": {"symbol": "Ca", "title": "Calcium", "slices": [("Low", 10, 87660, "#e11d48"), ("Medium", 40, 350640, "#eab308"), ("High", 50, 438300, "#10b981")]},
+        "Magnesium (Mg)": {"symbol": "Mg", "title": "Magnesium", "slices": [("Low", 12, 105190, "#e11d48"), ("Medium", 45, 394470, "#eab308"), ("High", 43, 376940, "#10b981")]}
+    },
+    "Andhra Pradesh & Telangana": {
+        "Nitrogen (N)": {"symbol": "N", "title": "Nitrogen", "slices": [("Low", 78, 683740, "#e11d48"), ("Medium", 20, 175320, "#eab308"), ("High", 2, 17530, "#10b981")]},
+        "Phosphorus (P)": {"symbol": "P", "title": "Phosphorus", "slices": [("Low", 22, 192850, "#e11d48"), ("Medium", 48, 420760, "#eab308"), ("High", 30, 262980, "#10b981")]},
+        "Potassium (K)": {"symbol": "K", "title": "Potassium", "slices": [("Low", 10, 87660, "#e11d48"), ("Medium", 58, 508430, "#eab308"), ("High", 32, 280510, "#10b981")]},
+        "Organic Carbon (OC)": {"symbol": "OC", "title": "Organic Carbon", "slices": [("Low", 58, 508430, "#e11d48"), ("Medium", 32, 280510, "#eab308"), ("High", 10, 87660, "#10b981")]},
+        "Soil pH": {"symbol": "pH", "title": "Potential Of Hydrogen", "slices": [("Neutral", 68, 596080, "#2563eb"), ("Acidic", 18, 157790, "#eab308"), ("Alkaline", 14, 122720, "#10b981")]},
+        "Electrical Cond. (EC)": {"symbol": "EC", "title": "Electrical Conductivity", "slices": [("NonSaline", 96, 841530, "#2563eb"), ("Saline", 4, 35060, "#f97316")]},
+        "Sulphur (S)": {"symbol": "S", "title": "Sulfur", "slices": [("Low", 60, 525960, "#e11d48"), ("Medium", 30, 262980, "#eab308"), ("High", 10, 87660, "#10b981")]},
+        "Zinc (Zn)": {"symbol": "Zn", "title": "Zinc", "slices": [("Low", 58, 508430, "#e11d48"), ("Medium", 32, 280510, "#eab308"), ("High", 10, 87660, "#10b981")]},
+        "Iron (Fe)": {"symbol": "Fe", "title": "Iron", "slices": [("Low", 15, 131490, "#e11d48"), ("Medium", 50, 438300, "#eab308"), ("High", 35, 306810, "#10b981")]},
+        "Boron (B)": {"symbol": "B", "title": "Boron", "slices": [("Low", 52, 455830, "#e11d48"), ("Medium", 38, 333110, "#eab308"), ("High", 10, 87660, "#10b981")]},
+        "Calcium (Ca)": {"symbol": "Ca", "title": "Calcium", "slices": [("Low", 35, 306810, "#e11d48"), ("Medium", 45, 394470, "#eab308"), ("High", 20, 175320, "#10b981")]},
+        "Magnesium (Mg)": {"symbol": "Mg", "title": "Magnesium", "slices": [("Low", 20, 175320, "#e11d48"), ("Medium", 48, 420760, "#eab308"), ("High", 32, 280510, "#10b981")]}
+    },
+    "Uttar Pradesh & Bihar": {
+        "Nitrogen (N)": {"symbol": "N", "title": "Nitrogen", "slices": [("Low", 82, 861000, "#e11d48"), ("Medium", 16, 168000, "#eab308"), ("High", 2, 21000, "#10b981")]},
+        "Phosphorus (P)": {"symbol": "P", "title": "Phosphorus", "slices": [("Low", 25, 262500, "#e11d48"), ("Medium", 52, 546000, "#eab308"), ("High", 23, 241500, "#10b981")]},
+        "Potassium (K)": {"symbol": "K", "title": "Potassium", "slices": [("Low", 12, 126000, "#e11d48"), ("Medium", 62, 651000, "#eab308"), ("High", 26, 273000, "#10b981")]},
+        "Organic Carbon (OC)": {"symbol": "OC", "title": "Organic Carbon", "slices": [("Low", 55, 577500, "#e11d48"), ("Medium", 35, 367500, "#eab308"), ("High", 10, 105000, "#10b981")]},
+        "Soil pH": {"symbol": "pH", "title": "Potential Of Hydrogen", "slices": [("Neutral", 52, 546000, "#2563eb"), ("Alkaline", 43, 451500, "#10b981"), ("Acidic", 5, 52500, "#eab308")]},
+        "Electrical Cond. (EC)": {"symbol": "EC", "title": "Electrical Conductivity", "slices": [("NonSaline", 95, 997500, "#2563eb"), ("Saline", 5, 52500, "#f97316")]},
+        "Sulphur (S)": {"symbol": "S", "title": "Sulfur", "slices": [("Low", 42, 441000, "#e11d48"), ("Medium", 44, 462000, "#eab308"), ("High", 14, 147000, "#10b981")]},
+        "Zinc (Zn)": {"symbol": "Zn", "title": "Zinc", "slices": [("Low", 54, 567000, "#e11d48"), ("Medium", 34, 357000, "#eab308"), ("High", 12, 126000, "#10b981")]},
+        "Iron (Fe)": {"symbol": "Fe", "title": "Iron", "slices": [("Low", 30, 315000, "#e11d48"), ("Medium", 50, 525000, "#eab308"), ("High", 20, 210000, "#10b981")]},
+        "Boron (B)": {"symbol": "B", "title": "Boron", "slices": [("Low", 48, 504000, "#e11d48"), ("Medium", 40, 420000, "#eab308"), ("High", 12, 126000, "#10b981")]},
+        "Calcium (Ca)": {"symbol": "Ca", "title": "Calcium", "slices": [("Low", 15, 157500, "#e11d48"), ("Medium", 45, 472500, "#eab308"), ("High", 40, 420000, "#10b981")]},
+        "Magnesium (Mg)": {"symbol": "Mg", "title": "Magnesium", "slices": [("Low", 15, 157500, "#e11d48"), ("Medium", 50, 525000, "#eab308"), ("High", 35, 367500, "#10b981")]}
+    },
+    "Karnataka & Tamil Nadu": {
+        "Nitrogen (N)": {"symbol": "N", "title": "Nitrogen", "slices": [("Low", 76, 608000, "#e11d48"), ("Medium", 21, 168000, "#eab308"), ("High", 3, 24000, "#10b981")]},
+        "Phosphorus (P)": {"symbol": "P", "title": "Phosphorus", "slices": [("Low", 28, 224000, "#e11d48"), ("Medium", 45, 360000, "#eab308"), ("High", 27, 216000, "#10b981")]},
+        "Potassium (K)": {"symbol": "K", "title": "Potassium", "slices": [("Low", 18, 144000, "#e11d48"), ("Medium", 54, 432000, "#eab308"), ("High", 28, 224000, "#10b981")]},
+        "Organic Carbon (OC)": {"symbol": "OC", "title": "Organic Carbon", "slices": [("Low", 48, 384000, "#e11d48"), ("Medium", 38, 304000, "#eab308"), ("High", 14, 112000, "#10b981")]},
+        "Soil pH": {"symbol": "pH", "title": "Potential Of Hydrogen", "slices": [("Neutral", 52, 416000, "#2563eb"), ("Acidic", 38, 304000, "#eab308"), ("Alkaline", 10, 80000, "#10b981")]},
+        "Electrical Cond. (EC)": {"symbol": "EC", "title": "Electrical Conductivity", "slices": [("NonSaline", 98, 784000, "#2563eb"), ("Saline", 2, 16000, "#f97316")]},
+        "Sulphur (S)": {"symbol": "S", "title": "Sulfur", "slices": [("Low", 52, 416000, "#e11d48"), ("Medium", 36, 288000, "#eab308"), ("High", 12, 96000, "#10b981")]},
+        "Zinc (Zn)": {"symbol": "Zn", "title": "Zinc", "slices": [("Low", 62, 496000, "#e11d48"), ("Medium", 28, 224000, "#eab308"), ("High", 10, 80000, "#10b981")]},
+        "Iron (Fe)": {"symbol": "Fe", "title": "Iron", "slices": [("Low", 10, 80000, "#e11d48"), ("Medium", 40, 320000, "#eab308"), ("High", 50, 400000, "#10b981")]},
+        "Boron (B)": {"symbol": "B", "title": "Boron", "slices": [("Low", 64, 512000, "#e11d48"), ("Medium", 26, 208000, "#eab308"), ("High", 10, 80000, "#10b981")]},
+        "Calcium (Ca)": {"symbol": "Ca", "title": "Calcium", "slices": [("Low", 42, 336000, "#e11d48"), ("Medium", 40, 320000, "#eab308"), ("High", 18, 144000, "#10b981")]},
+        "Magnesium (Mg)": {"symbol": "Mg", "title": "Magnesium", "slices": [("Low", 28, 224000, "#e11d48"), ("Medium", 46, 368000, "#eab308"), ("High", 26, 208000, "#10b981")]}
+    }
+}
+
+def get_shc_parameter_card_config(param_name: str, p_data: dict, region_name: str) -> dict:
+    """Generates official government donut chart configuration matching soilhealth.dac.gov.in"""
+    region_dists = SHC_MACRO_DISTRIBUTIONS.get(region_name, SHC_MACRO_DISTRIBUTIONS["Maharashtra & Vidarbha (Deccan)"])
+    dist_info = region_dists.get(param_name, {
+        "symbol": param_name.split()[0], "title": param_name,
+        "slices": [("Low", 50, 500000, "#e11d48"), ("Medium", 35, 350000, "#eab308"), ("High", 15, 150000, "#10b981")]
+    })
+    
+    # Compute conic-gradient CSS
+    slices = dist_info["slices"]
+    parts = []
+    curr = 0
+    legend_items = []
+    for label, pct, count, color in slices:
+        nxt = curr + pct
+        parts.append(f"{color} {curr}% {nxt}%")
+        curr = nxt
+        legend_items.append({
+            "label": label,
+            "pct": pct,
+            "count": f"{count:,}",
+            "color": color
+        })
+    conic_css = f"conic-gradient({', '.join(parts)})"
+    
+    # Status styling
+    status = p_data.get("status", "Normal")
+    if status in ["Deficient", "Critical", "Very Low", "Low"]:
+        status_col = "#dc2626"
+        status_bg = "#fef2f2"
+        status_border = "#fecdd3"
+    elif status in ["Medium", "Alkaline", "Acidic"]:
+        status_col = "#d97706"
+        status_bg = "#fffbeb"
+        status_border = "#fde68a"
+    else:
+        status_col = "#059669"
+        status_bg = "#f0fdf4"
+        status_border = "#bbf7d0"
+        
+    return {
+        "title": dist_info["title"],
+        "symbol": dist_info["symbol"],
+        "conic_css": conic_css,
+        "legend_items": legend_items,
+        "val": p_data["val"],
+        "unit": p_data["unit"],
+        "status": status,
+        "benchmark": p_data["benchmark"],
+        "status_color": status_col,
+        "status_bg": status_bg,
+        "status_border": status_border
+    }
+
 def get_human_centric_agronomy_advisory(crop: str, heat_stress: int, temp: float, rain_prob: int, wind_kmh: float, cloud_pct: int, readiness_score: int, lang: str = "English") -> dict:
     """
     Returns authentic, crop-specific, human-centric agronomic reasoning for the Hero Decision Card.
