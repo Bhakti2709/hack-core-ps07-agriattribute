@@ -365,48 +365,99 @@ def build_growth_divergence_timeline(days=120, base_yield=24.0, bio_boost=3.8, h
 
 
 
-def inject_adaptive_typography(device_mode):
-    if "Mobile" in device_mode:
-        css = """
-        <style>
-            /* ─── 📱 MOBILE / FARMER ACCESSIBILITY MODE: ULTRA-READABLE FONT ─── */
+@st.cache_data
+def get_base64_image(image_path):
+    import base64
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    return ""
+
+
+def inject_responsive_typography():
+    css = """
+    <style>
+        /* ─── AUTOMATIC ZERO-CLICK RESPONSIVE TYPOGRAPHY & ACCESSIBILITY ─── */
+        /* Enhanced soothing font scale and high contrast to eliminate eye fatigue */
+
+        /* Desktop and Laptop View (Default) */
+        html, body, .stApp {
+            font-size: 18px !important;
+            line-height: 1.70 !important;
+            color: #0f172a !important;
+        }
+        p, span, label, .stMarkdown, .stText {
+            font-size: 1.08rem !important;
+            color: #0f172a !important;
+        }
+        h1 { font-size: 2.35rem !important; font-weight: 900 !important; color: #064e3b !important; }
+        h2 { font-size: 1.90rem !important; font-weight: 800 !important; color: #064e3b !important; }
+        h3, .stSubheader { font-size: 1.55rem !important; font-weight: 800 !important; color: #064e3b !important; }
+        h4 { font-size: 1.30rem !important; font-weight: 700 !important; color: #0f172a !important; }
+        
+        /* High-contrast decision and reasoning boxes */
+        .why-box {
+            font-size: 1.12rem !important;
+            padding: 22px 26px !important;
+            line-height: 1.78 !important;
+            background: #ffffff !important;
+            border: 2px solid #bbf7d0 !important;
+        }
+        .why-box * {
+            font-size: 1.08rem !important;
+            line-height: 1.74 !important;
+        }
+        .decision-verdict {
+            font-size: 2.25rem !important;
+            font-weight: 900 !important;
+        }
+        .benefit-card, .benefit-card * {
+            font-size: 1.10rem !important;
+        }
+
+        /* Large touch-friendly tabs (Default Desktop: 56px) */
+        .stTabs [data-baseweb="tab"],
+        button[role="tab"] {
+            min-height: 56px !important;
+            font-size: 1.12rem !important;
+            padding: 12px 24px !important;
+            font-weight: 800 !important;
+        }
+        .stTabs [data-baseweb="tab"] *,
+        button[role="tab"] * {
+            font-size: 1.12rem !important;
+            font-weight: 800 !important;
+        }
+
+        /* Prominent, comfortable click targets (Default Desktop: 52px) */
+        .stButton > button {
+            min-height: 52px !important;
+            font-size: 1.08rem !important;
+            font-weight: 750 !important;
+            border-radius: 10px !important;
+        }
+
+        /* Mobile Automatic Override (max-width: 768px): 18.5px text, 56px buttons, 60px tabs */
+        @media (max-width: 768px) {
             html, body, .stApp {
                 font-size: 18.5px !important;
-                line-height: 1.75 !important;
+                line-height: 1.76 !important;
             }
-            p, span, label, .stMarkdown, .stText, div {
-                font-size: 1.10rem !important;
+            p, span, label, .stMarkdown, .stText {
+                font-size: 1.12rem !important;
                 color: #0f172a !important;
             }
-            h1 { font-size: 2.35rem !important; font-weight: 900 !important; color: #064e3b !important; }
-            h2 { font-size: 1.85rem !important; font-weight: 800 !important; color: #064e3b !important; }
-            h3, .stSubheader { font-size: 1.55rem !important; font-weight: 800 !important; color: #064e3b !important; }
-            h4 { font-size: 1.35rem !important; font-weight: 700 !important; color: #0f172a !important; }
+            h1 { font-size: 2.25rem !important; font-weight: 900 !important; }
+            h2 { font-size: 1.85rem !important; font-weight: 800 !important; }
+            h3, .stSubheader { font-size: 1.55rem !important; font-weight: 800 !important; }
+            h4 { font-size: 1.32rem !important; font-weight: 700 !important; }
             
-            /* High-legibility why box & benefits */
-            .why-box {
-                font-size: 1.15rem !important;
-                padding: 20px 24px !important;
-                line-height: 1.8 !important;
-            }
-            .why-box * {
-                font-size: 1.10rem !important;
-                line-height: 1.75 !important;
-            }
-            .decision-verdict {
-                font-size: 2.25rem !important;
-                font-weight: 900 !important;
-            }
-            .benefit-card, .benefit-card * {
-                font-size: 1.12rem !important;
-            }
-            
-            /* Large Touch-Friendly Navigation Tabs */
+            /* Large 60px Touch Tabs for Mobile */
             .stTabs [data-baseweb="tab"],
             button[role="tab"] {
                 min-height: 60px !important;
                 font-size: 1.18rem !important;
-                padding: 14px 26px !important;
+                padding: 14px 22px !important;
                 font-weight: 800 !important;
             }
             .stTabs [data-baseweb="tab"] *,
@@ -415,111 +466,56 @@ def inject_adaptive_typography(device_mode):
                 font-weight: 800 !important;
             }
             
-            /* Large Touch Buttons */
+            /* Large 56px Touch Buttons for Mobile */
             .stButton > button {
                 min-height: 56px !important;
                 font-size: 1.15rem !important;
                 font-weight: 800 !important;
-                padding: 14px 24px !important;
+                padding: 14px 22px !important;
             }
             
-            /* Weather Cards Large */
-            .weather-card {
-                padding: 18px 12px !important;
+            .why-box {
+                font-size: 1.16rem !important;
+                padding: 20px 22px !important;
+                line-height: 1.80 !important;
             }
-            .weather-card * {
-                font-size: 1.10rem !important;
+            .why-box * {
+                font-size: 1.12rem !important;
+                line-height: 1.75 !important;
             }
-            
-            /* WhatsApp Button Big */
             .wa-button {
                 font-size: 1.25rem !important;
                 padding: 16px 28px !important;
                 min-height: 56px !important;
             }
-        </style>
-        """
-    elif "Tablet" in device_mode:
-        css = """
-        <style>
-            /* ─── 📟 TABLET MODE: BALANCED TOUCH COMFORT ─── */
+        }
+
+        /* Tablet View (769px to 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
             html, body, .stApp {
-                font-size: 17px !important;
-                line-height: 1.68 !important;
+                font-size: 18px !important;
             }
-            p, span, label, .stMarkdown, .stText, div {
-                font-size: 1.05rem !important;
-                color: #0f172a !important;
+            .stTabs [data-baseweb="tab"], button[role="tab"] {
+                min-height: 58px !important;
+                font-size: 1.14rem !important;
             }
-            h1 { font-size: 2.15rem !important; font-weight: 900 !important; }
-            h2 { font-size: 1.70rem !important; font-weight: 800 !important; }
-            h3, .stSubheader { font-size: 1.40rem !important; font-weight: 800 !important; }
-            h4 { font-size: 1.22rem !important; font-weight: 700 !important; }
-            .why-box, .why-box * {
-                font-size: 1.05rem !important;
-                line-height: 1.7 !important;
-            }
-            .stTabs [data-baseweb="tab"],
-            button[role="tab"] {
+            .stButton > button {
                 min-height: 54px !important;
                 font-size: 1.10rem !important;
-                padding: 12px 22px !important;
             }
-            .stTabs [data-baseweb="tab"] *,
-            button[role="tab"] * {
-                font-size: 1.10rem !important;
-            }
-            .stButton > button {
-                min-height: 50px !important;
-                font-size: 1.08rem !important;
-            }
-            .weather-card * {
-                font-size: 1.02rem !important;
-            }
-        </style>
-        """
-    else:
-        css = """
-        <style>
-            /* ─── 💻 LAPTOP / DESKTOP MODE: CRISP PROPORTIONAL ─── */
-            html, body, .stApp {
-                font-size: 16px !important;
-                line-height: 1.62 !important;
-            }
-            p, span, label, .stMarkdown, .stText, div {
-                font-size: 1.00rem !important;
-                color: #1e293b !important;
-            }
-            h1 { font-size: 2.05rem !important; font-weight: 900 !important; }
-            h2 { font-size: 1.60rem !important; font-weight: 800 !important; }
-            h3, .stSubheader { font-size: 1.35rem !important; font-weight: 800 !important; }
-            h4 { font-size: 1.18rem !important; font-weight: 700 !important; }
-            .stTabs [data-baseweb="tab"],
-            button[role="tab"] {
-                min-height: 52px !important;
-                font-size: 1.05rem !important;
-                padding: 12px 20px !important;
-            }
-            .stTabs [data-baseweb="tab"] *,
-            button[role="tab"] * {
-                font-size: 1.05rem !important;
-            }
-            .stButton > button {
-                min-height: 48px !important;
-                font-size: 1.00rem !important;
-            }
-        </style>
-        """
+        }
+    </style>
+    """
     st.markdown(css, unsafe_allow_html=True)
+
 
 def main():
     if 's_dosage' not in st.session_state: st.session_state.s_dosage = 2.0
     if 'selected_lang' not in st.session_state: st.session_state.selected_lang = "English"
-    if 'device_view_mode' not in st.session_state: st.session_state.device_view_mode = "📱 Mobile Phone (बड़ा फ़ॉन्ट / Large Font)"
     if 'chat_history' not in st.session_state: st.session_state.chat_history = []
     
-    # 📱 Apply Adaptive Device Typography Engine
-    inject_adaptive_typography(st.session_state.device_view_mode)
+    # 📱 Apply Automatic Responsive Typography Engine
+    inject_responsive_typography()
     
     model, artifacts = load_ml_pipeline()
     
@@ -532,29 +528,9 @@ def main():
         hdr_col1, hdr_col2 = st.columns([3.6, 1.4])
         
         with hdr_col2:
-            # 📱 Device View Selector (Mobile / Desktop / Tablet)
+            # 🌐 Central Language Selector & Synchronized Display Status
             st.markdown(f"""
             <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05); margin-bottom: 6px;">
-                <div style="font-size: 0.80rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 1.15rem;">📱</span>
-                    <span>Device View / डिवाइस मोड:</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            device_mode_options = [
-                "📱 Mobile Phone (बड़ा फ़ॉन्ट / Large Font)",
-                "💻 Laptop / Desktop (Standard View)",
-                "📟 Tablet Mode (Comfort View)"
-            ]
-            cur_dev_idx = device_mode_options.index(st.session_state.device_view_mode) if st.session_state.device_view_mode in device_mode_options else 0
-            new_dev_mode = st.selectbox("Device View Mode", device_mode_options, index=cur_dev_idx, label_visibility="collapsed", key="global_top_device_selector")
-            if new_dev_mode != st.session_state.device_view_mode:
-                st.session_state.device_view_mode = new_dev_mode
-                st.rerun()
-
-            # 🌐 Language Selector (Directly Below Device View)
-            st.markdown(f"""
-            <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05); margin-top: 6px; margin-bottom: 4px;">
                 <div style="font-size: 0.80rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
                     <span style="font-size: 1.15rem;">🌐</span>
                     <span>{t('sidebar_lang_title', lang)}</span>
@@ -566,11 +542,10 @@ def main():
                 st.session_state.selected_lang = new_lang
                 st.rerun()
 
-            dev_label = "Mobile Large" if "Mobile" in st.session_state.device_view_mode else ("Tablet" if "Tablet" in st.session_state.device_view_mode else "Desktop")
             st.markdown(f"""
-            <div style="font-size: 0.78rem; color: #475569; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 0 4px;">
-                <span>View: <strong style="color: #047857;">{dev_label}</strong></span>
-                <span style="color: #047857; font-weight: 700;">● Active</span>
+            <div style="font-size: 0.80rem; color: #475569; display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 0 4px;">
+                <span>📱 Auto-Responsive: <strong style="color: #047857;">Active</strong></span>
+                <span style="color: #047857; font-weight: 700;">● 100% Synced</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -592,8 +567,8 @@ def main():
                     {t('subtitle', lang)}
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 6px; flex-wrap: wrap; gap: 10px;">
-                    <div style="font-size: 0.82rem; color: #334155; font-weight: 600;">
-                        <strong style="color: #0f172a;">Team 15:</strong> Soham P. Kadu (Lead), Singireddy Prabhumitrareddy, Bhakti A. Kadam
+                    <div style="font-size: 0.84rem; color: #047857; font-weight: 750;">
+                        🌱 Multi-Agro-Climatic Intelligence Platform
                     </div>
                     <div style="display: flex; align-items: center; gap: 14px; font-size: 0.78rem; font-weight: 600; color: #475569;">
                         <span style="color: #047857; display: inline-flex; align-items: center; gap: 5px;">
@@ -612,6 +587,110 @@ def main():
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+    # 🌟 CORE ACCESSIBILITY FEATURE NAVIGATION DECK (Direct Click-to-Tab)
+    tab_keys = ["tab_decision", "tab_counter", "tab_disease", "tab_memory", "tab_prove", "tab_ai"]
+    tab_labels = [t(k, lang) for k in tab_keys]
+
+    if 'active_tab_idx' not in st.session_state:
+        st.session_state.active_tab_idx = 0
+    if not (0 <= st.session_state.active_tab_idx < len(tab_labels)):
+        st.session_state.active_tab_idx = 0
+
+    if 'tab_selector' not in st.session_state or st.session_state.tab_selector not in tab_labels:
+        st.session_state.tab_selector = tab_labels[st.session_state.active_tab_idx]
+
+    feature_meta = [
+        {
+            "img": "assets/features/feature_1_decision.jpg",
+            "title": t("feat1_title", lang),
+            "sub": t("feat1_sub", lang),
+            "icon": "🌦️",
+            "badge": "Radar & Weather"
+        },
+        {
+            "img": "assets/features/feature_2_dosage.jpg",
+            "title": t("feat2_title", lang),
+            "sub": t("feat2_sub", lang),
+            "icon": "⚖️",
+            "badge": "Yield & ROI"
+        },
+        {
+            "img": "assets/features/feature_3_disease.jpg",
+            "title": t("feat3_title", lang),
+            "sub": t("feat3_sub", lang),
+            "icon": "🩺",
+            "badge": "LeafVision AI"
+        },
+        {
+            "img": "assets/features/feature_4_memory.jpg",
+            "title": t("feat4_title", lang),
+            "sub": t("feat4_sub", lang),
+            "icon": "📖",
+            "badge": "Farm Memory"
+        },
+        {
+            "img": "assets/features/feature_5_proof.jpg",
+            "title": t("feat5_title", lang),
+            "sub": t("feat5_sub", lang),
+            "icon": "📊",
+            "badge": "SHAP Proof"
+        },
+        {
+            "img": "assets/features/feature_6_ai.jpg",
+            "title": t("feat6_title", lang),
+            "sub": t("feat6_sub", lang),
+            "icon": "💬",
+            "badge": "Kisan AI"
+        }
+    ]
+
+    with st.container(border=True):
+        st.markdown(f"""
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <div style="font-size: 1.25rem; font-weight: 900; color: #064e3b; display: flex; align-items: center; gap: 8px;">
+                    {t('nav_deck_title', lang)}
+                </div>
+                <div style="font-size: 0.92rem; color: #475569; font-weight: 600; margin-top: 2px;">
+                    {t('nav_deck_caption', lang)}
+                </div>
+            </div>
+            <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-weight: 800; color: #047857;">
+                {t('nav_deck_badge', lang)}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        f_cols = st.columns(6)
+        for f_idx, feat in enumerate(feature_meta):
+            is_active = (st.session_state.active_tab_idx == f_idx)
+            with f_cols[f_idx]:
+                card_border = "3px solid #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.25);" if is_active else "1.5px solid #cbd5e1;"
+                bg_style = "background: #f0fdf4;" if is_active else "background: #ffffff;"
+                status_pill = f"<span style='background: #059669; color: white; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 10px;'>{t('nav_active_btn', lang)}</span>" if is_active else f"<span style='background: #e2e8f0; color: #334155; font-size: 0.70rem; font-weight: 700; padding: 2px 6px; border-radius: 8px;'>{feat['badge']}</span>"
+                b64_img = get_base64_image(feat['img'])
+                
+                st.markdown(f"""
+                <div style="border-radius: 12px; border: {card_border}; {bg_style} overflow: hidden; margin-bottom: 8px;">
+                    <img src="data:image/jpeg;base64,{b64_img}" alt="{feat['title']}" style="width: 100%; height: 95px; object-fit: cover; display: block;" />
+                    <div style="padding: 8px 6px; text-align: center;">
+                        <div style="display: flex; justify-content: center; margin-bottom: 4px;">{status_pill}</div>
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #0f172a; line-height: 1.25; min-height: 38px; display: flex; align-items: center; justify-content: center;">
+                            {feat['icon']} {feat['title']}
+                        </div>
+                        <div style="font-size: 0.75rem; color: #475569; font-weight: 600; line-height: 1.2; margin-top: 2px; min-height: 28px;">
+                            {feat['sub']}
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                btn_label = f"✅ {feat['title']}" if is_active else f"👉 {t('nav_open_btn', lang)}"
+                if st.button(btn_label, key=f"nav_card_btn_{f_idx}", use_container_width=True):
+                    st.session_state.active_tab_idx = f_idx
+                    st.session_state.tab_selector = tab_labels[f_idx]
+                    st.rerun()
 
     # URL Query Sync for Farm GPS & Location
     qp = st.query_params
@@ -1159,15 +1238,26 @@ def main():
             st.markdown(sources_algo_html, unsafe_allow_html=True)
         
 
-    # HUMAN-CENTRIC NAVIGATION TABS (100% Localized)
-    tab_decision, tab_counter, tab_disease, tab_memory, tab_prove, tab_ai = st.tabs([
-        t("tab_decision", lang),
-        t("tab_counter", lang),
-        t("tab_disease", lang),
-        t("tab_memory", lang),
-        t("tab_prove", lang),
-        t("tab_ai", lang)
-    ])
+    # HUMAN-CENTRIC NAVIGATION TABS (100% Localized & Synchronized)
+    tab_keys = ["tab_decision", "tab_counter", "tab_disease", "tab_memory", "tab_prove", "tab_ai"]
+    tab_labels = [t(k, lang) for k in tab_keys]
+
+    if 'active_tab_idx' not in st.session_state:
+        st.session_state.active_tab_idx = 0
+    if not (0 <= st.session_state.active_tab_idx < len(tab_labels)):
+        st.session_state.active_tab_idx = 0
+
+    if 'tab_selector' not in st.session_state or st.session_state.tab_selector not in tab_labels:
+        st.session_state.tab_selector = tab_labels[st.session_state.active_tab_idx]
+
+    st.markdown('<div id="platform_main_tabs"></div>', unsafe_allow_html=True)
+    tab_decision, tab_counter, tab_disease, tab_memory, tab_prove, tab_ai = st.tabs(
+        tab_labels,
+        key="tab_selector",
+        on_change="rerun"
+    )
+    if st.session_state.tab_selector in tab_labels:
+        st.session_state.active_tab_idx = tab_labels.index(st.session_state.tab_selector)
 
     # TAB 1: TODAY'S DECISION & WEATHER + WHATSAPP SHARE
     with tab_decision:
@@ -2004,7 +2094,7 @@ def main():
 
             wa_text = (
                 f"*AgriAttribute AI — Verified Harvest Report*\n"
-                f"Powered by Syngenta Biologicals x ANNAM.AI (PS-07, Team 15)\n"
+                f"Powered by Syngenta Biologicals x ANNAM.AI (Hack Core PS-07)\n"
                 f"{'─'*32}\n\n"
                 f"*Crop:* {localized_active_crop}\n"
                 f"*Region:* {localized_reg}\n"
