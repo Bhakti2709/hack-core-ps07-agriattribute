@@ -360,10 +360,162 @@ def build_growth_divergence_timeline(days=120, base_yield=24.0, bio_boost=3.8, h
     return fig
 
 
+
+def inject_adaptive_typography(device_mode):
+    if "Mobile" in device_mode:
+        css = """
+        <style>
+            /* ─── 📱 MOBILE / FARMER ACCESSIBILITY MODE: ULTRA-READABLE FONT ─── */
+            html, body, .stApp {
+                font-size: 18.5px !important;
+                line-height: 1.75 !important;
+            }
+            p, span, label, .stMarkdown, .stText, div {
+                font-size: 1.10rem !important;
+                color: #0f172a !important;
+            }
+            h1 { font-size: 2.35rem !important; font-weight: 900 !important; color: #064e3b !important; }
+            h2 { font-size: 1.85rem !important; font-weight: 800 !important; color: #064e3b !important; }
+            h3, .stSubheader { font-size: 1.55rem !important; font-weight: 800 !important; color: #064e3b !important; }
+            h4 { font-size: 1.35rem !important; font-weight: 700 !important; color: #0f172a !important; }
+            
+            /* High-legibility why box & benefits */
+            .why-box {
+                font-size: 1.15rem !important;
+                padding: 20px 24px !important;
+                line-height: 1.8 !important;
+            }
+            .why-box * {
+                font-size: 1.10rem !important;
+                line-height: 1.75 !important;
+            }
+            .decision-verdict {
+                font-size: 2.25rem !important;
+                font-weight: 900 !important;
+            }
+            .benefit-card, .benefit-card * {
+                font-size: 1.12rem !important;
+            }
+            
+            /* Large Touch-Friendly Navigation Tabs */
+            .stTabs [data-baseweb="tab"],
+            button[role="tab"] {
+                min-height: 60px !important;
+                font-size: 1.18rem !important;
+                padding: 14px 26px !important;
+                font-weight: 800 !important;
+            }
+            .stTabs [data-baseweb="tab"] *,
+            button[role="tab"] * {
+                font-size: 1.18rem !important;
+                font-weight: 800 !important;
+            }
+            
+            /* Large Touch Buttons */
+            .stButton > button {
+                min-height: 56px !important;
+                font-size: 1.15rem !important;
+                font-weight: 800 !important;
+                padding: 14px 24px !important;
+            }
+            
+            /* Weather Cards Large */
+            .weather-card {
+                padding: 18px 12px !important;
+            }
+            .weather-card * {
+                font-size: 1.10rem !important;
+            }
+            
+            /* WhatsApp Button Big */
+            .wa-button {
+                font-size: 1.25rem !important;
+                padding: 16px 28px !important;
+                min-height: 56px !important;
+            }
+        </style>
+        """
+    elif "Tablet" in device_mode:
+        css = """
+        <style>
+            /* ─── 📟 TABLET MODE: BALANCED TOUCH COMFORT ─── */
+            html, body, .stApp {
+                font-size: 17px !important;
+                line-height: 1.68 !important;
+            }
+            p, span, label, .stMarkdown, .stText, div {
+                font-size: 1.05rem !important;
+                color: #0f172a !important;
+            }
+            h1 { font-size: 2.15rem !important; font-weight: 900 !important; }
+            h2 { font-size: 1.70rem !important; font-weight: 800 !important; }
+            h3, .stSubheader { font-size: 1.40rem !important; font-weight: 800 !important; }
+            h4 { font-size: 1.22rem !important; font-weight: 700 !important; }
+            .why-box, .why-box * {
+                font-size: 1.05rem !important;
+                line-height: 1.7 !important;
+            }
+            .stTabs [data-baseweb="tab"],
+            button[role="tab"] {
+                min-height: 54px !important;
+                font-size: 1.10rem !important;
+                padding: 12px 22px !important;
+            }
+            .stTabs [data-baseweb="tab"] *,
+            button[role="tab"] * {
+                font-size: 1.10rem !important;
+            }
+            .stButton > button {
+                min-height: 50px !important;
+                font-size: 1.08rem !important;
+            }
+            .weather-card * {
+                font-size: 1.02rem !important;
+            }
+        </style>
+        """
+    else:
+        css = """
+        <style>
+            /* ─── 💻 LAPTOP / DESKTOP MODE: CRISP PROPORTIONAL ─── */
+            html, body, .stApp {
+                font-size: 16px !important;
+                line-height: 1.62 !important;
+            }
+            p, span, label, .stMarkdown, .stText, div {
+                font-size: 1.00rem !important;
+                color: #1e293b !important;
+            }
+            h1 { font-size: 2.05rem !important; font-weight: 900 !important; }
+            h2 { font-size: 1.60rem !important; font-weight: 800 !important; }
+            h3, .stSubheader { font-size: 1.35rem !important; font-weight: 800 !important; }
+            h4 { font-size: 1.18rem !important; font-weight: 700 !important; }
+            .stTabs [data-baseweb="tab"],
+            button[role="tab"] {
+                min-height: 52px !important;
+                font-size: 1.05rem !important;
+                padding: 12px 20px !important;
+            }
+            .stTabs [data-baseweb="tab"] *,
+            button[role="tab"] * {
+                font-size: 1.05rem !important;
+            }
+            .stButton > button {
+                min-height: 48px !important;
+                font-size: 1.00rem !important;
+            }
+        </style>
+        """
+    st.markdown(css, unsafe_allow_html=True)
+
 def main():
     if 's_dosage' not in st.session_state: st.session_state.s_dosage = 2.0
     if 'selected_lang' not in st.session_state: st.session_state.selected_lang = "English"
+    if 'device_view_mode' not in st.session_state: st.session_state.device_view_mode = "📱 Mobile Phone (बड़ा फ़ॉन्ट / Large Font)"
     if 'chat_history' not in st.session_state: st.session_state.chat_history = []
+    
+    # 📱 Apply Adaptive Device Typography Engine
+    inject_adaptive_typography(st.session_state.device_view_mode)
     
     model, artifacts = load_ml_pipeline()
     
@@ -376,10 +528,31 @@ def main():
         hdr_col1, hdr_col2 = st.columns([3.6, 1.4])
         
         with hdr_col2:
+            # 📱 Device View Selector (Mobile / Desktop / Tablet)
             st.markdown(f"""
-            <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05);">
-                <div style="font-size: 0.76rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 1.05rem;">🌐</span>
+            <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05); margin-bottom: 6px;">
+                <div style="font-size: 0.80rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 1.15rem;">📱</span>
+                    <span>Device View / डिवाइस मोड:</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            device_mode_options = [
+                "📱 Mobile Phone (बड़ा फ़ॉन्ट / Large Font)",
+                "💻 Laptop / Desktop (Standard View)",
+                "📟 Tablet Mode (Comfort View)"
+            ]
+            cur_dev_idx = device_mode_options.index(st.session_state.device_view_mode) if st.session_state.device_view_mode in device_mode_options else 0
+            new_dev_mode = st.selectbox("Device View Mode", device_mode_options, index=cur_dev_idx, label_visibility="collapsed", key="global_top_device_selector")
+            if new_dev_mode != st.session_state.device_view_mode:
+                st.session_state.device_view_mode = new_dev_mode
+                st.rerun()
+
+            # 🌐 Language Selector (Directly Below Device View)
+            st.markdown(f"""
+            <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05); margin-top: 6px; margin-bottom: 4px;">
+                <div style="font-size: 0.80rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 1.15rem;">🌐</span>
                     <span>{t('sidebar_lang_title', lang)}</span>
                 </div>
             </div>
@@ -388,10 +561,12 @@ def main():
             if new_lang != st.session_state.selected_lang:
                 st.session_state.selected_lang = new_lang
                 st.rerun()
-            st.markdown("""
-            <div style="font-size: 0.72rem; color: #64748b; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 0 4px;">
-                <span>System Mode: <strong>Full-Width Clean</strong></span>
-                <span style="color: #047857; font-weight: 700;">● Online</span>
+
+            dev_label = "Mobile Large" if "Mobile" in st.session_state.device_view_mode else ("Tablet" if "Tablet" in st.session_state.device_view_mode else "Desktop")
+            st.markdown(f"""
+            <div style="font-size: 0.78rem; color: #475569; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 0 4px;">
+                <span>View: <strong style="color: #047857;">{dev_label}</strong></span>
+                <span style="color: #047857; font-weight: 700;">● Active</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -595,26 +770,26 @@ def main():
             mandi_tag_text = f"🔴 -₹{abs(c_delta):,.0f} < MSP"
             
         border_style = "2.5px solid #059669; background: #ecfdf5; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2);" if is_selected else "1px solid #e2e8f0; background: #ffffff;"
-        badge_html = f"<span style='background:#059669; color:white; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px;'>★ {t('active_field_badge', lang)}</span>" if is_selected else f"<span style='background:#f1f5f9; color:#475569; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:12px;'>{localized_season}</span>"
+        badge_html = f"<span style='background:#059669; color:white; font-size:0.82rem; font-weight:800; padding:3px 10px; border-radius:12px;'>★ {t('active_field_badge', lang)}</span>" if is_selected else f"<span style='background:#f1f5f9; color:#1e293b; font-size:0.82rem; font-weight:700; padding:3px 10px; border-radius:12px;'>{localized_season}</span>"
         
         with crop_card_cols[c_idx]:
             card_html = (
-                f'<div style="border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 8px; border: {border_style}; min-height: 225px;">'
+                f'<div style="border-radius: 14px; padding: 14px 10px; text-align: center; margin-bottom: 8px; border: {border_style}; min-height: 245px;">'
                 f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">'
-                f'<span style="font-size: 1.5rem;">{c_info["icon"]}</span>'
+                f'<span style="font-size: 1.8rem;">{c_info["icon"]}</span>'
                 f'{badge_html}'
                 f'</div>'
-                f'<div style="font-weight: 800; font-size: 0.98rem; color: #0f172a; line-height: 1.2;">{localized_crop_name}</div>'
-                f'<div style="font-size: 0.75rem; font-weight: 700; color: #059669; margin: 3px 0;">{acreage_text}</div>'
-                f'<div style="background: #e2e8f0; border-radius: 6px; height: 5px; width: 100%; overflow: hidden; margin-bottom: 8px;">'
+                f'<div style="font-weight: 800; font-size: 1.15rem; color: #0f172a; line-height: 1.25;">{localized_crop_name}</div>'
+                f'<div style="font-size: 0.90rem; font-weight: 700; color: #059669; margin: 4px 0;">{acreage_text}</div>'
+                f'<div style="background: #e2e8f0; border-radius: 6px; height: 6px; width: 100%; overflow: hidden; margin-bottom: 8px;">'
                 f'<div style="background: #059669; height: 100%; width: {c_info["share"]}%;"></div>'
                 f'</div>'
-                f'<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; margin: 6px 0;">'
-                f'<div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Agmarknet 2.0 Mandi</div>'
-                f'<div style="font-size: 1.05rem; font-weight: 900; color: #047857;">₹{c_price:,.0f} <span style="font-size: 0.68rem; font-weight: normal; color: #64748b;">/q</span></div>'
-                f'<div style="font-size: 0.65rem; font-weight: 700; color: {mandi_tag_color};">{mandi_tag_text}</div>'
+                f'<div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 6px; margin: 6px 0;">'
+                f'<div style="font-size: 0.80rem; color: #475569; font-weight: 800; text-transform: uppercase;">Agmarknet 2.0 Mandi</div>'
+                f'<div style="font-size: 1.30rem; font-weight: 900; color: #047857;">₹{c_price:,.0f} <span style="font-size: 0.82rem; font-weight: 600; color: #475569;">/q</span></div>'
+                f'<div style="font-size: 0.85rem; font-weight: 800; color: {mandi_tag_color};">{mandi_tag_text}</div>'
                 f'</div>'
-                f'<div style="font-size: 0.68rem; color: #64748b; line-height: 1.25; margin-top: 4px;">{localized_crop_desc}</div>'
+                f'<div style="font-size: 0.86rem; color: #334155; line-height: 1.35; margin-top: 6px; font-weight: 550;">{localized_crop_desc}</div>'
                 f'</div>'
             )
             st.markdown(card_html, unsafe_allow_html=True)
@@ -831,15 +1006,15 @@ def main():
             }
         
         st.markdown(f"""
-        <div class="why-box" style="background: #ffffff; border: 1.5px solid #a7f3d0; border-radius: 14px; padding: 14px 18px; margin-top: 10px; box-shadow: 0 2px 8px rgba(5,150,105,0.06);">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span style="font-size: 1.1rem;">👨‍🌾</span>
-                <strong style="color: #065f46; font-size: 1.0rem;">{t('why_title', lang)} — {localized_active_crop}</strong>
+        <div class="why-box" style="background: #ffffff; border: 2px solid #a7f3d0; border-radius: 14px; padding: 18px 22px; margin-top: 10px; box-shadow: 0 4px 12px rgba(5,150,105,0.06);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 1.3rem;">👨‍🌾</span>
+                <strong style="color: #065f46; font-size: 1.25rem;">{t('why_title', lang)} — {localized_active_crop}</strong>
             </div>
-            <div style="font-size: 0.92rem; line-height: 1.6; color: #1e293b; margin-bottom: 10px;">
+            <div style="font-size: 1.10rem; line-height: 1.75; color: #0f172a; margin-bottom: 12px; font-weight: 550;">
                 {adv['physio']}
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; color: #334155; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 1.02rem; color: #1e293b; border-top: 1.5px solid #e2e8f0; padding-top: 12px; font-weight: 600;">
                 <div>{adv['weather_spray']}</div>
                 <div>{adv['rain_safety']}</div>
                 <div>{adv['canopy_absorption']}</div>
@@ -858,37 +1033,37 @@ def main():
             f'<div class="benefit-card">'
             f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">'
             f'<div style="display: flex; align-items: center; gap: 7px;">'
-            f'<span style="font-size: 1.1rem;">💹</span>'
-            f'<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.10em; font-weight: 800; color: #047857 !important;">'
+            f'<span style="font-size: 1.2rem;">💹</span>'
+            f'<span style="font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; color: #047857 !important;">'
             f'{t("financial_benefit_title", lang)}'
             f'</span>'
             f'</div>'
-            f'<div style="display: flex; align-items: center; gap: 5px; background: #ecfdf5; border: 1.5px solid #86efac; padding: 3px 10px; border-radius: 14px;">'
-            f'<span style="width: 7px; height: 7px; background: #059669; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span>'
-            f'<span style="font-size: 0.70rem; font-weight: 800; color: #047857 !important; letter-spacing: 0.05em;">LIVE ROI</span>'
+            f'<div style="display: flex; align-items: center; gap: 5px; background: #ecfdf5; border: 1.5px solid #86efac; padding: 4px 12px; border-radius: 14px;">'
+            f'<span style="width: 8px; height: 8px; background: #059669; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span>'
+            f'<span style="font-size: 0.85rem; font-weight: 800; color: #047857 !important; letter-spacing: 0.05em;">LIVE ROI</span>'
             f'</div>'
             f'</div>'
             f'<div style="margin: 4px 0 14px 0; display: flex; align-items: baseline; justify-content: flex-start; flex-wrap: wrap; gap: 8px;">'
-            f'<span style="font-size: 2.75rem; font-weight: 900; line-height: 1; color: #059669 !important; letter-spacing: -0.02em;">'
+            f'<span style="font-size: 3.1rem; font-weight: 900; line-height: 1; color: #059669 !important; letter-spacing: -0.02em;">'
             f'+₹{net_profit:,.0f}'
             f'</span>'
-            f'<span style="font-size: 0.90rem; font-weight: 700; color: #334155 !important; background: #f1f5f9; padding: 4px 10px; border-radius: 8px; border: 1px solid #cbd5e1;">'
+            f'<span style="font-size: 1.15rem; font-weight: 800; color: #1e293b !important; background: #f1f5f9; padding: 6px 14px; border-radius: 8px; border: 1.5px solid #cbd5e1;">'
             f'{unit_str}'
             f'</span>'
             f'</div>'
-            f'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">'
-            f'<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">'
-            f'<div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b !important; letter-spacing: 0.05em; font-weight: 700;">Expected 95% Band</div>'
-            f'<div style="font-size: 1.02rem; font-weight: 800; color: #0f172a !important; margin-top: 3px;">₹{low_range} – ₹{high_range}</div>'
+            f'<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">'
+            f'<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">'
+            f'<div style="font-size: 0.88rem; text-transform: uppercase; color: #475569 !important; letter-spacing: 0.05em; font-weight: 800;">Expected 95% Band</div>'
+            f'<div style="font-size: 1.25rem; font-weight: 900; color: #0f172a !important; margin-top: 3px;">₹{low_range} – ₹{high_range}</div>'
             f'</div>'
-            f'<div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 10px 12px; text-align: left; box-shadow: 0 2px 4px rgba(5,150,105,0.03);">'
-            f'<div style="font-size: 0.68rem; text-transform: uppercase; color: #047857 !important; letter-spacing: 0.05em; font-weight: 700;">Net Farmer Return</div>'
-            f'<div style="font-size: 1.02rem; font-weight: 800; color: #059669 !important; margin-top: 3px;">{roi_badge} Yield Upside</div>'
+            f'<div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 12px 14px; text-align: left; box-shadow: 0 2px 4px rgba(5,150,105,0.03);">'
+            f'<div style="font-size: 0.88rem; text-transform: uppercase; color: #047857 !important; letter-spacing: 0.05em; font-weight: 800;">Net Farmer Return</div>'
+            f'<div style="font-size: 1.25rem; font-weight: 900; color: #059669 !important; margin-top: 3px;">{roi_badge} Yield Upside</div>'
             f'</div>'
             f'</div>'
-            f'<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 0.74rem; color: #475569 !important;">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 0.92rem; color: #334155 !important; font-weight: 600;">'
             f'<span>🔬 <b style="color: #1e293b !important;">SHAP TreeExplainer</b> Verified</span>'
-            f'<span style="color: #166534 !important; font-weight: 800; background: #dcfce7; padding: 3px 9px; border-radius: 12px; border: 1.5px solid #86efac;">'
+            f'<span style="color: #166534 !important; font-weight: 800; font-size: 0.92rem; background: #dcfce7; padding: 4px 12px; border-radius: 12px; border: 1.5px solid #86efac;">'
             f'{t("confidence_badge", lang)}'
             f'</span>'
             f'</div>'
@@ -1043,25 +1218,25 @@ def main():
                 w_desc = "Do NOT spray! Chemical drift and wash-off danger."
                 
             st.markdown(f"""
-            <div style="background: {w_bg}; border: 1.5px solid {w_border}; border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+            <div style="background: {w_bg}; border: 2px solid {w_border}; border-radius: 14px; padding: 16px; margin-bottom: 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; font-weight:800; color:{w_text_color};">💨 LIVE WIND SPEED & SPRAY SAFETY</span>
-                    <span style="font-size:1.3rem; font-weight:900; color:{w_text_color};">{wind_speed_num} km/h</span>
+                    <span style="font-size:1.02rem; font-weight:800; color:{w_text_color};">💨 LIVE WIND SPEED & SPRAY SAFETY</span>
+                    <span style="font-size:1.55rem; font-weight:900; color:{w_text_color};">{wind_speed_num} km/h</span>
                 </div>
-                <div style="font-weight:700; font-size:0.9rem; color:{w_text_color}; margin:6px 0;">{w_status}</div>
-                <div style="font-size:0.75rem; color:#475569;">{w_desc}</div>
+                <div style="font-weight:800; font-size:1.12rem; color:{w_text_color}; margin:8px 0;">{w_status}</div>
+                <div style="font-size:0.95rem; color:#1e293b; font-weight:600; line-height:1.45;">{w_desc}</div>
             </div>
             """, unsafe_allow_html=True)
             
         with w_c2:
             st.markdown(f"""
-            <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-bottom: 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; font-weight:800; color:#334155;">☁️ LIVE CLOUD COVER & ABSORPTION</span>
-                    <span style="font-size:1.3rem; font-weight:900; color:#0284c7;">{cloud_pct_num}%</span>
+                    <span style="font-size:1.02rem; font-weight:800; color:#334155;">☁️ LIVE CLOUD COVER & ABSORPTION</span>
+                    <span style="font-size:1.55rem; font-weight:900; color:#0284c7;">{cloud_pct_num}%</span>
                 </div>
-                <div style="font-weight:700; font-size:0.9rem; color:#0f172a; margin:6px 0;">{ow_live.get('description', 'Partly Cloudy').title()}</div>
-                <div style="font-size:0.75rem; color:#475569;">Stomatal opening active. Optimal diffused light for biostimulant uptake.</div>
+                <div style="font-weight:800; font-size:1.12rem; color:#0f172a; margin:8px 0;">{ow_live.get('description', 'Partly Cloudy').title()}</div>
+                <div style="font-size:0.95rem; color:#1e293b; font-weight:600; line-height:1.45;">Stomatal opening active. Optimal diffused light for biostimulant uptake.</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -1070,11 +1245,11 @@ def main():
             with fc_cols[idx]:
                 emoji = get_weather_emoji(day_data['desc'])
                 st.markdown(f"""
-                <div class="weather-card">
-                    <div style="font-weight:bold; font-size:0.85rem; color:#0f172a;">{day_data['date']}</div>
-                    <div style="font-size:1.6rem; margin:4px 0;">{emoji}</div>
-                    <div style="font-weight:bold; font-size:0.9rem; color:#ef4444;">{day_data['temp_max']}°C <span style="font-size:0.75rem; color:#64748b;">/ {day_data['temp_min']}°</span></div>
-                    <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">💧 {day_data['humidity']}% {t('ow_rh', lang)}<br>🌧️ {t('ow_rain_prob', lang)}: {day_data['rain_prob']}%</div>
+                <div class="weather-card" style="background:#ffffff; border:1.5px solid #cbd5e1; border-radius:12px; padding:16px 8px; text-align:center;">
+                    <div style="font-weight:800; font-size:1.08rem; color:#0f172a;">{day_data['date']}</div>
+                    <div style="font-size:2.2rem; margin:6px 0;">{emoji}</div>
+                    <div style="font-weight:900; font-size:1.25rem; color:#dc2626;">{day_data['temp_max']}°C <span style="font-size:0.95rem; font-weight:700; color:#475569;">/ {day_data['temp_min']}°</span></div>
+                    <div style="font-size:0.96rem; font-weight:700; color:#1e293b; margin-top:6px; line-height:1.45;">💧 {day_data['humidity']}% {t('ow_rh', lang)}<br>🌧️ {t('ow_rain_prob', lang)}: {day_data['rain_prob']}%</div>
                 </div>
                 """, unsafe_allow_html=True)
 
