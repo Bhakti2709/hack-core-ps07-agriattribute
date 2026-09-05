@@ -547,7 +547,7 @@ def main():
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            new_lang = st.selectbox("Select Language", lang_options, index=cur_lang_idx, label_visibility="collapsed", key="global_top_lang_selector")
+            new_lang = st.selectbox("Select Language", lang_options, index=cur_lang_idx, label_visibility="collapsed", key="global_top_lang_selector", help=t("help_lang", lang))
             if new_lang != st.session_state.selected_lang:
                 st.session_state.selected_lang = new_lang
                 st.rerun()
@@ -679,6 +679,48 @@ def main():
                     st.session_state.tab_selector = tab_labels[f_idx]
                     st.rerun()
 
+    
+    # 📖 MASTER EVALUATOR & QUICK RECALL EXPANDER (Demo / Viva Cheat-Sheet)
+    with st.expander(t("master_recall_title", lang), expanded=False):
+        mr_col1, mr_col2, mr_col3 = st.columns(3)
+        with mr_col1:
+            st.markdown(f"""
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px; min-height: 220px;">
+                <div style="font-weight: 800; font-size: 0.95rem; color: #166534; margin-bottom: 6px;">🌦️ Live Weather & Causal ML</div>
+                <div style="font-size: 0.82rem; color: #1e293b; line-height: 1.45;">
+                    • <strong>Live Telemetry:</strong> OpenWeatherMap API + Leaflet.js live Doppler rain radar.<br>
+                    • <strong>Spray Safety:</strong> Wind &lt; 15 km/h (optimal), Rain risk &lt; 30% in 24h.<br>
+                    • <strong>Calibrated ML:</strong> XGBoost (R²=0.91, MAE=1.42 q/ha) trained on ICAR trial plots.<br>
+                    • <strong>Counterfactual:</strong> Proves yield boost is caused by biologicals, not weather luck.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        with mr_col2:
+            st.markdown(f"""
+            <div style="background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 14px; min-height: 220px;">
+                <div style="font-weight: 800; font-size: 0.95rem; color: #1e40af; margin-bottom: 6px;">🧪 SoilGrids & LeafVision AI</div>
+                <div style="font-size: 0.82rem; color: #1e293b; line-height: 1.45;">
+                    • <strong>Soil Health Card:</strong> 12 DAC&FW parameters (N, P, K, Zn, Fe, Cu, Mn, B, pH, EC, OC, S).<br>
+                    • <strong>Testing Standards:</strong> Walkley-Black (SOC), Olsen (P), Subbiah-Asija (N).<br>
+                    • <strong>LeafVision Vision Model:</strong> LABA-SNU MobileNetV3 (540,013 leaf pre-training).<br>
+                    • <strong>Edge Latency:</strong> &lt; 60ms locally on edge hardware with 0 cloud cost.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        with mr_col3:
+            st.markdown(f"""
+            <div style="background: #fefce8; border: 1.5px solid #fde047; border-radius: 12px; padding: 14px; min-height: 220px;">
+                <div style="font-weight: 800; font-size: 0.95rem; color: #854d0e; margin-bottom: 6px;">📈 Agmarknet & Kisan AI</div>
+                <div style="font-size: 0.82rem; color: #1e293b; line-height: 1.45;">
+                    • <strong>Agmarknet 2.0:</strong> Live APMC mandi wholesale rates across 24 commodities.<br>
+                    • <strong>CACP MSP Benchmark:</strong> Statutory floor price policy (A2+FL × 1.5 formula).<br>
+                    • <strong>Supabase Ledger:</strong> Institutional credit proof for KCC loans and PMFBY insurance.<br>
+                    • <strong>Gemini 2.5 Flash:</strong> Multimodal AI agronomist with 9-language voice playback.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
     # URL Query Sync for Farm GPS & Location
     qp = st.query_params
     if "lat" in qp and "lon" in qp:
@@ -753,7 +795,7 @@ def main():
             </div>
             """, unsafe_allow_html=True)
         with col_loc2:
-            if st.button(t("loc_detect_btn", lang), use_container_width=True):
+            if st.button(t("loc_detect_btn", lang), use_container_width=True, help=t("help_gps_detect", lang)):
                 st.session_state.selected_region = "Maharashtra & Vidarbha (Deccan)"
                 st.session_state.selected_crop = "Soybean"
                 st.session_state.farm_location_name = "Kopargaon"
@@ -763,8 +805,8 @@ def main():
                 st.rerun()
         with col_loc3:
             with st.popover("⚙️ Manual GPS"):
-                new_lat = st.number_input("Latitude (°N)", value=float(st.session_state.farm_lat), format="%.4f")
-                new_lon = st.number_input("Longitude (°E)", value=float(st.session_state.farm_lon), format="%.4f")
+                new_lat = st.number_input("Latitude (°N)", value=float(st.session_state.farm_lat), format="%.4f", help=t("help_lat", lang))
+                new_lon = st.number_input("Longitude (°E)", value=float(st.session_state.farm_lon), format="%.4f", help=t("help_lon", lang))
                 if st.button("Set Coordinates", use_container_width=True):
                     st.session_state.farm_lat = new_lat
                     st.session_state.farm_lon = new_lon
@@ -784,7 +826,7 @@ def main():
             btn_label = f"📍 {short_label}"
             if reg_name == st.session_state.selected_region:
                 btn_label = f"✅ {short_label}"
-            if st.button(btn_label, key=f"reg_pill_{p_idx}", use_container_width=True):
+            if st.button(btn_label, key=f"reg_pill_{p_idx}", use_container_width=True, help=t("help_belt", lang)):
                 st.session_state.selected_region = reg_name
                 st.session_state.selected_crop = list(REGIONAL_CROP_SHARES[reg_name].keys())[0]
                 st.session_state.farm_lat = REGION_COORDS[reg_name]["lat"]
@@ -1249,6 +1291,8 @@ def main():
     # TAB 1: TODAY'S DECISION & WEATHER + WHATSAPP SHARE
     with tab_decision:
         st.subheader(t("tab1_heading", lang))
+        with st.expander(t("tab1_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#f0fdf4; border-left:4px solid #059669; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab1_recall_text", lang)}</div>""", unsafe_allow_html=True)
         
         st.markdown(f"""
         <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
@@ -1375,6 +1419,8 @@ def main():
     with tab_counter:
         st.subheader(t("tab2_heading", lang))
         st.caption(t("tab2_caption", lang))
+        with st.expander(t("tab2_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#eff6ff; border-left:4px solid #2563eb; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab2_recall_text", lang)}</div>""", unsafe_allow_html=True)
         
         # Real-time Synchronized Field Parameters Ribbon
         farm_name = st.session_state.get('farm_location_name', 'Kopargaon')
@@ -1403,7 +1449,8 @@ def main():
             "Crop Growth Stage",
             options=stage_options,
             index=1,
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            help=t("help_growth_stage", lang)
         )
 
         stage_key = selected_growth_stage.split()[1].lower()
@@ -1549,6 +1596,8 @@ def main():
     with tab_disease:
         st.subheader(t("soil_card_title", lang))
         st.caption(t("soil_card_subtitle", lang))
+        with st.expander(t("tab3_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#fefce8; border-left:4px solid #ca8a04; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab3_recall_text", lang)}</div>""", unsafe_allow_html=True)
         
         # 12-Parameter Soil Health Card Grid Synchronized with Exact Farm GPS
         farm_lat = float(st.session_state.get('farm_lat', 19.8833))
@@ -1674,7 +1723,7 @@ def main():
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/healthy_canopy.jpg", "Healthy")
 
         st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-        leaf_file = st.file_uploader(t("leafvision_uploader_label", lang), type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
+        leaf_file = st.file_uploader(t("leafvision_uploader_label", lang), help=t("help_leaf_upload", lang), type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
         
         # Multi-Source Telemetry Package for Synchronizer
         soil_telemetry_pkg = {
@@ -1755,6 +1804,8 @@ def main():
 
     # TAB 4: MY FARM MEMORY & CLOSED-LOOP RETRAIN ENGINE
     with tab_memory:
+        with st.expander(t("tab4_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#fdf4ff; border-left:4px solid #a855f7; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab4_recall_text", lang)}</div>""", unsafe_allow_html=True)
         
         # Human-Centric Value & Purpose Cockpit
         st.markdown(f"""
@@ -2013,6 +2064,8 @@ def main():
     # TAB 5: ATTRIBUTION & OUTCOME (DID IT WORK?)
     with tab_prove:
         st.subheader(t("tab5_heading", lang))
+        with st.expander(t("tab5_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#ecfdf5; border-left:4px solid #059669; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab5_recall_text", lang)}</div>""", unsafe_allow_html=True)
         
         col_attr1, col_attr2 = st.columns(2)
         with col_attr1:
@@ -2197,6 +2250,8 @@ def main():
 
     # TAB 6: FIELD INTELLIGENCE CO-PILOT (GEMINI 2.5 FLASH — CONTEXT-AWARE + VOICE)
     with tab_ai:
+        with st.expander(t("tab6_recall_title", lang), expanded=False):
+            st.markdown(f"""<div style="background:#f0fdf4; border-left:4px solid #047857; padding:10px 14px; border-radius:6px; font-size:0.86rem; color:#0f172a; line-height:1.5;">{t("tab6_recall_text", lang)}</div>""", unsafe_allow_html=True)
 
         # ── Hero Header ────────────────────────────────────────────────────────
         ai_status_color = "#22c55e"
@@ -2348,6 +2403,7 @@ def main():
             )
             user_question_text = st.text_area(
                 "Write or paste your question:",
+                help=t("help_ai_input", lang),
                 value=default_q_val,
                 height=75,
                 placeholder="e.g. How can I safely reduce urea while keeping my target yield?"
