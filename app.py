@@ -806,7 +806,8 @@ def main():
             lon=st.session_state.farm_lon,
             region_name=localized_reg,
             active_crop=t_crop(st.session_state.selected_crop, lang),
-            weather_info=ow_live
+            weather_info=ow_live,
+            lang=lang
         )
         components.html(map_html, height=570)
 
