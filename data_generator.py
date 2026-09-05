@@ -193,38 +193,6 @@ def generate_synthetic_field_trials(num_samples: int = 1200, seed: int = 42) -> 
     
     return df
 
-def fetch_openweather_telemetry(lat: float = 21.1458, lon: float = 79.0882) -> dict:
-    """Fetches live field weather data from OpenWeather API with failover."""
-    from openweather_service import fetch_live_current_weather
-    return fetch_live_current_weather(lat, lon)
-
-def fetch_meteoblue_weather(lat: float = 21.1458, lon: float = 79.0882) -> dict:
-    """Returns domain-calibrated 10-day agronomic telemetry."""
-    return {
-        "status": "Success",
-        "api_engine": "Meteoblue Agro-Weather Dataset API",
-        "cumulative_rainfall_mm": 745.2,
-        "growing_degree_days": 2340.0,
-        "heat_stress_days_above_38c": 6,
-        "historical_reliability_score": 0.94
-    }
-
-def fetch_cehub_forecast(product_name: str = "Syngenta Quantis") -> dict:
-    """Returns Syngenta CE Hub recommended dosage rate."""
-    return {
-        "status": "Connected",
-        "api_engine": "Syngenta CE Hub Product Matrix",
-        "recommended_product": product_name,
-        "optimal_dosage_l_ha": 2.5,
-        "application_stage": "Pre-flowering / Stomatal Opening",
-        "synergy_advisory": "Combine with light irrigation or spray before 10 AM."
-    }
-
-def fetch_10day_forecast(lat: float = 21.1458, lon: float = 79.0882) -> list:
-    """Returns 10-day weather forecast array."""
-    from openweather_service import fetch_live_5day_forecast
-    return fetch_live_5day_forecast(lat, lon)
-
 if __name__ == "__main__":
     print("Generating updated 12-crop, 12-soil parameter field trials dataset...")
     df = generate_synthetic_field_trials(num_samples=1200)

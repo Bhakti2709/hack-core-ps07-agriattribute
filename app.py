@@ -27,7 +27,7 @@ import streamlit.components.v1 as components
 import urllib.parse
 from datetime import datetime
 
-from data_generator import generate_synthetic_field_trials, fetch_meteoblue_weather, fetch_cehub_forecast, fetch_10day_forecast, fetch_openweather_telemetry
+from data_generator import generate_synthetic_field_trials
 import pdf_report
 import supabase_client
 import openweather_service

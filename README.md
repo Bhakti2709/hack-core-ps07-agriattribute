@@ -144,17 +144,34 @@ $$	ext{MRER} = rac{P_{	ext{spot}} - 	ext{MSP}}{	ext{MSP}} 	imes 100$$
 
 ```text
 📁 hack-core-ps07-agriattribute/
-├── app.py                         # Streamlit Full-Width Reactive UI (Tabs 1-6)
-├── gemini_service.py                # Gemini 2.5 Flash Multimodal & Audio Service
-├── leafvision_engine.py             # LeafVision 2.0 Pathology Diagnostics Model
-├── agmarknet_engine.py              # Agmarknet Mandi Spot Price & MSP Intelligence
-├── pricing_and_soil_engine.py       # DAC&FW Soil Health Card & Fertilizer Calculator
-├── supabase_client.py               # Supabase Ledger & Multi-Sheet Excel Engine
-├── pdf_report.py                    # Unicode Print-Ready PDF Advisory Dossier Generator
-├── requirements.txt                 # Pinned Production Dependencies
-├── .env.example                     # Environment Variables Blueprint
-└── README.md                       # System Documentation & Architectural Specification
+├── app.py                         # Streamlit Full-Width Reactive Cockpit (Tabs 1-6)
+├── localization.py                # 4-Language Localization Engine (EN, HI, MR, TE)
+├── openweather_service.py         # 3-Key Failover Real-Time Weather & 5-Day Forecast
+├── gemini_service.py              # Gemini 2.5 Flash Multimodal & Audio Service
+├── leafvision_engine.py           # LeafVision 2.0 Pathology Diagnostics Model
+├── agmarknet_engine.py            # Agmarknet Mandi Spot Price & MSP Intelligence
+├── pricing_and_soil_engine.py     # DAC&FW Soil Health Card & Fertilizer Calculator
+├── interactive_map_service.py     # Hyperlocal Weather & Crop Distribution Interactive Map
+├── supabase_client.py             # Supabase Ledger & Multi-Sheet Excel Engine
+├── pdf_report.py                  # Unicode Print-Ready PDF Advisory Dossier Generator
+├── retrain_pipeline.py            # Automated CSV Retraining & Recalibration Engine
+├── train_model.py                 # Initial XGBoost Regressor & SHAP Model Trainer
+├── data_generator.py              # Domain-Calibrated 12-Crop Synthetic Data Generator
+├── requirements.txt               # Pinned Production Dependencies
+├── .env.example                   # Environment Variables Blueprint
+├── README.md                      # System Overview & Quickstart Guide
+├── assets/leaf_samples/           # Sample Leaf Photos for Diagnostics Verification
+├── data/                          # Real Agmarknet Mandi Reports & Trial Benchmarks
+├── docs/                          # Technical Specification & Cloud Architecture
+│   ├── SYSTEM_ARCHITECTURE.md     # In-Depth 5-Layer Blueprint, Formulations & Proof
+│   └── supabase_schema.sql        # Supabase PostgreSQL DDL Database Schema
+└── models/                        # Serialized Machine Learning Artifacts
+    ├── model.pkl                  # Trained XGBoost Regressor (R² = 0.9995)
+    └── shap_explainer.pkl         # SHAP TreeExplainer & Game-Theoretic Weights
 ```
+
+> 📖 **Deep Technical Architecture**: For full mathematical formulations, algorithmic proofs, and government data provenance, consult [docs/SYSTEM_ARCHITECTURE.md](./docs/SYSTEM_ARCHITECTURE.md).
+
 
 ---
 
