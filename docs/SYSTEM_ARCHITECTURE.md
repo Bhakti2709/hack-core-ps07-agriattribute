@@ -1,161 +1,144 @@
-# 🌾 AgriAttribute AI — System Architecture & Scientific Blueprint
-**PS-07: Agronomic Causal Attribution & Decision Intelligence Platform**  
-*Built for Smallholder Farming Communities & Field Extension Officers across India*
+# AgriAttribute — System Architecture & Technical Design
+
+**Hack Core 2026 — Problem Statement 07 (Syngenta Biologicals & ANNAM.AI)**  
+*Team 15: Soham Prabhakar Kadu, Singireddy Prabhumitrareddy, Bhakti Ajay Kadam*
 
 ---
 
-## 📌 Executive Summary
+## 1. Overview & Core Engineering Objectives
 
-Smallholder farmers face volatile microclimatic events, sudden pest outbreaks, volatile mandi price realizations, and depleted soil nutrient profiles. Traditional advisory systems are often static, text-heavy, disconnected from market economics, and fail to isolate whether a yield increase was caused by costly biological inputs or favorable monsoon rainfall.
+The core goal of AgriAttribute is to answer a fundamental agricultural attribution question: **How much of a crop's yield boost was caused by biological treatment, and how much was simply the result of good rainfall, soil nutrients, or regional baselines?**
 
-**AgriAttribute AI** solves this with an integrated **5-Layer Closed-Loop System**:
-1. **Sense (Layer 1):** Ingests live OpenWeatherMap microclimate telemetry (with 3-key failover rotation), SoilGrids parameters, and satellite NDVI canopy greenness.
-2. **Decide (Layer 2):** Computes biological application readiness, climatic heat/moisture stress indices, DAC&FW Soil Health Card fertilizer deficits, and Agmarknet 2.0 mandi price arbitrage.
-3. **Reach (Layer 3):** Delivers localized recommendations in 4 Indian languages (English, हिन्दी, मराठी, తెలుగు) through a zero-sidebar, touch-first responsive interface and an integrated Gemini 2.5 Flash Multimodal Co-Pilot.
-4. **Record (Layer 4):** Persists all field applications, foliar diagnoses, and harvest metrics into a **Supabase PostgreSQL Cloud Ledger (Farm Memory)**.
-5. **Prove (Layer 5):** Employs an **XGBoost Regressor ($R^2 = 0.9995$)** paired with **SHAP TreeExplainer game-theoretic causal attribution** to rigorously isolate the true biological yield lift ($\Delta Y$) from environmental noise, calculating net profit (₹/acre) and Return on Investment (ROI %).
-6. **Continuous Retrain Loop:** Real harvest logs from the Record layer continuously feed back into the automated retraining pipeline (`retrain_pipeline.py`), recalibrating models for subsequent agricultural cycles.
+To solve this in a production-ready web application without requiring heavy cloud infrastructure, we designed the platform with four technical principles:
 
----
-
-## 🏛️ High-Level System Architecture
-
-```mermaid
-graph TD
-    subgraph Layer1 [1. SENSE — Telemetry & Remote Sensing]
-        W[OpenWeatherMap 3-Key Failover Engine]
-        S[DAC&FW Soil Health Card Registry]
-        M[Agmarknet Real-Time Mandi Spot & MSP Feed]
-        C[High-Res Leaf & Canopy Photography]
-    end
-
-    subgraph Layer2 [2. DECIDE — Analytics & Inference Engines]
-        LV[LeafVision 2.0 Pathology Diagnostics]
-        SHC[12-Parameter NPK Chemical Balance Optimizer]
-        MKT[Agmarknet 2.0 Mandi Momentum & Arbitrage]
-        XGB[XGBoost Yield Engine R2 = 0.9995]
-        SHAP[SHAP TreeExplainer Causal Attribution]
-    end
-
-    subgraph Layer3 [3. REACH — Localized Farmer Interface]
-        UI[Streamlit Full-Width Responsive Cockpit]
-        LOC[Adaptive Multilingual Engine: EN, HI, MR, TE]
-        DEV[Dynamic Device View: Mobile / Tablet / Laptop]
-        GEM[Gemini 2.5 Flash Multimodal Agronomic Co-Pilot]
-    end
-
-    subgraph Layer4 [4. RECORD — Cloud Persistence & Ledger]
-        DB[(Supabase PostgreSQL Ledger: Farm Memory)]
-        REP[Unicode Printable PDF & Multi-Sheet Excel Reports]
-    end
-
-    subgraph Layer5 [5. PROVE — Retraining & Recalibration Loop]
-        RET[retrain_pipeline.py: Automated Schema Normalizer]
-    end
-
-    Layer1 --> Layer2
-    Layer2 --> Layer3
-    Layer3 --> Layer4
-    Layer4 --> Layer5
-    Layer5 -->|Recalibrated Models| Layer2
-```
+1. **Lightweight Edge Inference:** The leaf vision pathology scanner runs locally on the CPU in under 30 ms using quantized PyTorch models, avoiding cloud GPU hosting costs and working on low-bandwidth field connections.
+2. **Resilient External Integrations:** Weather data uses an automated 3-key rotation mechanism over OpenWeatherMap to handle rate limits and 429 errors seamlessly.
+3. **Causal Explainability over Black-Box Output:** Rather than just predicting a final yield number, we use SHAP (SHapley Additive exPlanations) to isolate the exact quintals-per-acre contribution of the biological product, weather, and soil.
+4. **Touch-First Accessibility:** The UI is full-width, touch-friendly, supports 4 Indian languages (English, Hindi, Marathi, Telugu), and includes an adaptive font-scaling mode for outdoor sunlight visibility.
 
 ---
 
-## 🧮 Mathematical Formulations & Validation
+## 2. System Flow
 
-### 1. Machine Learning Yield Regressor (XGBoost)
-The non-linear crop yield model minimizes regularized empirical risk over $n$ agricultural field samples:
-$$\mathcal{L}(\theta) = \sum_{i=1}^n \left( y_i - \hat{y}_i \right)^2 + \sum_{k=1}^K \left( \gamma T_k + \frac{1}{2}\lambda \|w_k\|^2 \right)$$
-
-**Empirical Performance Metrics:**
-- **$R^2$ Score:** `0.9995`
-- **Mean Absolute Error (MAE):** `1.82 q/acre`
-- **Root Mean Squared Error (RMSE):** `2.41 q/acre`
-
-### 2. Causal Yield Attribution (SHAP TreeExplainer)
-To prove that biological inputs caused the observed yield gain rather than favorable monsoon rain or soil quality, the system uses Shapley additive explanations based on cooperative game theory:
-$$f(x) = \phi_0 + \sum_{j=1}^M \phi_j(x)$$
-Where:
-- $\phi_0$ is the regional baseline yield across all trials.
-- $\phi_{\text{bio}}$ is the isolated causal contribution of the biological application ($\Delta Y$).
-- $\phi_{\text{weather}}$ aggregates rainfall, growing degree days (GDD), and heat stress.
-- $\phi_{\text{soil}}$ accounts for Soil Organic Carbon (SOC), N-P-K reserves, and pH.
-
-### 3. Thermal Stress Index (TSI)
-$$\text{TSI} = T_{\text{ambient}} + 0.55 \left(1 - \frac{\text{RH}}{100}\right)(T_{\text{ambient}} - 14.5)$$
-Values $> 32^\circ\text{C}$ trigger heat-stress mitigation alerts (e.g., biostimulant application).
-
-### 4. DAC&FW Fertilizer Replenishment Equation
-$$\text{Requirement } (kg/ha) = \frac{\text{Target Uptake} - (S_{\text{test}} \times \eta_{\text{soil}})}{\eta_{\text{fertilizer}}}$$
-Calculates precise bag-level requirements (Urea, DAP, MOP) to prevent chemical over-application while restoring soil microbial health.
-
-### 5. Mandi Realization Elasticity Ratio (MRER)
-$$\text{MRER} = \frac{P_{\text{spot}} - \text{MSP}}{\text{MSP}} \times 100$$
-Determines whether the farmer should sell on the open APMC market or utilize MSP procurement / warehouse receipts.
-
----
-
-## 🔬 LeafVision 2.0 Plant Pathology Engine
-
-- **Edge Performance:** Executes in under $25\text{ ms}$ on commodity CPU hardware without cloud latency.
-- **Parametric Feature Extraction:** Analyzes 24 biometric attributes including green canopy ratio, necrosis index, chlorosis ratio, lesion edge sharpness, and HSV color variance.
-- **Pathogen Coverage:** Detects Early/Late Blight, Yellow Rust, Powdery Mildew, Leaf Curl Virus, Bacterial Blight, and micronutrient chlorosis across 12 major Indian crops.
-- **Bifurcated Prescriptions:** Recommends CIBRC-registered chemical controls alongside biological and bio-fungicide remediation pathways (*Trichoderma viride*, *Pseudomonas fluorescens*, Neem formulations).
-
----
-
-## 🏛️ Official Indian Government Data Provenance
-
-Every baseline, threshold, and benchmark in the platform is anchored in official government datasets:
-
-1. **Ministry of Agriculture & Farmers Welfare (MoA&FW):**
-   - Directorate of Economics & Statistics (DES) — Area, Production and Yield (APY) Portal.
-   - Official 2024–25 CCEA Minimum Support Price (MSP) Gazette schedules.
-2. **Department of Agriculture & Farmers Welfare (DAC&FW):**
-   - National Soil Health Card (SHC) 12-parameter parametric standards across Indian agro-climatic zones.
-3. **Agmarknet (Agricultural Marketing Information Network):**
-   - Daily wholesale modal prices from state APMC mandis.
-4. **ICAR-CRIDA (Central Research Institute for Dryland Agriculture):**
-   - District Agricultural Contingency Plans (DACP) for crop-specific moisture and thermal stress limits.
-
----
-
-## 🔄 Automated Retraining Pipeline (`retrain_pipeline.py`)
-
-When new field trial data is uploaded via the UI or CLI:
-1. **Schema Normalization:** Uses alias mapping (`yield_q_acre` $\rightarrow$ `yield_q_per_acre`, `soc` $\rightarrow$ `soil_organic_carbon`) to accommodate heterogeneous CSV formats.
-2. **Model Fitting:** Retrains the XGBoost regressor on the updated dataset.
-3. **SHAP Recalibration:** Recomputes the TreeExplainer to update causal attribution weights.
-4. **Artifact Serialization:** Atomically updates `models/model.pkl` and `models/shap_explainer.pkl`.
-
----
-
-## 📂 Repository Layout
+The application coordinates data from field sensors, public government APIs, and trained models:
 
 ```text
-📁 hack-core-ps07-agriattribute/
-├── app.py                         # Main Streamlit Full-Width Dashboard (Tabs 1-6)
-├── localization.py                # 4-Language Localization Engine (EN, HI, MR, TE)
-├── openweather_service.py         # 3-Key Failover Real-Time Weather & Forecast Engine
-├── gemini_service.py              # Gemini 2.5 Flash Multimodal Voice & Visual Co-Pilot
-├── leafvision_engine.py           # LeafVision 2.0 Foliar Pathology Diagnostics Model
-├── agmarknet_engine.py            # Agmarknet Mandi Spot Price & MSP Intelligence
-├── pricing_and_soil_engine.py     # DAC&FW Soil Health Card & Fertilizer Calculator
-├── interactive_map_service.py     # Hyperlocal Weather & Crop Distribution Interactive Map
-├── supabase_client.py             # Supabase PostgreSQL Ledger & Export Engine
-├── pdf_report.py                  # Downloadable Printable A4 Advisory PDF Engine
-├── retrain_pipeline.py            # Automated CSV Ingestion & Model Retraining Engine
-├── train_model.py                 # Initial XGBoost & SHAP Training Script
-├── requirements.txt               # Pinned Production Dependencies
-├── .env.example                   # Environment Variables Blueprint
-├── README.md                      # Project Overview, Setup & Quickstart Guide
-├── assets/                        # Sample Leaf Images for Offline Pathology Testing
-├── data/                          # Agmarknet Mandi Reports & Baseline Field Trial CSVs
-├── docs/
-│   ├── SYSTEM_ARCHITECTURE.md     # Consolidated Technical Architecture & Proof Dossier
-│   └── supabase_schema.sql        # Supabase PostgreSQL Cloud DDL Schema
-└── models/
-    ├── model.pkl                  # Trained XGBoost Regressor
-    └── shap_explainer.pkl         # Serialized SHAP TreeExplainer & Metrics
+[ Farmer / Extension Worker ]
+       │
+       ├── Selects Crop, Region, & Biological Dosage
+       ├── (Optional) Uploads Leaf Photo or Speaks via Mic
+       │
+       ▼
+[ Streamlit Web Interface (app.py) ]
+       │
+       ├── 1. Weather Telemetry (openweather_service.py)
+       │      └─ Fetches local temp, humidity, wind & 5-day forecast (with 3-key failover)
+       │
+       ├── 2. Market Economics (agmarknet_engine.py)
+       │      └─ Compares live APMC modal prices with CACP 2024-25 MSP benchmarks
+       │
+       ├── 3. Soil Health Card (pricing_and_soil_engine.py)
+       │      └─ Evaluates 12 soil parameters & calculates bag-level N-P-K requirements
+       │
+       ├── 4. Leaf Pathology (leafvision_engine.py)
+       │      └─ On-device lesion segmentation, severity rating, and dual prescription
+       │
+       ├── 5. Causal Yield Engine (models/model.pkl & models/shap_explainer.pkl)
+       │      └─ XGBoost predicts total yield; SHAP isolates biological lift (ΔY)
+       │
+       ├── 6. Multimodal Assistant (gemini_service.py)
+       │      └─ Google Gemini 2.5 Flash handles voice notes, photos, and localized Q&A
+       │
+       ▼
+[ Persistence & Export Layer ]
+       ├── Supabase Cloud PostgreSQL (Farm Memory ledger)
+       ├── Downloadable A4 PDF Advisory (pdf_report.py)
+       ├── Multi-Sheet Excel Workbook (supabase_client.py)
+       └── 1-Click WhatsApp ROI Sharing
 ```
+
+---
+
+## 3. The Causal Attribution Pipeline
+
+### The Problem with Simple Linear Comparisons
+In agriculture, biological yield response is highly non-linear. Under mild heat stress, a biostimulant like Syngenta Quantis protects stomatal conductance and prevents flower drop, resulting in a noticeable yield increase. However, if monsoon rains are optimal and temperatures remain mild, the baseline yield is already high, and the relative boost is smaller. A simple linear regression fails to capture these climate-product interaction effects.
+
+### Our Solution: XGBoost + SHAP TreeExplainer
+1. **Model Architecture:** We trained an `XGBRegressor` on 1,200 domain-calibrated Indian field trial data points across 12 major crops (Soybean, Cotton, Rice, Wheat, Sugarcane, Maize, Groundnut, Mustard, Gram, Tur, Onion, Tomato).
+2. **Feature Space:** Features include 12 soil test parameters (N, P, K, OC, pH, EC, S, Ca, Mg, Zn, Fe, Cu, Mn, B), environmental variables (cumulative rainfall, growing degree days, heat stress days above 38°C, peak satellite NDVI), crop type, region, and biological treatment (flag and dosage in L/ha).
+3. **Attribution Decomposition:**
+   Using the additive property of Shapley values:
+   $$\text{Yield} = \phi_0 + \phi_{\text{bio}} + \phi_{\text{weather}} + \phi_{\text{soil}} + \phi_{\text{crop/region}}$$
+   Where:
+   - $\phi_{\text{bio}}$ is the isolated causal contribution of the biological product ($\Delta Y$).
+   - $\phi_{\text{weather}}$ captures the net effect of rainfall and thermal stress.
+   - $\phi_{\text{soil}}$ captures organic carbon, nutrient deficits, and pH buffering.
+   - $\phi_0$ is the regional expected baseline.
+4. **Validation Performance:**
+   - **$R^2$ Score:** `0.9986`
+   - **Mean Absolute Error (MAE):** `2.78 q/acre`
+   - **Root Mean Squared Error (RMSE):** `6.82 q/acre`
+
+---
+
+## 4. Subsystem Details
+
+### A. Resilient Weather Telemetry (`openweather_service.py`)
+- Coordinates 3 independent API keys in a failover pool (`current weather`, `maps`, `google map`).
+- If an active key returns HTTP 429 (rate limited) or times out, the service automatically switches to the next key and logs the failover without crashing the user session.
+- Calculates wind shear spray windows: $< 15\text{ km/h}$ is flagged as optimal for spraying, while $> 25\text{ km/h}$ warns the user of droplet drift.
+
+### B. On-Device Plant Pathology (`leafvision_engine.py`)
+- Uses a lightweight vision model fine-tuned on crop pathology samples.
+- Extracts 24 biometric parameters from the uploaded image, including green canopy ratio, lesion surface percentage, necrosis index, and chlorosis ratio.
+- Runs entirely on CPU in $20-45\text{ ms}$, removing the need for a persistent cloud GPU.
+- Returns a dual recommendation: approved CIBRC chemical controls alongside biological alternatives (*Trichoderma viride*, *Pseudomonas fluorescens*, Neem oil).
+
+### C. Mandi Intelligence & MSP Tracker (`agmarknet_engine.py`)
+- Ingests daily modal wholesale spot prices from Indian APMCs.
+- Benchmarks prices against the official 2024–25 CACP Minimum Support Price.
+- Calculates 72-hour price momentum:
+  $$\text{Price Delta \%} = \frac{\text{Spot Price} - \text{MSP}}{\text{MSP}} \times 100$$
+  If trading below MSP, the app recommends utilizing central procurement centers or negotiable warehouse receipts (NWR).
+
+### D. Soil Health Card Integration (`pricing_and_soil_engine.py`)
+- Implements the Indian Government's DAC&FW Soil Health Card response equations.
+- Evaluates soil nutrient deficits against target crop uptake and outputs exact bag requirements for Urea (46% N), DAP (18% N, 46% P), and MOP (60% K).
+- Includes a 15% Urea reduction protocol when biological soil conditioners are applied to prevent nitrogen leaching.
+
+### E. Cloud Farm Memory (`supabase_client.py`)
+- Connects to a cloud-hosted Supabase PostgreSQL database (`wnujxbnjqrwybllvbahm.supabase.co`).
+- Stores historical field journal entries, treatment dates, observed yields, and profit outcomes.
+- Exports records as multi-sheet `.xlsx` workbooks and printable A4 PDF summaries.
+
+### F. Multilingual Voice Assistant (`gemini_service.py`)
+- Uses Google's Gemini 2.5 Flash API with a localized agricultural system prompt.
+- Supports voice query transcription via the browser Web Speech API, text chat, and leaf image attachments.
+- Available in English, Hindi, Marathi, and Telugu.
+
+---
+
+## 5. Model Retraining Pipeline (`retrain_pipeline.py`)
+
+To ensure the system improves over time as real Syngenta trial data becomes available:
+1. **Schema Normalization:** Uses alias mapping (`yield_q_acre` $\rightarrow$ `yield_q_per_acre`, `soc` $\rightarrow$ `soil_organic_carbon`) to ingest raw CSV trial files with inconsistent column names.
+2. **Automated Fitting:** Fits the XGBoost regressor on the updated dataset and evaluates train/test splits.
+3. **Explainer Recalibration:** Recomputes the TreeExplainer to update causal weights.
+4. **Atomic Serialization:** Overwrites `models/model.pkl` and `models/shap_explainer.pkl`.
+
+---
+
+## 6. Official Data Sources & Citations
+
+1. **Ministry of Agriculture & Farmers Welfare (MoA&FW):**
+   - Agmarknet daily wholesale price reports: `https://agmarknet.gov.in`
+   - CACP 2024–25 MSP schedules: `https://cacp.dacnet.nic.in`
+2. **Department of Agriculture & Farmers Welfare (DAC&FW):**
+   - Soil Health Card 12-parameter benchmarks: `https://soilhealth.dac.gov.in`
+3. **India Meteorological Department (IMD):**
+   - District rainfall normals: `https://mausam.imd.gov.in`
+4. **ICAR-CRIDA:**
+   - District Agricultural Contingency Plans: `https://crida.icar.gov.in`
+5. **Scott M. Lundberg et al. (2020):**
+   - *From local explanations to global understanding with explainable AI for trees*, Nature Machine Intelligence 2, 56–67.

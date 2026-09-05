@@ -43,7 +43,7 @@ TRANSLATIONS = {
         # App Header & Meta
         
         "radar_map_title": "🛰️ Interactive Weather Radar & Field Satellite Map",
-        "proof_sources_expander": "🏛️ Verified Government Citations, CACP MSP Formulas & ICAR Sources",
+        "proof_sources_expander": "📚 Official Data Sources & Government Citations",
         "share_weather_wa_btn": "📲 Share Weather & Spray Window via WhatsApp",
         "kcc_cert_btn": "📄 Download Official KCC Bank Certificate (PDF)",
         "soil_card_title": "🏛️ Official 12-Parameter Indian Soil Health Card",

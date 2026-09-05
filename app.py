@@ -578,38 +578,35 @@ def main():
             st.markdown(f"""
             <div style="padding: 2px 4px;">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-                    <span style="background: #047857; color: #ffffff; font-size: 0.72rem; font-weight: 800; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.08em; text-transform: uppercase;">
-                        🏛️ PS-07 NATIONAL HACKATHON
+                    <span style="background: #047857; color: #ffffff; font-size: 0.74rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.04em;">
+                        Syngenta Biologicals × ANNAM.AI
                     </span>
-                    <span style="color: #475569; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
-                        Syngenta Biologicals &amp; ANNAM.AI
-                    </span>
-                    <span style="color: #cbd5e1;">•</span>
-                    <span style="color: #047857; font-size: 0.78rem; font-weight: 700;">
-                        Empirical Causal Attribution System
+                    <span style="color: #475569; font-size: 0.80rem; font-weight: 600;">
+                        Hack Core 2026 &bull; Problem Statement 07
                     </span>
                 </div>
                 <div style="font-size: 2.15rem; font-weight: 900; color: #064e3b; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 4px;">
                     {t('title', lang)}
                 </div>
-                <div style="font-size: 0.98rem; color: #475569; font-weight: 600; font-style: italic; margin-bottom: 12px;">
+                <div style="font-size: 0.98rem; color: #475569; font-weight: 600; margin-bottom: 12px;">
                     {t('subtitle', lang)}
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 6px; flex-wrap: wrap; gap: 10px;">
-                    <div style="font-size: 0.8rem; color: #334155; font-weight: 600;">
-                        <strong style="color: #0f172a;">Team 15:</strong> Soham P. Kadu (Lead) &bull; Singireddy Prabhumitrareddy &bull; Bhakti A. Kadam
-                        <span style="color: #cbd5e1; margin: 0 4px;">|</span>
-                        <span style="color: #64748b;">Advisors: Dr. Shahbaz &amp; Hana Hafer</span>
+                    <div style="font-size: 0.82rem; color: #334155; font-weight: 600;">
+                        <strong style="color: #0f172a;">Team 15:</strong> Soham P. Kadu (Lead), Singireddy Prabhumitrareddy, Bhakti A. Kadam
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.74rem; font-weight: 700;">
+                    <div style="display: flex; align-items: center; gap: 14px; font-size: 0.78rem; font-weight: 600; color: #475569;">
                         <span style="color: #047857; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span> Closed-Loop Active
+                            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block;"></span> Live Weather
                         </span>
                         <span style="color: #0284c7; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #0284c7; border-radius: 50%; display: inline-block;"></span> Supabase PostgreSQL
+                            <span style="width: 7px; height: 7px; background: #0284c7; border-radius: 50%; display: inline-block;"></span> Mandi Prices
                         </span>
                         <span style="color: #b45309; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #f59e0b; border-radius: 50%; display: inline-block;"></span> Gemini 2.5 Flash
+                            <span style="width: 7px; height: 7px; background: #f59e0b; border-radius: 50%; display: inline-block;"></span> Soil Health
+                        </span>
+                        <span style="color: #7c3aed; display: inline-flex; align-items: center; gap: 5px;">
+                            <span style="width: 7px; height: 7px; background: #8b5cf6; border-radius: 50%; display: inline-block;"></span> AI Advisor
                         </span>
                     </div>
                 </div>

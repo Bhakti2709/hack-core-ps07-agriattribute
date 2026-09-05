@@ -1,244 +1,189 @@
-# 🌾 AgriAttribute AI: National Agronomic Causal Intelligence Engine
+# AgriAttribute
 
-> **Next-Generation Multimodal Decision Support, Pathology Diagnostics & Agronomic Causal Attribution System**  
-> *Engineered for Indian Agro-Climatic Zones | Built for PS-07 Hackathon*
-
----
-
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python)](https://python.org)
-[![Streamlit App](https://img.shields.io/badge/Streamlit-1.32%2B-FF4B4B.svg?logo=streamlit)](https://streamlit.io)
-[![Gemini 2.5 Flash](https://img.shields.io/badge/Google%20DeepMind-Gemini%202.5-4285F4.svg?logo=google)](https://deepmind.google)
-[![LeafVision 2.0](https://img.shields.io/badge/Vision%20Engine-LeafVision%202.0-10B981.svg)](./leafvision_engine.py)
-[![Supabase](https://img.shields.io/badge/Database-Supabase%20Cloud-3ECF8E.svg?logo=supabase)](https://supabase.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> **Biological Yield Attribution & Farmer Decision Platform**  
+> Built for **Syngenta Biologicals & ANNAM.AI — Hack Core 2026** (Problem Statement 07)  
+> **Team 15:** Soham Prabhakar Kadu (Lead), Singireddy Prabhumitrareddy, Bhakti Ajay Kadam  
+> **Mentors / Advisors:** Dr. Shahbaz, Hana Hafer
 
 ---
 
-## 📋 Table of Contents
-1. [Executive Summary & Problem Statement](#-executive-summary--problem-statement)
-2. [High-Level System Architecture](#-high-level-system-architecture)
-3. [Core Subsystems & Modules](#-core-subsystems--modules)
-   - [Tab 1: Real-Time Weather & Microclimate Intelligence](#1-real-time-weather--microclimate-intelligence)
-   - [Tab 2: Multimodal Agronomic Co-Pilot](#2-multimodal-agronomic-co-pilot)
-   - [Tab 3: Agmarknet 2.0 Market Economics & MSP Integration](#3-agmarknet-20-market-economics--msp-integration)
-   - [Tab 4: LeafVision 2.0 Plant Pathology & Diagnostic Engine](#4-leafvision-20-plant-pathology--diagnostic-engine)
-   - [Tab 5: DAC&FW Soil Health Card & Precision Nutrition](#5-dacfw-soil-health-card--precision-nutrition)
-   - [Tab 6: Farm Memory, Multi-Sheet Cloud Ledger & Audit Reports](#6-farm-memory-multi-sheet-cloud-ledger--audit-reports)
-4. [Mathematical Formulations & Causal Attribution Models](#-mathematical-formulations--causal-attribution-models)
-5. [Directory Layout](#-directory-layout)
-6. [Quickstart & Installation](#-quickstart--installation)
-7. [Environment Configuration](#-environment-configuration)
-8. [Authors, Mentorship & Acknowledgments](#-authors-mentorship--acknowledgments)
+## The Problem We Wanted to Solve
+
+Indian farmers are increasingly adopting biological crop inputs (like Syngenta Quantis or Isabion) to combat climate stress, erratic monsoons, and extreme heatwaves. However, at harvest time, one critical question remains unanswered:
+
+> *"Did my yield improve because of the biological product I paid for, or was it just favorable monsoon rain and good soil?"*
+
+Traditional agricultural apps either give generic advice or dump raw statistical charts that make little sense to a farmer standing in a field with a budget smartphone. We built **AgriAttribute** to solve this: a fast, touch-friendly, multilingual platform that mathematically isolates the biological yield boost from weather and soil factors, connects directly with live APMC mandi prices and government MSP benchmarks, and translates complex data science into plain language and actionable rupees per acre.
 
 ---
 
-## 🌍 Executive Summary & Problem Statement
+## Key Features
 
-Smallholder farmers across India face systemic asymmetric information risks: unpredictable microclimatic anomalies, sudden pest outbreaks, volatile mandi price realizations, and depleted soil nutrient profiles. Traditional advisory services are either non-localized, text-heavy, delayed, or disconnected from market realities.
+### 1. Today's Field Decisions & Weather
+- **Live Local Weather:** Real-time temperature, humidity, wind velocity, and cloud cover powered by OpenWeatherMap with automatic 3-key failover to prevent downtime.
+- **Spray Safety Window:** Automatically evaluates wind shear to warn farmers if spraying biologicals would cause droplet drift or if conditions are optimal (< 15 km/h).
+- **Interactive District Map:** Interactive Leaflet map showing local weather radar overlays, crop distribution, and district contingency baselines.
+- **5-Day Agro-Met Forecast:** Daily expected highs, lows, and precipitation probabilities so farmers can plan irrigation and applications in advance.
 
-**AgriAttribute AI** addresses **PS-07** by fusing **multimodal computer vision**, **causal agro-meteorology**, **real-time Agmarknet mandi streams**, and **DAC&FW Soil Health Card registries** into an integrated, zero-sidebar, touch-first diagnostic platform. It empowers marginal farmers and field extension officers with actionable, high-conviction agronomic interventions in English and Hindi (हिन्दी).
+### 2. Counterfactual Yield & ROI Calculator
+- **"Act vs. Do Nothing" Comparison:** Compares predicted harvest with biological treatment against an untreated control field under the exact same weather and soil conditions.
+- **SHAP Causal Attribution:** Uses an XGBoost regressor ($R^2 = 0.998$) with SHAP TreeExplainer to decompose yield into four clear slices:
+  - Biological boost ($\Delta Y$)
+  - Monsoon weather contribution
+  - Baseline soil fertility
+  - Base regional yield
+- **Plain-Language Financials:** Calculates gross revenue gain, product cost, net profit (₹/acre), and ROI percentage.
+- **1-Click WhatsApp Sharing & PDF:** Farmers can share their ROI summary directly on WhatsApp with local farmer groups or download a printable A4 advisory report.
 
----
+### 3. Agmarknet 2.0 Mandi Prices & MSP Tracker
+- **Live APMC Spot Prices:** Real wholesale prices across 24 major Indian commodities (Soybean, Cotton, Paddy, Wheat, Mustard, Onion, etc.).
+- **Government MSP Comparison:** Flags whether current mandi prices are trading at a premium or discount relative to the official CACP 2024–25 Minimum Support Price.
+- **Sell vs. Hold Recommendations:** Evaluates 72-hour price momentum to help farmers decide whether to sell at the local mandi immediately or hold stock under warehouse receipts.
 
-## 🧠 High-Level System Architecture
+### 4. Leaf Disease Scanner (LeafVision)
+- **Fast CPU Diagnosis:** Optimized vision foundation model that diagnoses leaf diseases in under 30 ms on standard CPU hardware without requiring an expensive cloud GPU.
+- **Visual Lesion Segmentation:** Highlights infected areas, calculates chlorosis and necrotic tissue percentages, and estimates potential crop loss.
+- **Balanced Prescriptions:** Recommends both approved chemical interventions (CIBRC dosage ratios) and regenerative biological pathways (*Trichoderma viride*, *Pseudomonas fluorescens*, Neem oil).
+- **Built-in Sample Gallery:** Includes pre-loaded leaf samples (Soybean, Cotton, Rice, Onion, Healthy) for demonstration and testing.
 
-```mermaid
-graph TD
-    subgraph DataIngestion [Multimodal Ingestion & External APIs]
-        A1[GPS Geolocation & Open-Meteo / IMD Weather]
-        A2[Agmarknet Real-Time Mandi Spot & MSP Feed]
-        A3[DAC&FW Soil Health Card Knowledge Base]
-        A4[Device Mic: Voice Input / Web Speech API]
-        A5[High-Res Camera: Leaf / Crop Sample]
-    end
+### 5. Soil Health Card & Fertilizer Calculator
+- **DAC&FW Soil Standards:** Calibrated with the Indian Government's 12-parameter Soil Health Card standards across 5 major agro-climatic zones (Deccan Vertisols, Indo-Gangetic Alluvium, Red Soils, etc.).
+- **Bag-Level Fertilizer Plan:** Recommends exact bag quantities of Urea, DAP, and MOP tailored to the farmer's target yield, helping reduce chemical over-application while restoring microbial health.
 
-    subgraph CoreEngines [Analytical & Deep Learning Engines]
-        B1[LeafVision 2.0 Vision Foundation Model<br/>Lesion Boundary & Chlorosis Detection]
-        B2[Gemini 2.5 Multimodal Engine<br/>Context-Aware Agronomic Co-Pilot]
-        B3[Causal Attribution & Microclimate Stress Engine]
-        B4[Agmarknet 2.0 Market Momentum & Arbitrage Calc]
-        B5[Precision N-P-K Chemical Dosage Optimizer]
-    end
-
-    subgraph PresentationTier [Human-Centric Interface Tier]
-        C1[Tab 1: Today's Decisions & Weather Alerts]
-        C2[Tab 2: Multimodal Voice & Visual Co-Pilot]
-        C3[Tab 3: Agmarknet 2.0 Economics & MSP Analysis]
-        C4[Tab 4: LeafVision 2.0 Plant Health Scanner]
-        C5[Tab 5: Soil Health Card & Fertilizer Rx]
-        C6[Tab 6: Farm Memory, Excel Ledger & PDF Dossiers]
-    end
-
-    subgraph Persistence [Cloud Storage & Analytical Reports]
-        D1[(Supabase Cloud Farm Memory Ledger)]
-        D2[ReportLab Unicode PDF Advisory Generator]
-        D3[Multi-Sheet Financial & Agronomic Excel Workbook]
-    end
-
-    A1 --> B3 --> C1
-    A4 & A5 --> B2 --> C2
-    A5 --> B1 --> C4
-    A2 --> B4 --> C3
-    A3 --> B5 --> C5
-    C1 & C2 & C3 & C4 & C5 --> D1
-    D1 --> C6
-    D1 --> D2 & D3
-```
+### 6. Farm Journal & Multilingual AI Assistant
+- **Cloud Farm Memory:** Synchronizes field logs, diagnostic history, and application records with a Supabase PostgreSQL cloud database.
+- **Export to Excel:** Generates a clean, multi-sheet `.xlsx` spreadsheet for farm bookkeeping or loan applications.
+- **Multimodal AI Assistant:** Powered by Google Gemini 2.5 Flash. Farmers can ask questions by typing, speaking via voice note, or uploading a field photo. Works in English, Hindi, Marathi, and Telugu.
 
 ---
 
-## 🔬 Core Subsystems & Modules
+## Practical Engineering Decisions
 
-### 1. Real-Time Weather & Microclimate Intelligence
-- **Hyperlocal Geo-Weather:** Automatically extracts GPS coordinates or allows manual Indian district selection; pulls 7-day hourly temperature, relative humidity, wind velocity, precipitation probability, and Solar GHI.
-- **Microclimatic Stress Index:** Computes physiological thermal stress and fungal humidity thresholds to issue real-time actionable advisories (e.g., spray delays during high wind gusts or pre-irrigation before heat waves).
+During development, we made several conscious engineering trade-offs based on real-world farming constraints:
 
-### 2. Multimodal Agronomic Co-Pilot
-- **Powered by Gemini 2.5:** Combines prompt orchestration with real-time agronomic domain priors.
-- **Multimodal Dialogue:** Supports audio speech transcription (via browser Web Speech API), text queries, and image attachment.
-- **Bilingual Response Generation:** Delivers structured advisories in English and Hindi with explicit dos/don'ts, chemical dosage calculations, and safety warnings.
+1. **Why we built an Adaptive Device View Mode:**  
+   Budget Android smartphones are the primary device used in rural India. Farmers often struggle to read small 13-14px fonts in bright outdoor sunlight. We implemented an adaptive typography engine right at the top of the interface:
+   - `📱 Mobile Phone (Large Font)`: Scales base fonts to 18.5px, increases button heights to 56px, and enlarges navigation tabs to 60px for easy thumb taps.
+   - `💻 Laptop / Desktop`: Standard compact desktop view.
+   - `📟 Tablet Mode`: Balanced 17px view for field extension workers with tablets.
 
-### 3. Agmarknet 2.0 Market Economics & MSP Integration
-- **Direct Mandi Price Feeds:** Tracks wholesale spot prices across major APMCs and commodities (Wheat, Paddy, Cotton, Mustard, Soybean, Potato, etc.).
-- **Government MSP Benchmarking:** Instantly flags whether spot market transactions are trading at a discount or premium relative to the official Cabinet Committee on Economic Affairs (CCEA) Minimum Support Price.
-- **Arbitrage & Timing Strategy:** Evaluates 72-hour price momentum to recommend immediate sale vs. warehouse storage under negotiable warehouse receipts (NWR).
+2. **Why we implemented 3-Key API Failover for Weather:**  
+   Free-tier weather APIs frequently hit rate limits during hackathons and testing. Instead of letting the app fail, `openweather_service.py` automatically detects HTTP 429 or connection timeouts and seamlessly rotates through a pool of 3 distinct API keys with zero user disruption.
 
-### 4. LeafVision 2.0 Plant Pathology & Diagnostic Engine
-- **In-Browser Deep Diagnostics:** Analyzes leaf imagery within 25 ms, extracting 24 structural and biochemical attributes.
-- **Pathogen Fingerprinting:** Identifies Early/Late Blight, Yellow Rust, Powdery Mildew, Leaf Curl Virus, and Zinc/Iron chlorosis.
-- **Bifurcated Prescriptions:** Delivers immediate chemical interventions (CIBRC-approved formulations with active ingredient ratios) alongside organic/biological remediation pathways (Neem cake, *Trichoderma viride*, *Pseudomonas fluorescens*).
+3. **Edge Vision over Cloud Vision:**  
+   Cellular connectivity in agricultural fields can be intermittent. Rather than sending heavy image payloads to expensive cloud GPU endpoints, we optimized our foliar diagnosis pipeline to run locally on the CPU in under 30 ms.
 
-### 5. DAC&FW Soil Health Card & Precision Nutrition
-- **Agro-Climatic Baselines:** Incorporates official Department of Agriculture & Farmers Welfare (DAC&FW) target benchmarks across Indo-Gangetic, Deccan, Western Coastal, and Eastern Plateau zones.
-- **Chemical Balance Audit:** Computes Nitrogen (N), Available Phosphorus ($P_2O_5$), Available Potassium ($K_2O$), Soil Organic Carbon (SOC), and pH.
-- **Dosage Calculator:** Generates bag-level fertilizer recommendations (Urea, DAP, MOP, Gypsum, Agricultural Lime) tailored to target crop nutrient uptake dynamics.
-
-### 6. Farm Memory, Multi-Sheet Cloud Ledger & Audit Reports
-- **Cloud-Synced Longitudinal Record:** Persists all farmer queries, crop stages, diagnostic outputs, and transactions to Supabase Postgres.
-- **Multi-Sheet OpenPyXL Workbook:** Generates a structured `.xlsx` workbook featuring:
-  1. *Farm Profile & Land Registry*
-  2. *Diagnostic History & Disease Trajectory*
-  3. *Soil Test Parametric Matrix*
-  4. *Input Costs vs. Market Revenue Log*
-- **Audit-Ready PDF Generator:** Produces Unicode-compliant, printable advisory dossiers via ReportLab for submission to KVKs, banks, and crop insurance adjudicators.
+4. **Zero-Sidebar, Touch-First Interface:**  
+   Sidebars on mobile devices often collapse into a hamburger menu that non-technical users struggle to find. We moved all critical controls—Device Mode, Language Selector, Location, and Navigation Tabs—into the main full-width flow so everything is visible and accessible in one glance.
 
 ---
 
-## 📐 Mathematical Formulations & Causal Attribution Models
+## Tech Stack
 
-### 1. Thermal Stress Index (TSI)
-$$	ext{TSI} = T_{	ext{ambient}} + 0.55 \left(1 - rac{	ext{RH}}{100}ight)(T_{	ext{ambient}} - 14.5)$$
-*Where $T_{	ext{ambient}}$ is dry-bulb temperature in °C and $	ext{RH}$ is relative humidity (%). Values $> 32^\circ	ext{C}$ trigger heat-induced reproductive sterility warnings.*
-
-### 2. Fertilizer Replenishment Calculus (DAC&FW Target Yield Equation)
-$$	ext{Fertilizer Requirement } (kg/ha) = rac{	ext{Nutrient Target} - (S_{	ext{test}} 	imes \eta_{	ext{soil}})}{\eta_{	ext{fertilizer}}}$$
-*Where $S_{	ext{test}}$ represents available soil test value ($kg/ha$), $\eta_{	ext{soil}}$ is soil nutrient efficiency factor ($0.30 - 0.35$ for N, $0.15 - 0.20$ for P), and $\eta_{	ext{fertilizer}}$ is fertilizer efficiency ($0.50$ for Urea, $0.20$ for DAP).*
-
-### 3. Mandi Realization Elasticity Ratio (MRER)
-$$	ext{MRER} = rac{P_{	ext{spot}} - 	ext{MSP}}{	ext{MSP}} 	imes 100$$
-*If $	ext{MRER} < -5\%$, the platform triggers a formal advisory to route stock to central procurement centers (FCI/NAFED) or secure e-NWR pledges.*
+- **Frontend & App Engine:** Python 3.10+, Streamlit (custom responsive CSS, Plotly charts, Leaflet GIS)
+- **Machine Learning & Attribution:** XGBoost Regressor, SHAP (TreeExplainer), Scikit-Learn
+- **Computer Vision:** PyTorch / Torchvision, Pillow (lesion color masking, HSV thresholding)
+- **Multilingual AI:** Google Gemini 2.5 Flash API (multimodal audio/image reasoning)
+- **Cloud Database:** Supabase (PostgreSQL 15 + PostGIS)
+- **Data & APIs:** OpenWeatherMap REST API, Agmarknet daily mandi feeds, DAC&FW Soil Health Card benchmarks, CACP MSP 2024-25 gazette data
+- **Export Engines:** FPDF2 (printable A4 PDF dossiers), OpenPyXL (multi-sheet Excel workbooks), WhatsApp deep-linking
 
 ---
 
-## 📂 Directory Layout
+## Project Structure
 
 ```text
-📁 hack-core-ps07-agriattribute/
-├── app.py                         # Streamlit Full-Width Reactive Cockpit (Tabs 1-6)
-├── localization.py                # 4-Language Localization Engine (EN, HI, MR, TE)
-├── openweather_service.py         # 3-Key Failover Real-Time Weather & 5-Day Forecast
-├── gemini_service.py              # Gemini 2.5 Flash Multimodal & Audio Service
-├── leafvision_engine.py           # LeafVision 2.0 Pathology Diagnostics Model
-├── agmarknet_engine.py            # Agmarknet Mandi Spot Price & MSP Intelligence
-├── pricing_and_soil_engine.py     # DAC&FW Soil Health Card & Fertilizer Calculator
-├── interactive_map_service.py     # Hyperlocal Weather & Crop Distribution Interactive Map
-├── supabase_client.py             # Supabase Ledger & Multi-Sheet Excel Engine
-├── pdf_report.py                  # Unicode Print-Ready PDF Advisory Dossier Generator
-├── retrain_pipeline.py            # Automated CSV Retraining & Recalibration Engine
-├── train_model.py                 # Initial XGBoost Regressor & SHAP Model Trainer
-├── data_generator.py              # Domain-Calibrated 12-Crop Synthetic Data Generator
-├── requirements.txt               # Pinned Production Dependencies
-├── .env.example                   # Environment Variables Blueprint
-├── README.md                      # System Overview & Quickstart Guide
-├── assets/leaf_samples/           # Sample Leaf Photos for Diagnostics Verification
-├── data/                          # Real Agmarknet Mandi Reports & Trial Benchmarks
-├── docs/                          # Technical Specification & Cloud Architecture
-│   ├── SYSTEM_ARCHITECTURE.md     # In-Depth 5-Layer Blueprint, Formulations & Proof
-│   └── supabase_schema.sql        # Supabase PostgreSQL DDL Database Schema
-└── models/                        # Serialized Machine Learning Artifacts
-    ├── model.pkl                  # Trained XGBoost Regressor (R² = 0.9995)
-    └── shap_explainer.pkl         # SHAP TreeExplainer & Game-Theoretic Weights
+hack-core-ps07-agriattribute/
+├── app.py                         # Main Streamlit application (Tabs 1 to 6)
+├── localization.py                # Translations for English, Hindi, Marathi, Telugu
+├── openweather_service.py         # Resilient weather engine with 3-key failover
+├── gemini_service.py              # Multimodal Gemini 2.5 assistant (voice, text, image)
+├── leafvision_engine.py           # On-device leaf disease diagnosis & lesion analysis
+├── agmarknet_engine.py            # Mandi wholesale prices & MSP comparison
+├── pricing_and_soil_engine.py     # Soil Health Card 12-parameter fertilizer calculator
+├── interactive_map_service.py     # Interactive Leaflet weather & crop map
+├── supabase_client.py             # Cloud database connection & Excel ledger exporter
+├── pdf_report.py                  # Downloadable printable A4 advisory PDF generator
+├── retrain_pipeline.py            # Drag-and-drop CSV model retraining pipeline
+├── train_model.py                 # Initial XGBoost and SHAP model training script
+├── data_generator.py              # Calibrated 12-crop Indian agricultural trial dataset
+├── requirements.txt               # Pinned Python dependencies
+├── .env.example                   # Template for API keys
+├── README.md                      # This file
+├── assets/leaf_samples/           # Test leaf photos for offline disease diagnosis
+├── data/                          # Agmarknet mandi report CSV and field trial data
+├── docs/                          # Technical documentation and database schema
+│   ├── SYSTEM_ARCHITECTURE.md     # Detailed architecture, math, and data sources
+│   ├── RESOURCES_DOSSIER.md       # Complete catalog of all datasets, APIs, and models
+│   └── supabase_schema.sql        # Supabase PostgreSQL table definitions
+└── models/                        # Serialized ML models
+    ├── model.pkl                  # Trained XGBoost yield model
+    └── shap_explainer.pkl         # Trained SHAP TreeExplainer
 ```
-
-> 📖 **Deep Technical Architecture**: For full mathematical formulations, algorithmic proofs, and government data provenance, consult [docs/SYSTEM_ARCHITECTURE.md](./docs/SYSTEM_ARCHITECTURE.md).
-
 
 ---
 
-## 🚀 Quickstart & Installation
+## Getting Started
 
-### Prerequisites
-- Python 3.10, 3.11, or 3.12
-- Git
-- Google AI Studio API Key (for Gemini 2.5 Flash)
-- Supabase Project URL & Anon Key (optional for cloud persistence; fallback to local memory is automatic)
-
-### Step 1: Clone Repository
+### 1. Clone the repository
 ```bash
 git clone https://github.com/soham0777/hack-core-ps07-agriattribute.git
 cd hack-core-ps07-agriattribute
 ```
 
-### Step 2: Configure Virtual Environment
+### 2. Create and activate a virtual environment
 ```bash
 python -m venv venv
+
 # On Windows:
-.\venv\Scripts\activate
-# On Linux/macOS:
+venv\Scripts\activate
+
+# On Linux / macOS:
 source venv/bin/activate
 ```
 
-### Step 3: Install Dependencies
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Configure Environment Variables
-Create a `.env` file in the root directory:
+### 4. Set up environment variables (Optional but recommended)
+Create a `.env` file in the project root:
 ```ini
-GEMINI_API_KEY=your_gemini_2_5_flash_api_key_here
-SUPABASE_URL=your_supabase_project_url_here
+GEMINI_API_KEY=your_gemini_api_key_here
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+SUPABASE_URL=your_supabase_url_here
 SUPABASE_KEY=your_supabase_anon_key_here
 ```
+*(Note: If API keys are not provided, the platform automatically switches to cached local telemetry and fallback logic without crashing.)*
 
-### Step 5: Launch Streamlit Dashboard
+### 5. Launch the application
 ```bash
-streamlit run app.py --server.port 8505
+streamlit run app.py
 ```
-Access the application at `http://localhost:8505`.
+Open your browser at `http://localhost:8505`.
 
 ---
 
-## ⚙️ Environment Configuration
+## Data Sources & Official Citations
 
-| Variable | Required | Description |
-| :--- | :---: | :--- |
-| `GEMINI_API_KEY` | **Yes** | Google Gemini API Key for multimodal conversational diagnostics. |
-| `SUPABASE_URL` | Optional | Supabase PostgreSQL project REST endpoint for farm ledger persistence. |
-| `SUPABASE_KEY` | Optional | Supabase public anonymous API key. |
+All agricultural data in this platform is grounded in official Indian Government publications:
+- **Agmarknet (DMI, MoA&FW):** Daily modal wholesale spot prices from state APMCs.
+- **Commission for Agricultural Costs & Prices (CACP):** 2024–25 Minimum Support Price schedules.
+- **Soil Health Card Scheme (DAC&FW):** 12-parameter soil nutrient benchmarks.
+- **India Meteorological Department (IMD Mausam):** Regional rainfall normals and stress thresholds.
+- **ICAR-CRIDA:** District Agricultural Contingency Plans for Vidarbha and the Deccan Plateau.
+- **SHAP Research Citation:** Lundberg et al., *Nature Machine Intelligence* (2020).
 
----
-
-## 👥 Authors, Mentorship & Acknowledgments
-
-- **Development Team:** Built with dedication for the **PS-07 National Hackathon** challenge on Agronomic Attribution & Smallholder Resilience.
-- **Domain Foundations:**
-  - *Directorate of Economics and Statistics (DES), Ministry of Agriculture & Farmers Welfare* (Agmarknet datasets & MSP bulletins).
-  - *Indian Council of Agricultural Research (ICAR)* (Fertilizer response equations & disease symptom libraries).
-  - *India Meteorological Department (IMD) & Open-Meteo* (High-resolution atmospheric models).
+For a complete itemized list of every formula, dataset, and statutory standard, see [`docs/RESOURCES_DOSSIER.md`](./docs/RESOURCES_DOSSIER.md).
 
 ---
 
-<div align="center">
-  <sub>Engineered with precision for the future of Indian Agriculture 🇮🇳</sub>
-</div>
+## The Team
+
+Built with genuine passion for Indian agriculture by **Team 15**:
+- **Soham Prabhakar Kadu** (Team Lead & Machine Learning Architecture)
+- **Singireddy Prabhumitrareddy** (Backend Engineering & Cloud Database)
+- **Bhakti Ajay Kadam** (Agronomic Research & UI Design)
+
+*Syngenta Biologicals & ANNAM.AI Hack Core 2026 — Problem Statement 07*
