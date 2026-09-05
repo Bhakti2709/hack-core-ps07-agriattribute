@@ -520,7 +520,17 @@ def main():
     model, artifacts = load_ml_pipeline()
     
     # 🌐 Centralized Global Language Selector & Executive Command Header
-    lang_options = ["English", "Hindi (हिंदी)", "Marathi (मराठी)", "Telugu (తెలుగు)"]
+    lang_options = [
+        "English",
+        "Hindi (हिंदी)",
+        "Marathi (मराठी)",
+        "Punjabi (ਪੰਜਾਬੀ)",
+        "Telugu (తెలుగు)",
+        "Gujarati (ગુજરાતી)",
+        "Kannada (ಕನ್ನಡ)",
+        "Tamil (தமிழ்)",
+        "Bengali (বাংলা)"
+    ]
     cur_lang_idx = lang_options.index(st.session_state.selected_lang) if st.session_state.selected_lang in lang_options else 0
     lang = st.session_state.selected_lang
 
@@ -542,12 +552,7 @@ def main():
                 st.session_state.selected_lang = new_lang
                 st.rerun()
 
-            st.markdown(f"""
-            <div style="font-size: 0.80rem; color: #475569; display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 0 4px;">
-                <span>📱 Auto-Responsive: <strong style="color: #047857;">Active</strong></span>
-                <span style="color: #047857; font-weight: 700;">● 100% Synced</span>
-            </div>
-            """, unsafe_allow_html=True)
+
 
         with hdr_col1:
             st.markdown(f"""
@@ -566,25 +571,7 @@ def main():
                 <div style="font-size: 0.98rem; color: #475569; font-weight: 600; margin-bottom: 12px;">
                     {t('subtitle', lang)}
                 </div>
-                <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 6px; flex-wrap: wrap; gap: 10px;">
-                    <div style="font-size: 0.84rem; color: #047857; font-weight: 750;">
-                        🌱 Multi-Agro-Climatic Intelligence Platform
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 14px; font-size: 0.78rem; font-weight: 600; color: #475569;">
-                        <span style="color: #047857; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block;"></span> Live Weather
-                        </span>
-                        <span style="color: #0284c7; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #0284c7; border-radius: 50%; display: inline-block;"></span> Mandi Prices
-                        </span>
-                        <span style="color: #b45309; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #f59e0b; border-radius: 50%; display: inline-block;"></span> Soil Health
-                        </span>
-                        <span style="color: #7c3aed; display: inline-flex; align-items: center; gap: 5px;">
-                            <span style="width: 7px; height: 7px; background: #8b5cf6; border-radius: 50%; display: inline-block;"></span> AI Advisor
-                        </span>
-                    </div>
-                </div>
+
             </div>
             """, unsafe_allow_html=True)
 
@@ -606,42 +593,42 @@ def main():
             "title": t("feat1_title", lang),
             "sub": t("feat1_sub", lang),
             "icon": "🌦️",
-            "badge": "Radar & Weather"
+            "badge": t("feat1_badge", lang)
         },
         {
             "img": "assets/features/feature_2_dosage.jpg",
             "title": t("feat2_title", lang),
             "sub": t("feat2_sub", lang),
             "icon": "⚖️",
-            "badge": "Yield & ROI"
+            "badge": t("feat2_badge", lang)
         },
         {
             "img": "assets/features/feature_3_disease.jpg",
             "title": t("feat3_title", lang),
             "sub": t("feat3_sub", lang),
             "icon": "🩺",
-            "badge": "LeafVision AI"
+            "badge": t("feat3_badge", lang)
         },
         {
             "img": "assets/features/feature_4_memory.jpg",
             "title": t("feat4_title", lang),
             "sub": t("feat4_sub", lang),
             "icon": "📖",
-            "badge": "Farm Memory"
+            "badge": t("feat4_badge", lang)
         },
         {
             "img": "assets/features/feature_5_proof.jpg",
             "title": t("feat5_title", lang),
             "sub": t("feat5_sub", lang),
             "icon": "📊",
-            "badge": "SHAP Proof"
+            "badge": t("feat5_badge", lang)
         },
         {
             "img": "assets/features/feature_6_ai.jpg",
             "title": t("feat6_title", lang),
             "sub": t("feat6_sub", lang),
             "icon": "💬",
-            "badge": "Kisan AI"
+            "badge": t("feat6_badge", lang)
         }
     ]
 
@@ -1282,28 +1269,28 @@ def main():
         
         with w_c1:
             if wind_speed_num < 15.0:
-                w_status = "✅ OPTIMAL SPRAY WINDOW (< 15 km/h)"
+                w_status = t("wind_optimal", lang)
                 w_bg = "#ecfdf5"
                 w_border = "#10b981"
                 w_text_color = "#047857"
-                w_desc = "Zero droplet drift hazard. Ideal for foliar biological absorption."
+                w_desc = t("wind_optimal_desc", lang)
             elif wind_speed_num < 25.0:
-                w_status = "⚠️ MODERATE WIND (15-25 km/h)"
+                w_status = t("wind_moderate", lang)
                 w_bg = "#fffbeb"
                 w_border = "#f59e0b"
                 w_text_color = "#b45309"
-                w_desc = "Use low-drift coarse nozzles or spray before 10 AM."
+                w_desc = t("wind_moderate_desc", lang)
             else:
-                w_status = "❌ HIGH WIND ALERT (> 25 km/h)"
+                w_status = t("wind_high", lang)
                 w_bg = "#fef2f2"
                 w_border = "#ef4444"
                 w_text_color = "#b91c1c"
-                w_desc = "Do NOT spray! Chemical drift and wash-off danger."
+                w_desc = t("wind_high_desc", lang)
                 
             st.markdown(f"""
             <div style="background: {w_bg}; border: 2px solid {w_border}; border-radius: 14px; padding: 16px; margin-bottom: 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:1.02rem; font-weight:800; color:{w_text_color};">💨 LIVE WIND SPEED & SPRAY SAFETY</span>
+                    <span style="font-size:1.02rem; font-weight:800; color:{w_text_color};">{t('live_wind_heading', lang)}</span>
                     <span style="font-size:1.55rem; font-weight:900; color:{w_text_color};">{wind_speed_num} km/h</span>
                 </div>
                 <div style="font-weight:800; font-size:1.12rem; color:{w_text_color}; margin:8px 0;">{w_status}</div>
@@ -1315,11 +1302,11 @@ def main():
             st.markdown(f"""
             <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-bottom: 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:1.02rem; font-weight:800; color:#334155;">☁️ LIVE CLOUD COVER & ABSORPTION</span>
+                    <span style="font-size:1.02rem; font-weight:800; color:#334155;">{t('live_cloud_heading', lang)}</span>
                     <span style="font-size:1.55rem; font-weight:900; color:#0284c7;">{cloud_pct_num}%</span>
                 </div>
-                <div style="font-weight:800; font-size:1.12rem; color:#0f172a; margin:8px 0;">{ow_live.get('description', 'Partly Cloudy').title()}</div>
-                <div style="font-size:0.95rem; color:#1e293b; font-weight:600; line-height:1.45;">Stomatal opening active. Optimal diffused light for biostimulant uptake.</div>
+                <div style="font-weight:800; font-size:1.12rem; color:#0f172a; margin:8px 0;">{t_weather_desc(ow_live.get('description', 'Partly Cloudy'), lang)}</div>
+                <div style="font-size:0.95rem; color:#1e293b; font-weight:600; line-height:1.45;">{t('cloud_optimal_desc', lang)}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -1380,7 +1367,7 @@ def main():
         encoded_w_wa = urllib.parse.quote(weather_wa_text.encode('utf-8'))
         st.markdown(f'<a href="https://wa.me/?text={encoded_w_wa}" target="_blank" class="wa-button" style="width: 100%;">{t("share_weather_wa_btn", lang)}</a>', unsafe_allow_html=True)
         
-        with st.expander("📋 View & Copy Executive Agronomic Briefing Text"):
+        with st.expander(t("briefing_expander_title", lang)):
             st.code(weather_wa_text, language="markdown")
             
 
@@ -1405,12 +1392,12 @@ def main():
         
         # IMD KALP (Krishi Advisory based on Location-specific Weather Prediction) Framework
         # Ministry of Earth Sciences & India Meteorological Department (webgis.imd.gov.in/agro)
-        st.markdown("<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>🌾 <strong>Step 1: Select Active Crop Growth Stage (IMD Phenological Calendar):</strong></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>{t('step1_growth_stage', lang)}</div>", unsafe_allow_html=True)
         stage_options = [
-            "🌱 Vegetative Growth & Branching (20-45 DAS)",
-            "🌸 Flowering & Square / Boll / Pod Setting (45-75 DAS)",
-            "🌾 Grain Filling & Pod Maturation (75-105 DAS)",
-            "🍂 Physiological Maturity & Pre-Harvest (105+ DAS)"
+            t("growth_stage_1", lang),
+            t("growth_stage_2", lang),
+            t("growth_stage_3", lang),
+            t("growth_stage_4", lang)
         ]
         selected_growth_stage = st.selectbox(
             "Crop Growth Stage",
@@ -1482,7 +1469,7 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;'>⚖️ <strong>Step 2: Causal Harvest Prediction & Economic Return (Digital Field Twin):</strong></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;'>{t('step2_causal_pred', lang)}</div>", unsafe_allow_html=True)
         
         # Growth Stage Agronomic Response Multiplier
         stage_mult = 1.0
@@ -1510,7 +1497,7 @@ def main():
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%); border: 2px solid #fda4af; border-radius: 18px; padding: 22px; box-shadow: 0 4px 16px rgba(244,63,94,0.06);">
                 <span style="background: #ffe4e6; color: #be123c; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">❌ {t('cf_without_title', lang).upper()}</span>
-                <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #64748b; margin-top: 14px;">Baseline Harvest Prediction</div>
+                <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #64748b; margin-top: 14px;">{t('baseline_harvest_pred', lang)}</div>
                 <div style="font-size: 2.3rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin: 4px 0;">{pred_counterfactual:.2f} <span style="font-size: 1.1rem; font-weight: 600; color: #64748b;">{t('yield_unit', lang)}</span></div>
                 <div style="font-size: 1.05rem; font-weight: 700; color: #475569; margin-top: 6px;">Expected Gross Mandi Revenue: <strong style="color: #0f172a;">₹{pred_counterfactual * crop_price:,.0f} / acre</strong></div>
                 <div style="margin-top: 16px; background: rgba(255,255,255,0.85); border-left: 3px solid #e11d48; padding: 10px 12px; border-radius: 8px; font-size: 0.8rem; color: #9f1239; line-height: 1.4;">
@@ -1523,7 +1510,7 @@ def main():
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 2px solid #10b981; border-radius: 18px; padding: 22px; box-shadow: 0 4px 20px rgba(16,185,129,0.12);">
                 <span style="background: #dcfce7; color: #047857; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">✅ {t('cf_with_title', lang).upper()}</span>
-                <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #047857; margin-top: 14px;">Causal Boosted Harvest Prediction</div>
+                <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: #047857; margin-top: 14px;">{t('causal_boosted_pred', lang)}</div>
                 <div style="font-size: 2.3rem; font-weight: 900; color: #047857; line-height: 1.1; margin: 4px 0;">
                     {eff_actual:.2f} <span style="font-size: 1.1rem; font-weight: 600; color: #047857;">{t('yield_unit', lang)}</span>
                     <span style="background: #059669; color: white; font-size: 0.85rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">+{eff_delta:.2f} {t('yield_unit', lang)} (+{pct_boost:.1f}%)</span>
@@ -1546,13 +1533,13 @@ def main():
         st.markdown(f"""
         <div style="margin-top: 18px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
             <div style="max-width: 78%;">
-                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">🔬 Why Counterfactual Modeling (Judea Pearl / Rubin Potential Outcomes)?</div>
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">{t('why_cf_title', lang)}</div>
                 <div style="font-size: 0.78rem; color: #475569; line-height: 1.5; margin-top: 4px;">
                     To isolate pure biological efficacy from weather luck, the XGBoost engine simulates your exact digital field twin: holding Kopargaon temperature ({ow_live['temp_c']}°C), soil carbon ({soc}%), and rainfall 100% constant. The +{yield_delta:.2f} {t('yield_unit', lang)} boost is mathematically proven to be caused solely by the biostimulant.
                 </div>
             </div>
             <div style="font-size: 0.75rem; font-weight: 700; color: #047857; background: #ecfdf5; border: 1.5px solid #10b981; padding: 6px 14px; border-radius: 20px;">
-                ● 100% Causal Attribution (95% CI)
+                {t('causal_attrib_pill', lang)}
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1590,7 +1577,7 @@ def main():
         """, unsafe_allow_html=True)
         
         # Official Government Source Provenance Expander
-        with st.expander("🏛️ View Official Government Data Sources & Soil Laboratory Audit Provenance"):
+        with st.expander(t("soil_sources_expander_title", lang)):
             st.markdown("""
             * **Primary Authority:** Ministry of Agriculture & Farmers Welfare, Government of India — [National Soil Health Card Scheme (Phase-II)](https://soilhealth.dac.gov.in/).
             * **Geospatial Soil Mapping:** ICAR - National Bureau of Soil Survey & Land Use Planning (NBSS&LUP), Nagpur — *Agro-Ecological Sub-Region (AESR) Soil Taxonomy 1:250,000 Grid*.
@@ -1673,21 +1660,21 @@ def main():
         """, unsafe_allow_html=True)
         
         # 1-Click Verification Test Chips (No manual selection needed)
-        st.markdown("<div style='font-size:0.85rem; font-weight:800; color:#1e293b; margin-bottom:6px;'>🔬 1-Click Verification Samples (Test Instantly Without Files):</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:0.85rem; font-weight:800; color:#1e293b; margin-bottom:6px;'>{t('leafvision_samples_title', lang)}</div>", unsafe_allow_html=True)
         demo_cols = st.columns(5)
-        if demo_cols[0].button("🌿 Soybean (Rust)", use_container_width=True, key="bm_soy"):
+        if demo_cols[0].button(t("sample_soybean", lang), use_container_width=True, key="bm_soy"):
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/soybean_rust.jpg", "Soybean")
-        if demo_cols[1].button("🌸 Cotton (Blight)", use_container_width=True, key="bm_cot"):
+        if demo_cols[1].button(t("sample_cotton", lang), use_container_width=True, key="bm_cot"):
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/cotton_bacterial_blight.jpg", "Cotton")
-        if demo_cols[2].button("🌾 Rice (Blast)", use_container_width=True, key="bm_rice"):
+        if demo_cols[2].button(t("sample_rice", lang), use_container_width=True, key="bm_rice"):
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/rice_blast.jpg", "Rice (Paddy)")
-        if demo_cols[3].button("🧅 Onion (Blotch)", use_container_width=True, key="bm_oni"):
+        if demo_cols[3].button(t("sample_onion", lang), use_container_width=True, key="bm_oni"):
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/onion_purple_blotch.jpg", "Onion")
-        if demo_cols[4].button("🍃 Healthy Canopy", use_container_width=True, key="bm_hlth"):
+        if demo_cols[4].button(t("sample_healthy", lang), use_container_width=True, key="bm_hlth"):
             st.session_state["lv_active_sample"] = ("assets/leaf_samples/healthy_canopy.jpg", "Healthy")
 
         st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-        leaf_file = st.file_uploader("📷 Upload Custom Field Leaf Photo (Any Crop / Any Stage - Auto-Detected):", type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
+        leaf_file = st.file_uploader(t("leafvision_uploader_label", lang), type=["jpg", "jpeg", "png", "webp"], key="leafvision_uploader")
         
         # Multi-Source Telemetry Package for Synchronizer
         soil_telemetry_pkg = {
@@ -2147,7 +2134,7 @@ def main():
 
         # 🏛️ INTERACTIVE AGMARKNET 2.0 MANDI TERMINAL
         st.markdown("---")
-        st.markdown("### 🏛️ Agmarknet 2.0 Live Mandi Pulse & Daily Influx Terminal")
+        st.markdown(f"### {t('agmark_terminal_title', lang)}")
         st.caption("Real-Time APMC Daily Price & Influx Telemetry from Directorate of Marketing & Inspection ([agmarknet.gov.in/home](https://agmarknet.gov.in/home))")
         
         # Dual-Axis Price & Influx Chart
@@ -2159,7 +2146,7 @@ def main():
         with m_c1:
             st.markdown(f"""
             <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px;">
-                <div style="font-size: 0.8rem; font-weight: 800; color: #166534;">MANDI MODAL SPOT RATE</div>
+                <div style="font-size: 0.8rem; font-weight: 800; color: #166534;">{t('mandi_spot_rate_lbl', lang)}</div>
                 <div style="font-size: 1.6rem; font-weight: 900; color: #059669; margin: 4px 0;">₹{mandi_info['latest_price']:,.0f} <span style="font-size: 0.8rem; font-weight: normal;">/q</span></div>
                 <div style="font-size: 0.75rem; font-weight: 700; color: #15803d;">{mandi_info['market_verdict']}</div>
             </div>
@@ -2168,7 +2155,7 @@ def main():
         with m_c2:
             st.markdown(f"""
             <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px;">
-                <div style="font-size: 0.8rem; font-weight: 800; color: #1e40af;">SYNGENTA GRADE-A REALIZABLE</div>
+                <div style="font-size: 0.8rem; font-weight: 800; color: #1e40af;">{t('syngenta_realizable_lbl', lang)}</div>
                 <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb; margin: 4px 0;">₹{mandi_info['realizable_price']:,.0f} <span style="font-size: 0.8rem; font-weight: normal;">/q</span></div>
                 <div style="font-size: 0.75rem; color: #1e40af;"><strong>+₹{mandi_info['quality_premium']:,.0f}/q</strong> Quality Auction Premium</div>
             </div>
@@ -2177,7 +2164,7 @@ def main():
         with m_c3:
             st.markdown(f"""
             <div style="background: #fdf4ff; border: 1.5px solid #f0abfc; border-radius: 12px; padding: 14px;">
-                <div style="font-size: 0.8rem; font-weight: 800; color: #86198f;">DAILY MANDI INFLUX PRESSURE</div>
+                <div style="font-size: 0.8rem; font-weight: 800; color: #86198f;">{t('daily_influx_lbl', lang)}</div>
                 <div style="font-size: 1.6rem; font-weight: 900; color: #a21caf; margin: 4px 0;">{mandi_info['latest_arrival_mt']:,.1f} <span style="font-size: 0.8rem; font-weight: normal;">MT</span></div>
                 <div style="font-size: 0.75rem; color: #701a75;">72h Trend: <strong>{mandi_info['momentum_tag']}</strong></div>
             </div>
@@ -2186,7 +2173,7 @@ def main():
         st.info(f"💡 **Market Action Advisory for Farmers:** {mandi_info['action_advice']}")
         
         # Complete 24-Commodity Agmarknet 2.0 Report Expander
-        with st.expander("📑 View Complete Agmarknet 2.0 Daily Commodity & Arrival Matrix (24 Commodities)"):
+        with st.expander(t("view_agmark_matrix_title", lang)):
             agmark_df = agmarknet_engine.load_agmarknet_data()
             if not agmark_df.empty:
                 st.dataframe(
@@ -2222,13 +2209,13 @@ def main():
                         font-size: 1.6rem; box-shadow: 0 4px 20px rgba(99,102,241,0.4);">🤖</div>
             <div>
                 <div style="font-size: 1.25rem; font-weight: 900; color: #0f172a; line-height: 1.2;">
-                    AgriAttribute Field Intelligence Co-Pilot
+                    {t('ai_copilot_title', lang)}
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
                     <div style="width: 8px; height: 8px; background: {ai_status_color};
                                 border-radius: 50%; animation: pulse 2s infinite;"></div>
                     <span style="font-size: 0.8rem; color: #475569; font-weight: 600;">
-                        {ai_status_label} · Knows your farm, soil, weather & mandi today
+                        {ai_status_label} · {t('ai_copilot_sub', lang)}
                     </span>
                 </div>
             </div>
@@ -2501,10 +2488,9 @@ def main():
             st.markdown("""
             <div style="text-align:center; padding: 35px 20px; background:#f8fafc; border-radius:14px; border:1px dashed #cbd5e1; margin-top:15px;">
                 <div style="font-size:2.8rem;">🌾</div>
-                <div style="font-size:1.05rem; font-weight:700; color:#1e293b; margin-top:8px;">Ask Anything About Your Farm</div>
+                <div style="font-size:1.05rem; font-weight:700; color:#1e293b; margin-top:8px;">{t('ai_ask_anything_title', lang)}</div>
                 <div style="font-size:0.85rem; color:#64748b; margin-top:4px; max-width:550px; margin-left:auto; margin-right:auto;">
-                    Record a voice note, attach a field picture, pick a 1-tap telemetry prompt, or type your question.
-                    The AI is continuously synchronized with your weather, soil nutrients, mandi rates, and crop attribution.
+                    {t('ai_ask_anything_sub', lang)}
                 </div>
             </div>
             """, unsafe_allow_html=True)

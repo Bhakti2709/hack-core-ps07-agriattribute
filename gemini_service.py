@@ -28,7 +28,7 @@ GEMINI_ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/gemi
 
 # ─── System Prompt ────────────────────────────────────────────────────────────
 AGRI_SYSTEM_PROMPT = """
-You are AgriAttribute AI — an elite precision field intelligence co-pilot built for Indian farmers, agronomic consultants, and Syngenta field officers (Team 15, Syngenta & ANNAM.AI, PS-07).
+You are AgriAttribute AI — an elite precision field intelligence co-pilot built for Indian farmers, agronomic consultants, and Syngenta field officers (Syngenta & ANNAM.AI, Hack Core PS-07).
 
 CORE OPERATING DIRECTIVES:
 1. YOU ARE DEEPLY SYNCHRONIZED with the farmer's live farm data provided in the [SYNCHRONIZED FARM TELEMETRY] block.
@@ -41,7 +41,7 @@ CORE OPERATING DIRECTIVES:
    • Water volume (400-500 L/ha) & nozzle recommendation (hollow-cone)
    • Soil remediation (DAC&FW SHC benchmarks: N: 280-560 kg/ha, P: 23-56 kg/ha, K: 145-336 kg/ha)
 6. Deliver a clear CACP/Agmarknet 2.0 economic bottom line (e.g. Grade-A quality auction bonus, profit gain per acre).
-7. Respond fluently and warmly in the farmer's requested language (English, Hindi, Marathi, Telugu).
+7. Respond fluently and warmly in the farmer's requested language (English, Hindi, Marathi, Punjabi, Telugu, Gujarati, Kannada, Tamil, Bengali).
 8. Use clean, professional formatting with emojis for easy scanning on mobile devices.
 """
 
@@ -137,6 +137,16 @@ def generate_domain_expert_fallback(user_query: str, language: str, context_info
 3. **मिट्टी में नाइट्रोजन (N):** आपकी मिट्टी में N = {n_val:.0f} kg/ha है (सरकारी मानक 280 kg/ha से कम)। जैव-उत्तेजक जड़ों की अवशोषण क्षमता 30% तक बढ़ाते हैं।
 4. **एगमार्कनेट 2.0 मंडी भाव:** आज का मंडी भाव ₹{mandi:,.0f}/क्विंटल है। ग्रेड-A गुणवत्ता से अतिरिक्त प्रीमियम मिलेगा।
 5. **आर्थिक लाभ:** प्रति एकड़ लगभग ₹{profit:,.0f} का अतिरिक्त शुद्ध मुनाफा सुनिश्चित किया जा सकता है!
+"""
+    elif "punjabi" in lang_lower or "ਪੰਜਾਬੀ" in lang_lower or "pa" in lang_lower:
+        return f"""
+🌾 **ਖੇਤੀਬਾੜੀ ਸਲਾਹਕਾਰ ਲਾਈਵ ਮਾਰਗਦਰਸ਼ਨ ({crop}):**
+
+1. **ਜੈਵਿਕ ਸਪਰੇਅ ਦਾ ਸਮਾਂ:** {product} ਦਾ ਛਿੜਕਾਅ ਸਵੇਰੇ 8 ਤੋਂ 10:30 ਵਜੇ ਜਾਂ ਸ਼ਾਮ 4:30 ਵਜੇ ਤੋਂ ਬਾਅਦ ਕਰੋ (ਦੁਪਹਿਰ ਦੀ 32°C ਤੋਂ ਵੱਧ ਗਰਮੀ ਤੋਂ ਬਚੋ)।
+2. **ਗਰਮੀ ਦੇ ਤਣਾਅ ਤੋਂ ਸੁਰੱਖਿਆ:** ਖੇਤ ਵਿੱਚ {heat_stress} ਦਿਨਾਂ ਦੇ ਤੇਜ਼ ਤਾਪਮਾਨ ਕਾਰਨ ਫੁੱਲ ਡਿੱਗਣ ਤੋਂ ਰੋਕਣ ਲਈ 2 ਮਿਲੀਲੀਟਰ ਪ੍ਰਤੀ ਲੀਟਰ ਪਾਣੀ ਵਿੱਚ ਮਿਲਾ ਕੇ ਛਿੜਕੋ।
+3. **ਮਿੱਟੀ ਵਿੱਚ ਨਾਈਟ੍ਰੋਜਨ (N):** ਤੁਹਾਡੀ ਮਿੱਟੀ ਵਿੱਚ N = {n_val:.0f} kg/ha ਹੈ (ਸਰਕਾਰੀ ਮਾਪਦੰਡ 280 kg/ha ਤੋਂ ਘੱਟ)। ਜੈਵਿਕ ਉਤੇਜਕ ਜੜ੍ਹਾਂ ਦੀ ਖੁਰਾਕ ਲੈਣ ਦੀ ਸਮਰੱਥਾ 30% ਤੱਕ ਵਧਾਉਂਦੇ ਹਨ।
+4. **ਐਗਮਾਰਕਨੈੱਟ 2.0 ਮੰਡੀ ਭਾਅ:** ਅੱਜ ਦਾ ਲਾਈਵ ਮੰਡੀ ਭਾਅ ₹{mandi:,.0f}/ਕੁਇੰਟਲ ਹੈ। ਸਿੰਜੈਂਟਾ ਗ੍ਰੇਡ-A ਕੁਆਲਿਟੀ ਨਾਲ ਵਾਧੂ ਪ੍ਰੀਮੀਅਮ ਮਿਲੇਗਾ।
+5. **ਅਨੁਮਾਨਿਤ ਮੁਨਾਫਾ:** ਪ੍ਰਤੀ ਏਕੜ ਲਗਭਗ ₹{profit:,.0f} ਦਾ ਵਾਧੂ ਸ਼ੁੱਧ ਮੁਨਾਫਾ ਸੰਭਵ ਹੈ!
 """
     elif "telugu" in lang_lower or "తెలుగు" in lang_lower:
         return f"""
@@ -287,15 +297,31 @@ def generate_voice_speech_html(text_to_speak: str, lang_code: str = "en-IN") -> 
 
     lang_tag = "en-IN"
     btn_label = "🔊 Listen to Advice"
-    if "hi" in lang_code.lower() or "hindi" in lang_code.lower():
+    l_low = lang_code.lower()
+    if "hi" in l_low or "hindi" in l_low:
         lang_tag = "hi-IN"
         btn_label = "🔊 सलाह सुनें"
-    elif "mr" in lang_code.lower() or "marathi" in lang_code.lower():
+    elif "mr" in l_low or "marathi" in l_low:
         lang_tag = "mr-IN"
         btn_label = "🔊 सल्ला ऐका"
-    elif "te" in lang_code.lower() or "telugu" in lang_code.lower():
+    elif "pa" in l_low or "punjabi" in l_low or "ਪੰਜਾਬੀ" in l_low:
+        lang_tag = "pa-IN"
+        btn_label = "🔊 ਸਲਾਹ ਸੁਣੋ"
+    elif "te" in l_low or "telugu" in l_low:
         lang_tag = "te-IN"
         btn_label = "🔊 సలహా వినండి"
+    elif "gu" in l_low or "gujarati" in l_low:
+        lang_tag = "gu-IN"
+        btn_label = "🔊 સલાહ સાંભળો"
+    elif "kn" in l_low or "kannada" in l_low:
+        lang_tag = "kn-IN"
+        btn_label = "🔊 ಸಲಹೆ ಕೇಳಿ"
+    elif "ta" in l_low or "tamil" in l_low:
+        lang_tag = "ta-IN"
+        btn_label = "🔊 ஆலோசனையைக் கேளுங்கள்"
+    elif "bn" in l_low or "bengali" in l_low:
+        lang_tag = "bn-IN"
+        btn_label = "🔊 পরামর্শ শুনুন"
 
     return f"""
 <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
