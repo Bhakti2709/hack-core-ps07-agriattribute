@@ -127,6 +127,18 @@ st.markdown("""
         padding: 12px 16px;
         font-size: 0.85rem;
         margin-top: 10px;
+    }
+    
+    /* ─── MODERN EXECUTIVE CONTAINER STYLING ─── */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 16px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.03) !important;
+        margin-bottom: 20px !important;
+        padding: 6px !important;
+    }
+
     /* ─── REMOVE SIDEBAR COMPLETELY FOR FULL-WIDTH CLEAN INTERFACE ─── */
     [data-testid="stSidebar"],
     section[data-testid="stSidebar"],
@@ -355,36 +367,75 @@ def main():
     
     model, artifacts = load_ml_pipeline()
     
-    # 🌐 Centralized Global Language Selector on Top Header
+    # 🌐 Centralized Global Language Selector & Executive Command Header
     lang_options = ["English", "Hindi (हिंदी)", "Marathi (मराठी)", "Telugu (తెలుగు)"]
     cur_lang_idx = lang_options.index(st.session_state.selected_lang) if st.session_state.selected_lang in lang_options else 0
-
-    st.markdown('<div class="header-box" style="background: linear-gradient(135deg, #ecfdf5, #f0fdf4); border: 1.5px solid #a7f3d0; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08);">', unsafe_allow_html=True)
-    hdr_col1, hdr_col2 = st.columns([3.8, 1.4])
-    
-    with hdr_col2:
-        st.markdown(f"<div style='font-size:0.85rem; font-weight:800; color:#047857; margin-bottom:6px; display:flex; align-items:center; gap:5px;'>🌐 {t('sidebar_lang_title', st.session_state.selected_lang)}</div>", unsafe_allow_html=True)
-        new_lang = st.selectbox("Select Language", lang_options, index=cur_lang_idx, label_visibility="collapsed", key="global_top_lang_selector")
-        if new_lang != st.session_state.selected_lang:
-            st.session_state.selected_lang = new_lang
-            st.rerun()
-
     lang = st.session_state.selected_lang
 
-    with hdr_col1:
-        st.markdown(f"""
-        <div style="font-size: 2.1rem; font-weight: 800; color: #047857; margin-bottom: 4px; line-height: 1.15;">{t('title', lang)}</div>
-        <div style="font-size: 1.02rem; color: #475569 !important; font-weight: 600; font-style: italic; margin-bottom: 8px;">{t('subtitle', lang)}</div>
-        <div class="badge-container">
-            <span class="badge badge-highlight">{t('badge_hack', lang)}</span>
-            <span class="badge">{t('badge_team', lang)}</span>
-            <span class="badge" style="background: #e0f2fe; border-color: #0284c7; color: #0369a1 !important; font-weight: 600;">{t('badge_loop', lang)}</span>
-            <span class="badge" style="background: #dcfce7; border-color: #16a34a; color: #15803d !important; font-weight: 700;">{t('badge_db', lang)}</span>
-            <span class="badge" style="background: #fef3c7; border-color: #d97706; color: #b45309 !important; font-weight: 700;">{t('badge_ai', lang)}</span>
-        </div>
-        """, unsafe_allow_html=True)
+    with st.container(border=True):
+        hdr_col1, hdr_col2 = st.columns([3.6, 1.4])
+        
+        with hdr_col2:
+            st.markdown(f"""
+            <div style="background: #ffffff; border: 1.5px solid #d1fae5; border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05);">
+                <div style="font-size: 0.76rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 1.05rem;">🌐</span>
+                    <span>{t('sidebar_lang_title', lang)}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            new_lang = st.selectbox("Select Language", lang_options, index=cur_lang_idx, label_visibility="collapsed", key="global_top_lang_selector")
+            if new_lang != st.session_state.selected_lang:
+                st.session_state.selected_lang = new_lang
+                st.rerun()
+            st.markdown("""
+            <div style="font-size: 0.72rem; color: #64748b; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 0 4px;">
+                <span>System Mode: <strong>Full-Width Clean</strong></span>
+                <span style="color: #047857; font-weight: 700;">● Online</span>
+            </div>
+            """, unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        with hdr_col1:
+            st.markdown(f"""
+            <div style="padding: 2px 4px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <span style="background: #047857; color: #ffffff; font-size: 0.72rem; font-weight: 800; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.08em; text-transform: uppercase;">
+                        🏛️ PS-07 NATIONAL HACKATHON
+                    </span>
+                    <span style="color: #475569; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+                        Syngenta Biologicals &amp; ANNAM.AI
+                    </span>
+                    <span style="color: #cbd5e1;">•</span>
+                    <span style="color: #047857; font-size: 0.78rem; font-weight: 700;">
+                        Empirical Causal Attribution System
+                    </span>
+                </div>
+                <div style="font-size: 2.15rem; font-weight: 900; color: #064e3b; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 4px;">
+                    {t('title', lang)}
+                </div>
+                <div style="font-size: 0.98rem; color: #475569; font-weight: 600; font-style: italic; margin-bottom: 12px;">
+                    {t('subtitle', lang)}
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 6px; flex-wrap: wrap; gap: 10px;">
+                    <div style="font-size: 0.8rem; color: #334155; font-weight: 600;">
+                        <strong style="color: #0f172a;">Team 15:</strong> Soham P. Kadu (Lead) &bull; Singireddy Prabhumitrareddy &bull; Bhakti A. Kadam
+                        <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+                        <span style="color: #64748b;">Advisors: Dr. Shahbaz &amp; Hana Hafer</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.74rem; font-weight: 700;">
+                        <span style="color: #047857; display: inline-flex; align-items: center; gap: 5px;">
+                            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span> Closed-Loop Active
+                        </span>
+                        <span style="color: #0284c7; display: inline-flex; align-items: center; gap: 5px;">
+                            <span style="width: 7px; height: 7px; background: #0284c7; border-radius: 50%; display: inline-block;"></span> Supabase PostgreSQL
+                        </span>
+                        <span style="color: #b45309; display: inline-flex; align-items: center; gap: 5px;">
+                            <span style="width: 7px; height: 7px; background: #f59e0b; border-radius: 50%; display: inline-block;"></span> Gemini 2.5 Flash
+                        </span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
     # URL Query Sync for Farm GPS & Location
     qp = st.query_params
@@ -446,38 +497,38 @@ def main():
     # LOCATION & GPS INTELLIGENCE LAYER
     localized_reg = t_region(st.session_state.selected_region, lang)
     farm_disp_name = st.session_state.get('farm_location_name', 'Kopargaon')
-    st.markdown('<div class="section-card" style="padding: 18px 24px; margin-bottom: 20px; border-left: 5px solid #059669;">', unsafe_allow_html=True)
-    col_loc1, col_loc2, col_loc3 = st.columns([2, 1, 1])
-    with col_loc1:
-        st.markdown(f"""
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.6rem;">📍</span>
-            <div>
-                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #047857; letter-spacing: 0.05em;">{t('loc_title', lang)}</div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">{farm_disp_name} • <span style="font-size: 0.95rem; font-weight: 600; color: #475569;">{localized_reg}</span></div>
-                <div style="font-size: 0.8rem; color: #64748b;">GPS: {st.session_state.farm_lat:.4f}°N, {st.session_state.farm_lon:.4f}°E</div>
+    with st.container(border=True):
+        col_loc1, col_loc2, col_loc3 = st.columns([2, 1, 1])
+        with col_loc1:
+            st.markdown(f"""
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.6rem;">📍</span>
+                <div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #047857; letter-spacing: 0.05em;">{t('loc_title', lang)}</div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">{farm_disp_name} • <span style="font-size: 0.95rem; font-weight: 600; color: #475569;">{localized_reg}</span></div>
+                    <div style="font-size: 0.8rem; color: #64748b;">GPS: {st.session_state.farm_lat:.4f}°N, {st.session_state.farm_lon:.4f}°E</div>
+                </div>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_loc2:
-        if st.button(t("loc_detect_btn", lang), use_container_width=True):
-            st.session_state.selected_region = "Maharashtra & Vidarbha (Deccan)"
-            st.session_state.selected_crop = "Soybean"
-            st.session_state.farm_location_name = "Kopargaon"
-            st.session_state.farm_lat = 19.8833
-            st.session_state.farm_lon = 74.4833
-            st.success(t("loc_verified", lang, region=t_region("Maharashtra & Vidarbha (Deccan)", lang)))
-            st.rerun()
-    with col_loc3:
-        with st.popover("⚙️ Manual GPS"):
-            new_lat = st.number_input("Latitude (°N)", value=float(st.session_state.farm_lat), format="%.4f")
-            new_lon = st.number_input("Longitude (°E)", value=float(st.session_state.farm_lon), format="%.4f")
-            if st.button("Set Coordinates", use_container_width=True):
-                st.session_state.farm_lat = new_lat
-                st.session_state.farm_lon = new_lon
-                st.session_state.farm_location_name = f"{new_lat:.2f}N, {new_lon:.2f}E"
-                st.session_state.selected_region = get_closest_region(new_lat, new_lon)
+            """, unsafe_allow_html=True)
+        with col_loc2:
+            if st.button(t("loc_detect_btn", lang), use_container_width=True):
+                st.session_state.selected_region = "Maharashtra & Vidarbha (Deccan)"
+                st.session_state.selected_crop = "Soybean"
+                st.session_state.farm_location_name = "Kopargaon"
+                st.session_state.farm_lat = 19.8833
+                st.session_state.farm_lon = 74.4833
+                st.success(t("loc_verified", lang, region=t_region("Maharashtra & Vidarbha (Deccan)", lang)))
                 st.rerun()
+        with col_loc3:
+            with st.popover("⚙️ Manual GPS"):
+                new_lat = st.number_input("Latitude (°N)", value=float(st.session_state.farm_lat), format="%.4f")
+                new_lon = st.number_input("Longitude (°E)", value=float(st.session_state.farm_lon), format="%.4f")
+                if st.button("Set Coordinates", use_container_width=True):
+                    st.session_state.farm_lat = new_lat
+                    st.session_state.farm_lon = new_lon
+                    st.session_state.farm_location_name = f"{new_lat:.2f}N, {new_lon:.2f}E"
+                    st.session_state.selected_region = get_closest_region(new_lat, new_lon)
+                    st.rerun()
 
 
 
@@ -661,8 +712,6 @@ def main():
         with tab_veg:
             render_commodity_group_cards(["Vegetables", "Others"], "veg")
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
     # Active Variables Synchronized
     region = st.session_state.selected_region
     crop = st.session_state.selected_crop
@@ -751,7 +800,6 @@ def main():
     readiness_score = int(np.clip(100 - (heat_stress * 3.5) - (abs(rainfall - 750) / 25.0) + (soc * 2.0), 15, 98))
 
     # HERO EXPERIENCE: "TODAY'S FARM DECISION"
-    st.markdown('<div class="hero-decision-card">', unsafe_allow_html=True)
     col_hero1, col_hero2 = st.columns([1.6, 1.4])
     
     with col_hero1:
@@ -942,7 +990,6 @@ def main():
             )
             st.markdown(sources_algo_html, unsafe_allow_html=True)
         
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # HUMAN-CENTRIC NAVIGATION TABS (100% Localized)
     tab_decision, tab_counter, tab_disease, tab_memory, tab_prove, tab_ai = st.tabs([
@@ -956,7 +1003,6 @@ def main():
 
     # TAB 1: TODAY'S DECISION & WEATHER + WHATSAPP SHARE
     with tab_decision:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader(t("tab1_heading", lang))
         
         st.markdown(f"""
@@ -1079,11 +1125,9 @@ def main():
         with st.expander("📋 View & Copy Executive Agronomic Briefing Text"):
             st.code(weather_wa_text, language="markdown")
             
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 2: COUNTERFACTUAL (ACT VS DO NOTHING)
     with tab_counter:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader(t("tab2_heading", lang))
         st.caption(t("tab2_caption", lang))
         
@@ -1255,11 +1299,9 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 3: 12-PARAMETER SOIL HEALTH CARD + DISEASE RISK & LEAFVISION
     with tab_disease:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader(t("soil_card_title", lang))
         st.caption(t("soil_card_subtitle", lang))
         
@@ -1465,11 +1507,9 @@ def main():
                     st.markdown(leafvision_engine.render_unified_foliar_cockpit_html(lv_res), unsafe_allow_html=True)
             elif lv_res:
                 st.error(f"LeafVision analysis note: {lv_res.get('message')}")
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 4: MY FARM MEMORY & CLOSED-LOOP RETRAIN ENGINE
     with tab_memory:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         
         # Human-Centric Value & Purpose Cockpit
         st.markdown(f"""
@@ -1724,11 +1764,9 @@ def main():
                 <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px; font-style: italic;">“{item.get('farmer_notes')}”</div>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 5: ATTRIBUTION & OUTCOME (DID IT WORK?)
     with tab_prove:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader(t("tab5_heading", lang))
         
         col_attr1, col_attr2 = st.columns(2)
@@ -1911,11 +1949,9 @@ def main():
                 )
                 st.caption("Official Daily Bulletin: [Home-Agmarknet 2.0 (agmarknet.gov.in/home)](https://agmarknet.gov.in/home) — Ministry of Agriculture & Farmers Welfare")
                 
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # TAB 6: FIELD INTELLIGENCE CO-PILOT (GEMINI 2.5 FLASH — CONTEXT-AWARE + VOICE)
     with tab_ai:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
         # ── Hero Header ────────────────────────────────────────────────────────
         ai_status_color = "#22c55e"
@@ -2214,7 +2250,6 @@ def main():
                 </div>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

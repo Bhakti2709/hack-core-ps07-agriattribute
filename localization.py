@@ -105,7 +105,7 @@ TRANSLATIONS = {
         "map_hover_top": "Top Cultivated:",
 
         # Sidebar
-        "sidebar_lang_title": "🌐 Select Language / भाषा चुनें",
+        "sidebar_lang_title": "Select Language / भाषा चुनें",
         "sidebar_mode_title": "Experience Mode",
         "mode_farmer": "🚜 Farmer Mode (Action-Oriented)",
         "mode_agronomist": "⚙️ Agronomist Mode (Expert Analytics)",
@@ -326,7 +326,7 @@ TRANSLATIONS = {
         "map_hover_top": "प्रमुख फसलें:",
 
         # Sidebar
-        "sidebar_lang_title": "🌐 Select Language / भाषा चुनें",
+        "sidebar_lang_title": "Select Language / भाषा चुनें",
         "sidebar_mode_title": "अनुभव मोड",
         "mode_farmer": "🚜 किसान मोड (कार्रवाई-उन्मुख)",
         "mode_agronomist": "⚙️ कृषि वैज्ञानिक मोड (विशेषज्ञ विश्लेषण)",
@@ -547,7 +547,7 @@ TRANSLATIONS = {
         "map_hover_top": "प्रमुख पिके:",
 
         # Sidebar
-        "sidebar_lang_title": "🌐 Select Language / भाषा निवडा",
+        "sidebar_lang_title": "Select Language / भाषा निवडा",
         "sidebar_mode_title": "अनुभव मोड",
         "mode_farmer": "🚜 शेतकरी मोड (कृती-केंद्रित)",
         "mode_agronomist": "⚙️ कृषी तज्ज्ञ मोड (सखोल विश्लेषण)",
@@ -768,7 +768,7 @@ TRANSLATIONS = {
         "map_hover_top": "ప్రధాన పంటలు:",
 
         # Sidebar
-        "sidebar_lang_title": "🌐 Select Language / భాషను ఎంచుకోండి",
+        "sidebar_lang_title": "Select Language / భాషను ఎంచుకోండి",
         "sidebar_mode_title": "అనుభవ మోడ్",
         "mode_farmer": "🚜 రైతు మోడ్ (చర్య-కేంద్రీకృతం)",
         "mode_agronomist": "⚙️ వ్యవసాయ శాస్త్రవేత్త మోడ్ (లోతైన విశ్లేషణ)",
