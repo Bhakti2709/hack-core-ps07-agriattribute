@@ -6,3 +6,5 @@ __pycache__/
 .pytest_cache/
 scratch/
 *.log
+/model.pkl
+/shap_explainer.pkl

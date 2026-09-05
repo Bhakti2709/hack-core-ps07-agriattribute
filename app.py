@@ -319,9 +319,11 @@ REGIONAL_CROP_SHARES = {
 
 @st.cache_resource
 def load_ml_pipeline():
-    if os.path.exists("model.pkl") and os.path.exists("shap_explainer.pkl"):
-        model = joblib.load("model.pkl")
-        artifacts = joblib.load("shap_explainer.pkl")
+    m_path = "models/model.pkl" if os.path.exists("models/model.pkl") else "model.pkl"
+    s_path = "models/shap_explainer.pkl" if os.path.exists("models/shap_explainer.pkl") else "shap_explainer.pkl"
+    if os.path.exists(m_path) and os.path.exists(s_path):
+        model = joblib.load(m_path)
+        artifacts = joblib.load(s_path)
         return model, artifacts
     else:
         df = generate_synthetic_field_trials(num_samples=1000)
@@ -329,7 +331,9 @@ def load_ml_pipeline():
         df.to_csv("data/field_trials.csv", index=False)
         from train_model import train_yield_attribution_model
         train_yield_attribution_model("data/field_trials.csv")
-        return joblib.load("model.pkl"), joblib.load("shap_explainer.pkl")
+        m_path = "models/model.pkl" if os.path.exists("models/model.pkl") else "model.pkl"
+        s_path = "models/shap_explainer.pkl" if os.path.exists("models/shap_explainer.pkl") else "shap_explainer.pkl"
+        return joblib.load(m_path), joblib.load(s_path)
 
 def get_weather_emoji(condition):
     cond = str(condition).lower()

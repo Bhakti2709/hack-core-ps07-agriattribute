@@ -138,8 +138,9 @@ def retrain_from_csv(csv_filepath: str) -> dict:
         }
 
         # Serialize artifacts
-        joblib.dump(model, "model.pkl")
-        joblib.dump(artifacts, "shap_explainer.pkl")
+        os.makedirs("models", exist_ok=True)
+        joblib.dump(model, "models/model.pkl")
+        joblib.dump(artifacts, "models/shap_explainer.pkl")
 
         return {
             "status": "Success",

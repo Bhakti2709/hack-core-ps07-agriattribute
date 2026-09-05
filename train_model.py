@@ -80,10 +80,10 @@ def train_yield_attribution_model(data_path: str = "data/field_trials.csv"):
         "all_columns": X.columns.tolist(),
         "metrics": {"r2": r2, "rmse": rmse, "mae": mae}
     }
-    
-    joblib.dump(model, "model.pkl")
-    joblib.dump(artifacts, "shap_explainer.pkl")
-    print("SUCCESS: Saved model.pkl and shap_explainer.pkl successfully!")
+    os.makedirs("models", exist_ok=True)
+    joblib.dump(model, "models/model.pkl")
+    joblib.dump(artifacts, "models/shap_explainer.pkl")
+    print("SUCCESS: Saved models/model.pkl and models/shap_explainer.pkl successfully!")
 
 
 if __name__ == "__main__":
